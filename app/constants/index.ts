@@ -3,16 +3,17 @@ import { Car, CarCategory } from '@/app/types';
 // ─── Brand Data ──────────────────────────────────────────────────────────────
 
 export const CAR_BRANDS = [
-  { name: 'Mazda',      logo: '/brands/mazda.svg',      carCount: 245 },
-  { name: 'Ford',       logo: '/brands/ford.svg',       carCount: 780 },
-  { name: 'Cadillac',   logo: '/brands/cadillac.svg',   carCount: 430 },
-  { name: 'Rolls Royce',logo: '/brands/rollsroyce.svg', carCount: 500 },
-  { name: 'KIA',        logo: '/brands/kia.svg',        carCount: 720 },
-  { name: 'Porsche',    logo: '/brands/porsche.svg',    carCount: 380 },
-  { name: 'Audi',       logo: '/brands/audi.svg',       carCount: 130 },
-  { name: 'Subaru',     logo: '/brands/subaru.svg',     carCount: 90  },
-  { name: 'Fiat',       logo: '/brands/fiat.svg',       carCount: 20  },
-  { name: 'Land Rover', logo: '/brands/landrover.svg',  carCount: 90  },
+  { name: 'Porsche',      logo: '/assets/brands/porsche.png',      carCount: 380 },
+  { name: 'Audi',         logo: '/assets/brands/audi.png',         carCount: 130 },
+  { name: 'Subaru',       logo: '/assets/brands/subaru.png',       carCount: 90  },
+  { name: 'Fiat',         logo: '/assets/brands/fiat.png',         carCount: 20  },
+  { name: 'Land Rover',   logo: '/assets/brands/land-rover.png',   carCount: 90  },
+  { name: 'Brabus',       logo: '/assets/brands/brabus.png',       carCount: 120 },
+  { name: 'Mazda',        logo: '/assets/brands/mazda.png',        carCount: 245 },
+  { name: 'Ford',         logo: '/assets/brands/ford.png',         carCount: 780 },
+  { name: 'Cadillac',     logo: '/assets/brands/cadillac.png',     carCount: 430 },
+  { name: 'Toyota Crown', logo: '/assets/brands/toyota-crown.png', carCount: 500 },
+  { name: 'KIA',          logo: '/assets/brands/kia.png',          carCount: 720 },
 ];
 
 // ─── Category Data ───────────────────────────────────────────────────────────
@@ -23,13 +24,14 @@ export const CAR_CATEGORIES: {
   carCount: number;
   fromPrice: number;
   image: string;
+  gradient: string;
 }[] = [
-  { id: 'super',          label: 'SUPER',          carCount: 150, fromPrice: 1200, image: '/categories/super.jpg'          },
-  { id: 'luxury',         label: 'LUXURY',         carCount: 150, fromPrice: 1200, image: '/categories/luxury.jpg'         },
-  { id: 'suv',            label: "SUV's",          carCount: 150, fromPrice: 1200, image: '/categories/suv.jpg'            },
-  { id: 'convertible',    label: 'CONVERTIBLE',    carCount: 150, fromPrice: 1200, image: '/categories/convertible.jpg'    },
-  { id: 'driver-service', label: 'DRIVER SERVICE', carCount: 150, fromPrice: 1200, image: '/categories/driver-service.jpg' },
-  { id: 'economy',        label: 'ECONOMY',        carCount: 150, fromPrice: 1200, image: '/categories/economy.jpg'        },
+  { id: 'super',          label: 'SUPER',          carCount: 150, fromPrice: 1200, image: '/assets/categories/super.png',          gradient: 'linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 37%), linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 35%, rgba(0,0,0,0) 100%)' },
+  { id: 'luxury',         label: 'LUXURY',         carCount: 150, fromPrice: 1200, image: '/assets/categories/luxury.png',         gradient: 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 34%, rgba(0,0,0,0) 100%)' },
+  { id: 'suv',            label: "SUV's",          carCount: 150, fromPrice: 1200, image: '/assets/categories/suv.png',            gradient: 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 37%, rgba(0,0,0,0) 100%)' },
+  { id: 'convertible',    label: 'CONVERTIBLE',    carCount: 150, fromPrice: 1200, image: '/assets/categories/convertible.png',    gradient: 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 37%, rgba(0,0,0,0) 100%)' },
+  { id: 'driver-service', label: 'DRIVER SERVICE', carCount: 150, fromPrice: 1200, image: '/assets/categories/driver-service.png', gradient: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 12%, rgba(0,0,0,0) 100%)' },
+  { id: 'economy',        label: 'ECONOMY',        carCount: 150, fromPrice: 1200, image: '/assets/categories/economy.png',        gradient: 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%)' },
 ];
 
 // ─── Mock Cars Data ──────────────────────────────────────────────────────────
