@@ -1,0 +1,232 @@
+import { Car, CarCategory } from '@/app/types';
+
+// ─── Brand Data ──────────────────────────────────────────────────────────────
+
+export const CAR_BRANDS = [
+  { name: 'Mazda',      logo: '/brands/mazda.svg',      carCount: 245 },
+  { name: 'Ford',       logo: '/brands/ford.svg',       carCount: 780 },
+  { name: 'Cadillac',   logo: '/brands/cadillac.svg',   carCount: 430 },
+  { name: 'Rolls Royce',logo: '/brands/rollsroyce.svg', carCount: 500 },
+  { name: 'KIA',        logo: '/brands/kia.svg',        carCount: 720 },
+  { name: 'Porsche',    logo: '/brands/porsche.svg',    carCount: 380 },
+  { name: 'Audi',       logo: '/brands/audi.svg',       carCount: 130 },
+  { name: 'Subaru',     logo: '/brands/subaru.svg',     carCount: 90  },
+  { name: 'Fiat',       logo: '/brands/fiat.svg',       carCount: 20  },
+  { name: 'Land Rover', logo: '/brands/landrover.svg',  carCount: 90  },
+];
+
+// ─── Category Data ───────────────────────────────────────────────────────────
+
+export const CAR_CATEGORIES: {
+  id: CarCategory;
+  label: string;
+  carCount: number;
+  fromPrice: number;
+  image: string;
+}[] = [
+  { id: 'super',          label: 'SUPER',          carCount: 150, fromPrice: 1200, image: '/categories/super.jpg'          },
+  { id: 'luxury',         label: 'LUXURY',         carCount: 150, fromPrice: 1200, image: '/categories/luxury.jpg'         },
+  { id: 'suv',            label: "SUV's",          carCount: 150, fromPrice: 1200, image: '/categories/suv.jpg'            },
+  { id: 'convertible',    label: 'CONVERTIBLE',    carCount: 150, fromPrice: 1200, image: '/categories/convertible.jpg'    },
+  { id: 'driver-service', label: 'DRIVER SERVICE', carCount: 150, fromPrice: 1200, image: '/categories/driver-service.jpg' },
+  { id: 'economy',        label: 'ECONOMY',        carCount: 150, fromPrice: 1200, image: '/categories/economy.jpg'        },
+];
+
+// ─── Mock Cars Data ──────────────────────────────────────────────────────────
+
+export const MOCK_CARS: Car[] = [
+  {
+    id: '1',
+    slug: 'rolls-royce-cullinan-mansory-2024',
+    brand: 'Rolls Royce',
+    brandLogo: '/brands/rollsroyce.svg',
+    model: 'Cullinan Mansory 2024',
+    year: 2024,
+    category: 'super',
+    images: [
+      '/cars/cullinan-1.jpg',
+      '/cars/cullinan-2.jpg',
+      '/cars/cullinan-3.jpg',
+      '/cars/cullinan-4.jpg',
+    ],
+    pricePerDay: 2000,
+    pricePerMonth: 45000,
+    specs: {
+      topSpeed: '325 km/h',
+      engine: '5.2-L V10',
+      acceleration: '2.9 sec',
+      horsepower: '650 hp',
+      seats: 4,
+      color: 'Yellow',
+      transmission: 'Automatic',
+      fuelType: 'Petrol',
+    },
+    noDeposit: true,
+    mileagePerDay: 750,
+    minAge: 21,
+    securityDeposit: false,
+    fuelPolicy: 'Same to Same',
+    insurance: 'Basic Comprehensive Insurance',
+    languages: ['English', 'Arabic', 'Russian', 'French', 'Italian', 'German'],
+    payments: ['Credit Card', 'Bank Card', 'Cash', 'Crypto'],
+    documents: ['Driving License', 'Emirates ID or Passport', 'International Driving Permit (IDP)'],
+    rating: 4.8,
+    reviewCount: 124,
+  },
+  {
+    id: '2',
+    slug: 'ferrari-812-gts-2023',
+    brand: 'Ferrari',
+    brandLogo: '/brands/ferrari.svg',
+    model: '812 GTS 2023',
+    year: 2023,
+    category: 'super',
+    images: ['/cars/ferrari-812-1.jpg'],
+    pricePerDay: 7000,
+    specs: {
+      topSpeed: 'V12',
+      engine: 'V12',
+      acceleration: '800 hp',
+      horsepower: '800 hp',
+      seats: 2,
+      color: 'Red',
+      transmission: 'Automatic',
+      fuelType: 'Petrol',
+    },
+    noDeposit: true,
+    mileagePerDay: 325,
+    minAge: 25,
+    securityDeposit: false,
+    fuelPolicy: 'Same to Same',
+    insurance: 'Basic Comprehensive Insurance',
+    languages: ['English', 'Arabic'],
+    payments: ['Credit Card', 'Cash'],
+    documents: ['Driving License', 'Emirates ID or Passport'],
+  },
+  {
+    id: '3',
+    slug: 'mercedes-sl63-amg-2022',
+    brand: 'Mercedes',
+    brandLogo: '/brands/mercedes.svg',
+    model: 'SL 63 AMG 2022',
+    year: 2022,
+    category: 'luxury',
+    images: ['/cars/mercedes-sl63-1.jpg'],
+    pricePerDay: 1900,
+    specs: {
+      topSpeed: '250 km/h',
+      engine: '4.0L',
+      acceleration: '3.5 sec',
+      horsepower: '585 hp',
+      seats: 4,
+      color: 'Black',
+      transmission: 'Automatic',
+      fuelType: 'Petrol',
+    },
+    noDeposit: true,
+    mileagePerDay: 325,
+    minAge: 21,
+    securityDeposit: false,
+    fuelPolicy: 'Same to Same',
+    insurance: 'Basic Comprehensive Insurance',
+    languages: ['English', 'Arabic'],
+    payments: ['Credit Card', 'Cash'],
+    documents: ['Driving License', 'Emirates ID or Passport'],
+  },
+  {
+    id: '4',
+    slug: 'ferrari-purosangue-2024',
+    brand: 'Ferrari',
+    brandLogo: '/brands/ferrari.svg',
+    model: 'Purosangue 2024',
+    year: 2024,
+    category: 'super',
+    images: ['/cars/ferrari-puro-1.jpg'],
+    pricePerDay: 6700,
+    specs: {
+      topSpeed: '310 km/h',
+      engine: 'V12',
+      acceleration: '3.3 sec',
+      horsepower: '640 hp',
+      seats: 4,
+      color: 'Blue',
+      transmission: 'Automatic',
+      fuelType: 'Petrol',
+    },
+    noDeposit: true,
+    mileagePerDay: 325,
+    minAge: 25,
+    securityDeposit: false,
+    fuelPolicy: 'Same to Same',
+    insurance: 'Basic Comprehensive Insurance',
+    languages: ['English', 'Arabic'],
+    payments: ['Credit Card', 'Cash'],
+    documents: ['Driving License', 'Emirates ID or Passport'],
+  },
+  {
+    id: '5',
+    slug: 'porsche-gt3-rs-2024',
+    brand: 'Porsche',
+    brandLogo: '/brands/porsche.svg',
+    model: 'GT3 RS 2024',
+    year: 2024,
+    category: 'super',
+    images: ['/cars/porsche-gt3-1.jpg'],
+    pricePerDay: 4500,
+    specs: {
+      topSpeed: '296 km/h',
+      engine: '4.0L',
+      acceleration: '3.2 sec',
+      horsepower: '525 hp',
+      seats: 2,
+      color: 'Yellow',
+      transmission: 'Automatic',
+      fuelType: 'Petrol',
+    },
+    noDeposit: true,
+    mileagePerDay: 325,
+    minAge: 25,
+    securityDeposit: false,
+    fuelPolicy: 'Same to Same',
+    insurance: 'Basic Comprehensive Insurance',
+    languages: ['English', 'Arabic'],
+    payments: ['Credit Card', 'Cash'],
+    documents: ['Driving License', 'Emirates ID or Passport'],
+  },
+];
+
+// ─── FAQ Data ─────────────────────────────────────────────────────────────────
+
+export const FAQ_ITEMS = [
+  { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.' },
+  { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.' },
+  { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.' },
+  { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.' },
+  { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.' },
+  { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.' },
+];
+
+// ─── Footer Links ─────────────────────────────────────────────────────────────
+
+export const FOOTER_COLUMNS = {
+  company: ['About us', 'Our Blogs', 'FAQ', 'Contact', 'Sitemap XML', 'Privacy Policy', 'Terms of Service'],
+  renters: ['Create an account', 'Login', 'Help Center'],
+  rentalCompanies: ['Join us', 'Login', 'Request a Demo', 'Advantages', 'Pricing & Plans'],
+};
+
+export const FOOTER_SEO_LINKS = [
+  { heading: 'Rent by type of Car', links: ['Rent a Supercar in Dubai', 'Rent a Luxury Car in Dubai', 'Rent a SUV in Dubai', 'Rent a Sports Car in Dubai', 'Rent a Convertible Car in Dubai', 'Rent an Economy Car in Dubai'] },
+  { heading: 'Rent by type of Car', links: ['Rent a Lamborghini in Dubai', 'Rent a Ferrari Car in Dubai', 'Rent a Rolls Royce in Dubai', 'Rent a McLaren Car in Dubai', 'Rent a Aston Martin Car in Dubai', 'Rent a Bentley Car in Dubai'] },
+  { heading: 'Rent by type of Car', links: ['Rent a Mercedes in Dubai', 'Rent an Audi Car in Dubai', 'Rent a BMW in Dubai', 'Rent a Range Rover Car in Dubai', 'Rent a Porsche Car in Dubai', 'Rent a Cadillac Car in Dubai'] },
+  { heading: 'Rent by type of Car', links: ['Rent a Ford in Dubai', 'Rent a Nissan Car in Dubai', 'Rent a Chevrolet in Dubai', 'Rent a KIA in Dubai', 'Rent an Mini Car in Dubai', 'Rent a Cadillac Car in Dubai'] },
+];
+
+// ─── Country Codes ────────────────────────────────────────────────────────────
+
+export const COUNTRY_CODES = [
+  { code: '+971', country: 'UAE', flag: '🇦🇪' },
+  { code: '+1',   country: 'US',  flag: '🇺🇸' },
+  { code: '+44',  country: 'UK',  flag: '🇬🇧' },
+  { code: '+91',  country: 'IN',  flag: '🇮🇳' },
+  { code: '+966', country: 'SA',  flag: '🇸🇦' },
+];
