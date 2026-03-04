@@ -4,106 +4,197 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Heart } from 'lucide-react';
 import { useState } from 'react';
-import Badge from '@/app/components/ui/Badge';
 import { Car } from '@/app/types';
-import { formatAED } from '@/app/lib/utils';
 
 interface CarCardProps {
   car: Car;
 }
 
 /**
- * Car listing card – matches the Figma listings grid card exactly.
- * Shows: image, badge, wishlist, brand logo, name, specs, price, WhatsApp + Reserve CTAs.
+ * Car listing card – pixel-perfect from Figma "Browser & Mobile/Car Cards" (5385:29865).
+ *
+ * Figma specs:
+ * - Card: 318×439px, border-radius 15px, border Black/10%, padding 8px 8px 16px, gap 24px
+ * - Card bg gradient: linear-gradient(0deg, #fff 0%, #e9e9e9 44%, #2b2e34 100%)
+ * - Image area: fill, border-radius 10px, gradient overlay bottom 5%
+ * - No Deposit tag: rgba(18,21,28,0.7), border #B8F04F 1px, blur 10px, border-radius 60px
+ * - Specs: pill bg Black/10%, border Black/10%, border-radius 60px, padding 6px 8px
+ * - WhatsApp CTA: #1CC25A, 56×56px, border-radius 40px
+ * - Reserve CTA: #12151C, border #B8F04F 2px, border-radius 100px, height 56px, padding 0 16px
+ * - Price: "AED" Body Small/Medium Black/50%, count Heading 6-24/Bold, "/day" Body Small/Regular Black/50%
  */
 export default function CarCard({ car }: CarCardProps) {
   const [wishlisted, setWishlisted] = useState(false);
 
+  // Figma card specs extracted from the API
+  const specs = [
+    car.specs.engine,
+    car.specs.horsepower,
+    car.specs.topSpeed,
+    `${car.specs.seats} Seater`,
+  ];
+
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 flex flex-col">
-      {/* Image */}
-      <div className="relative h-44 bg-gray-100">
+    <div
+      className="relative flex flex-col overflow-hidden"
+      style={{
+        width: 318,
+        minHeight: 439,
+        borderRadius: 15,
+        border: '1px solid rgba(0,0,0,0.1)',
+        background: 'linear-gradient(0deg, #ffffff 0%, #e9e9e9 44%, #2b2e34 100%)',
+        padding: '8px 8px 16px',
+        gap: 24,
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* ── Image Area ── */}
+      <div
+        className="relative overflow-hidden flex-shrink-0"
+        style={{ borderRadius: 10, height: 220 }}
+      >
         <Image
           src={car.images[0]}
-          alt={car.model}
+          alt={`${car.brand} ${car.model}`}
           fill
           className="object-cover"
-          sizes="(max-width: 768px) 100vw, 25vw"
+          sizes="318px"
+          quality={85}
         />
-        {/* No Deposit badge */}
+        {/* Bottom fade overlay – Figma: rgba(0,0,0,0) 89% → rgba(0,0,0,1) 95% */}
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 89%, rgba(0,0,0,1) 95%)' }}
+        />
+
+        {/* No Deposit tag – Figma: rgba(18,21,28,0.7), border #B8F04F, blur 10px */}
         {car.noDeposit && (
-          <div className="absolute top-3 left-3">
-            <Badge variant="default">No Deposit</Badge>
+          <div
+            className="absolute top-2 left-2 flex items-center"
+            style={{
+              background: 'rgba(18, 21, 28, 0.7)',
+              border: '1px solid #B8F04F',
+              borderRadius: 60,
+              padding: '8px 12px',
+              backdropFilter: 'blur(10px)',
+              height: 26,
+            }}
+          >
+            <span className="text-white font-medium text-sm leading-none">No Deposit</span>
           </div>
         )}
-        {/* Wishlist */}
+
+        {/* Wishlist – 32×32px */}
         <button
           onClick={() => setWishlisted(!wishlisted)}
           aria-label="Add to wishlist"
-          className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform"
+          className="absolute top-2 right-2 flex items-center justify-center bg-white/80 hover:bg-white transition-colors"
+          style={{ width: 32, height: 32, borderRadius: '50%' }}
         >
           <Heart
             size={15}
-            className={wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400'}
+            className={wishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500'}
           />
         </button>
-        {/* Brand logo overlay */}
-        <div className="absolute bottom-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow overflow-hidden">
-          <Image src={car.brandLogo} alt={car.brand} width={24} height={24} className="object-contain" />
+      </div>
+
+      {/* ── Car Make, Model & Logo ── */}
+      <div className="flex items-center justify-between px-2">
+        <div className="flex flex-col" style={{ gap: 12 }}>
+          <span
+            className="font-medium"
+            style={{ fontSize: 16, lineHeight: '1.5em', color: '#000' }}
+          >
+            {car.brand}
+          </span>
+          <span
+            className="font-bold"
+            style={{ fontSize: 18, lineHeight: '1.44em', color: '#000' }}
+          >
+            {car.model}
+          </span>
+        </div>
+        {/* Brand logo – 40×40px per Figma */}
+        <div className="relative flex-shrink-0" style={{ width: 40, height: 40 }}>
+          <Image
+            src={car.brandLogo}
+            alt={car.brand}
+            fill
+            className="object-contain"
+            sizes="40px"
+          />
         </div>
       </div>
 
-      {/* Body */}
-      <div className="p-4 flex flex-col flex-1 gap-3">
-        {/* Car name */}
-        <div>
-          <p className="text-xs text-gray-400">{car.brand}</p>
-          <h3 className="font-bold text-sm text-gray-900">{car.model}</h3>
-        </div>
+      {/* ── Specs pills ── */}
+      <div className="flex flex-wrap items-center px-2" style={{ gap: 8 }}>
+        {specs.map((s) => (
+          <div
+            key={s}
+            className="flex items-center justify-center"
+            style={{
+              background: 'rgba(0,0,0,0.1)',
+              border: '1px solid rgba(0,0,0,0.1)',
+              borderRadius: 60,
+              padding: '6px 8px',
+            }}
+          >
+            <span style={{ fontSize: 14, fontWeight: 500, lineHeight: '1.57em', color: '#000' }}>
+              {s}
+            </span>
+          </div>
+        ))}
+      </div>
 
-        {/* Specs row */}
-        <div className="flex items-center gap-3 text-xs text-gray-500 flex-wrap">
-          <span>{car.specs.engine}</span>
-          <span className="text-gray-300">·</span>
-          <span>{car.specs.horsepower}</span>
-          <span className="text-gray-300">·</span>
-          <span>{car.specs.topSpeed}</span>
-          <span className="text-gray-300">·</span>
-          <span>{car.specs.seats} Seater</span>
-        </div>
-
-        {/* Price + CTAs */}
-        <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
-          <div>
-            <p className="text-xs text-gray-400">AED</p>
-            <p className="text-lg font-extrabold text-gray-900 leading-tight">
+      {/* ── Price & CTAs ── */}
+      <div className="flex items-center justify-between px-2" style={{ gap: 17 }}>
+        {/* Price */}
+        <div className="flex flex-col" style={{ gap: 8 }}>
+          <span style={{ fontSize: 14, fontWeight: 500, color: 'rgba(0,0,0,0.5)' }}>AED</span>
+          <div className="flex items-end">
+            <span style={{ fontSize: 24, fontWeight: 700, lineHeight: 1, color: '#000' }}>
               {car.pricePerDay.toLocaleString()}
-              <span className="text-xs font-normal text-gray-400">/day</span>
-            </p>
+            </span>
+            <span style={{ fontSize: 14, fontWeight: 400, color: 'rgba(0,0,0,0.5)', marginLeft: 2 }}>
+              /day
+            </span>
           </div>
+        </div>
 
-          <div className="flex items-center gap-2">
-            {/* WhatsApp */}
-            <a
-              href={`https://wa.me/971000000000?text=I'm interested in ${car.model}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp"
-              className="w-9 h-9 bg-[#25D366] rounded-full flex items-center justify-center hover:bg-[#1ebe5b] transition-colors"
-            >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="white">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-              </svg>
-            </a>
+        {/* CTAs */}
+        <div className="flex items-center flex-wrap" style={{ gap: 8 }}>
+          {/* WhatsApp – #1CC25A, 56×56px, border-radius 40px */}
+          <a
+            href={`https://wa.me/971000000000?text=I'm interested in ${car.model}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+            className="flex items-center justify-center flex-shrink-0"
+            style={{ width: 56, height: 56, borderRadius: 40, background: '#1CC25A' }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg>
+          </a>
 
-            {/* Reserve */}
-            <Link
-              href={`/cars/${car.slug}`}
-              className="bg-black text-white text-xs font-bold px-4 py-2 rounded-full hover:bg-gray-800 transition-colors"
-            >
-              RESERVE
-            </Link>
-          </div>
+          {/* Reserve – #12151C, border #B8F04F 2px, border-radius 100px, h 56px */}
+          <Link
+            href={`/cars/${car.slug}`}
+            className="flex items-center justify-center font-bold text-white whitespace-nowrap"
+            style={{
+              height: 56,
+              padding: '0 16px',
+              borderRadius: 100,
+              background: '#12151C',
+              border: '2px solid #B8F04F',
+              fontSize: 16,
+              fontWeight: 700,
+              letterSpacing: '0.02em',
+            }}
+          >
+            RESERVE
+          </Link>
         </div>
       </div>
     </div>

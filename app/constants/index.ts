@@ -3,16 +3,17 @@ import { Car, CarCategory } from '@/app/types';
 // ─── Brand Data ──────────────────────────────────────────────────────────────
 
 export const CAR_BRANDS = [
-  { name: 'Mazda',      logo: '/brands/mazda.svg',      carCount: 245 },
-  { name: 'Ford',       logo: '/brands/ford.svg',       carCount: 780 },
-  { name: 'Cadillac',   logo: '/brands/cadillac.svg',   carCount: 430 },
-  { name: 'Rolls Royce',logo: '/brands/rollsroyce.svg', carCount: 500 },
-  { name: 'KIA',        logo: '/brands/kia.svg',        carCount: 720 },
-  { name: 'Porsche',    logo: '/brands/porsche.svg',    carCount: 380 },
-  { name: 'Audi',       logo: '/brands/audi.svg',       carCount: 130 },
-  { name: 'Subaru',     logo: '/brands/subaru.svg',     carCount: 90  },
-  { name: 'Fiat',       logo: '/brands/fiat.svg',       carCount: 20  },
-  { name: 'Land Rover', logo: '/brands/landrover.svg',  carCount: 90  },
+  { name: 'Porsche',      logo: '/assets/brands/porsche.png',      carCount: 380 },
+  { name: 'Audi',         logo: '/assets/brands/audi.png',         carCount: 130 },
+  { name: 'Subaru',       logo: '/assets/brands/subaru.png',       carCount: 90  },
+  { name: 'Fiat',         logo: '/assets/brands/fiat.png',         carCount: 20  },
+  { name: 'Land Rover',   logo: '/assets/brands/land-rover.png',   carCount: 90  },
+  { name: 'Brabus',       logo: '/assets/brands/brabus.png',       carCount: 120 },
+  { name: 'Mazda',        logo: '/assets/brands/mazda.png',        carCount: 245 },
+  { name: 'Ford',         logo: '/assets/brands/ford.png',         carCount: 780 },
+  { name: 'Cadillac',     logo: '/assets/brands/cadillac.png',     carCount: 430 },
+  { name: 'Toyota Crown', logo: '/assets/brands/toyota-crown.png', carCount: 500 },
+  { name: 'KIA',          logo: '/assets/brands/kia.png',          carCount: 720 },
 ];
 
 // ─── Category Data ───────────────────────────────────────────────────────────
@@ -23,31 +24,33 @@ export const CAR_CATEGORIES: {
   carCount: number;
   fromPrice: number;
   image: string;
+  gradient: string;
 }[] = [
-  { id: 'super',          label: 'SUPER',          carCount: 150, fromPrice: 1200, image: '/categories/super.jpg'          },
-  { id: 'luxury',         label: 'LUXURY',         carCount: 150, fromPrice: 1200, image: '/categories/luxury.jpg'         },
-  { id: 'suv',            label: "SUV's",          carCount: 150, fromPrice: 1200, image: '/categories/suv.jpg'            },
-  { id: 'convertible',    label: 'CONVERTIBLE',    carCount: 150, fromPrice: 1200, image: '/categories/convertible.jpg'    },
-  { id: 'driver-service', label: 'DRIVER SERVICE', carCount: 150, fromPrice: 1200, image: '/categories/driver-service.jpg' },
-  { id: 'economy',        label: 'ECONOMY',        carCount: 150, fromPrice: 1200, image: '/categories/economy.jpg'        },
+  { id: 'super',          label: 'SUPER',          carCount: 150, fromPrice: 1200, image: '/assets/categories/super.png',          gradient: 'linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 37%), linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 35%, rgba(0,0,0,0) 100%)' },
+  { id: 'luxury',         label: 'LUXURY',         carCount: 150, fromPrice: 1200, image: '/assets/categories/luxury.png',         gradient: 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 34%, rgba(0,0,0,0) 100%)' },
+  { id: 'suv',            label: "SUV's",          carCount: 150, fromPrice: 1200, image: '/assets/categories/suv.png',            gradient: 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 37%, rgba(0,0,0,0) 100%)' },
+  { id: 'convertible',    label: 'CONVERTIBLE',    carCount: 150, fromPrice: 1200, image: '/assets/categories/convertible.png',    gradient: 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 37%, rgba(0,0,0,0) 100%)' },
+  { id: 'driver-service', label: 'DRIVER SERVICE', carCount: 150, fromPrice: 1200, image: '/assets/categories/driver-service.png', gradient: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 12%, rgba(0,0,0,0) 100%)' },
+  { id: 'economy',        label: 'ECONOMY',        carCount: 150, fromPrice: 1200, image: '/assets/categories/economy.png',        gradient: 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 100%)' },
 ];
 
 // ─── Mock Cars Data ──────────────────────────────────────────────────────────
+// Car images & brand logos sourced directly from Figma API (node: 8940:52698)
 
 export const MOCK_CARS: Car[] = [
   {
     id: '1',
     slug: 'rolls-royce-cullinan-mansory-2024',
     brand: 'Rolls Royce',
-    brandLogo: '/brands/rollsroyce.svg',
+    brandLogo: '/assets/brands/porsche.png', // placeholder until RR node fetched
     model: 'Cullinan Mansory 2024',
     year: 2024,
     category: 'super',
     images: [
-      '/cars/cullinan-1.jpg',
-      '/cars/cullinan-2.jpg',
-      '/cars/cullinan-3.jpg',
-      '/cars/cullinan-4.jpg',
+      '/assets/cars/ferrari-812-gts.png',
+      '/assets/cars/mercedes-sl63-amg.png',
+      '/assets/cars/ferrari-purosangue.png',
+      '/assets/cars/porsche-gt3-rs.png',
     ],
     pricePerDay: 2000,
     pricePerMonth: 45000,
@@ -77,16 +80,17 @@ export const MOCK_CARS: Car[] = [
     id: '2',
     slug: 'ferrari-812-gts-2023',
     brand: 'Ferrari',
-    brandLogo: '/brands/ferrari.svg',
+    brandLogo: '/assets/brands/ferrari.png',
     model: '812 GTS 2023',
     year: 2023,
     category: 'super',
-    images: ['/cars/ferrari-812-1.jpg'],
+    // Image: Figma node I8940:52742;5385:29819 | imageRef: ee42c8cf...
+    images: ['/assets/cars/ferrari-812-gts.png'],
     pricePerDay: 7000,
     specs: {
-      topSpeed: 'V12',
+      topSpeed: '325 km/h',
       engine: 'V12',
-      acceleration: '800 hp',
+      acceleration: '2.9 sec',
       horsepower: '800 hp',
       seats: 2,
       color: 'Red',
@@ -107,11 +111,12 @@ export const MOCK_CARS: Car[] = [
     id: '3',
     slug: 'mercedes-sl63-amg-2022',
     brand: 'Mercedes',
-    brandLogo: '/brands/mercedes.svg',
+    brandLogo: '/assets/brands/mercedes.png',
     model: 'SL 63 AMG 2022',
     year: 2022,
     category: 'luxury',
-    images: ['/cars/mercedes-sl63-1.jpg'],
+    // Image: Figma node I8940:52743;5385:29819
+    images: ['/assets/cars/mercedes-sl63-amg.png'],
     pricePerDay: 1900,
     specs: {
       topSpeed: '250 km/h',
@@ -137,11 +142,12 @@ export const MOCK_CARS: Car[] = [
     id: '4',
     slug: 'ferrari-purosangue-2024',
     brand: 'Ferrari',
-    brandLogo: '/brands/ferrari.svg',
+    brandLogo: '/assets/brands/ferrari.png',
     model: 'Purosangue 2024',
     year: 2024,
     category: 'super',
-    images: ['/cars/ferrari-puro-1.jpg'],
+    // Image: Figma node I8940:52744;5385:29819
+    images: ['/assets/cars/ferrari-purosangue.png'],
     pricePerDay: 6700,
     specs: {
       topSpeed: '310 km/h',
@@ -167,11 +173,12 @@ export const MOCK_CARS: Car[] = [
     id: '5',
     slug: 'porsche-gt3-rs-2024',
     brand: 'Porsche',
-    brandLogo: '/brands/porsche.svg',
+    brandLogo: '/assets/brands/porsche.png',
     model: 'GT3 RS 2024',
     year: 2024,
     category: 'super',
-    images: ['/cars/porsche-gt3-1.jpg'],
+    // Image: Figma node I8940:52745;5385:29819
+    images: ['/assets/cars/porsche-gt3-rs.png'],
     pricePerDay: 4500,
     specs: {
       topSpeed: '296 km/h',

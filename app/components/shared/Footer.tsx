@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { FOOTER_COLUMNS, FOOTER_SEO_LINKS } from '@/app/constants';
 
 /**
@@ -86,17 +87,13 @@ export default function Footer() {
 
 function LogoMark() {
   return (
-    <div className="flex flex-col leading-none">
-      <div className="flex items-center gap-0.5">
-        <svg width="24" height="18" viewBox="0 0 28 20" fill="none" className="mr-1">
-          <line x1="0" y1="5"  x2="22" y2="5"  stroke="#CDFF00" strokeWidth="3" strokeLinecap="round" />
-          <line x1="4" y1="10" x2="26" y2="10" stroke="#CDFF00" strokeWidth="3" strokeLinecap="round" />
-          <line x1="0" y1="15" x2="22" y2="15" stroke="#CDFF00" strokeWidth="3" strokeLinecap="round" />
-        </svg>
-        <span className="text-white font-extrabold text-lg tracking-tight">HEY</span>
-      </div>
-      <span className="text-white font-extrabold text-lg tracking-tight -mt-1">RENTER</span>
-    </div>
+    <Image
+      src="/assets/icons/logo.svg"
+      alt="Hey Renter"
+      width={100}
+      height={32}
+      className="h-8 w-auto"
+    />
   );
 }
 
