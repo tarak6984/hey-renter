@@ -92,8 +92,8 @@ function ListingsContent() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         <FilterBar total={280} />
 
-        {/* Car grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
+        {/* Car grid – Figma card width 318px, gap from design */}
+        <div className="flex flex-wrap gap-6 mt-6 justify-start">
           {paginatedCars.map((car, i) => (
             <CarCard key={`${car.id}-${i}`} car={car} />
           ))}

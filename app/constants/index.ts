@@ -35,21 +35,22 @@ export const CAR_CATEGORIES: {
 ];
 
 // ─── Mock Cars Data ──────────────────────────────────────────────────────────
+// Car images & brand logos sourced directly from Figma API (node: 8940:52698)
 
 export const MOCK_CARS: Car[] = [
   {
     id: '1',
     slug: 'rolls-royce-cullinan-mansory-2024',
     brand: 'Rolls Royce',
-    brandLogo: '/brands/rollsroyce.svg',
+    brandLogo: '/assets/brands/porsche.png', // placeholder until RR node fetched
     model: 'Cullinan Mansory 2024',
     year: 2024,
     category: 'super',
     images: [
-      '/cars/cullinan-1.jpg',
-      '/cars/cullinan-2.jpg',
-      '/cars/cullinan-3.jpg',
-      '/cars/cullinan-4.jpg',
+      '/assets/cars/ferrari-812-gts.png',
+      '/assets/cars/mercedes-sl63-amg.png',
+      '/assets/cars/ferrari-purosangue.png',
+      '/assets/cars/porsche-gt3-rs.png',
     ],
     pricePerDay: 2000,
     pricePerMonth: 45000,
@@ -79,16 +80,17 @@ export const MOCK_CARS: Car[] = [
     id: '2',
     slug: 'ferrari-812-gts-2023',
     brand: 'Ferrari',
-    brandLogo: '/brands/ferrari.svg',
+    brandLogo: '/assets/brands/ferrari.png',
     model: '812 GTS 2023',
     year: 2023,
     category: 'super',
-    images: ['/cars/ferrari-812-1.jpg'],
+    // Image: Figma node I8940:52742;5385:29819 | imageRef: ee42c8cf...
+    images: ['/assets/cars/ferrari-812-gts.png'],
     pricePerDay: 7000,
     specs: {
-      topSpeed: 'V12',
+      topSpeed: '325 km/h',
       engine: 'V12',
-      acceleration: '800 hp',
+      acceleration: '2.9 sec',
       horsepower: '800 hp',
       seats: 2,
       color: 'Red',
@@ -109,11 +111,12 @@ export const MOCK_CARS: Car[] = [
     id: '3',
     slug: 'mercedes-sl63-amg-2022',
     brand: 'Mercedes',
-    brandLogo: '/brands/mercedes.svg',
+    brandLogo: '/assets/brands/mercedes.png',
     model: 'SL 63 AMG 2022',
     year: 2022,
     category: 'luxury',
-    images: ['/cars/mercedes-sl63-1.jpg'],
+    // Image: Figma node I8940:52743;5385:29819
+    images: ['/assets/cars/mercedes-sl63-amg.png'],
     pricePerDay: 1900,
     specs: {
       topSpeed: '250 km/h',
@@ -139,11 +142,12 @@ export const MOCK_CARS: Car[] = [
     id: '4',
     slug: 'ferrari-purosangue-2024',
     brand: 'Ferrari',
-    brandLogo: '/brands/ferrari.svg',
+    brandLogo: '/assets/brands/ferrari.png',
     model: 'Purosangue 2024',
     year: 2024,
     category: 'super',
-    images: ['/cars/ferrari-puro-1.jpg'],
+    // Image: Figma node I8940:52744;5385:29819
+    images: ['/assets/cars/ferrari-purosangue.png'],
     pricePerDay: 6700,
     specs: {
       topSpeed: '310 km/h',
@@ -169,11 +173,12 @@ export const MOCK_CARS: Car[] = [
     id: '5',
     slug: 'porsche-gt3-rs-2024',
     brand: 'Porsche',
-    brandLogo: '/brands/porsche.svg',
+    brandLogo: '/assets/brands/porsche.png',
     model: 'GT3 RS 2024',
     year: 2024,
     category: 'super',
-    images: ['/cars/porsche-gt3-1.jpg'],
+    // Image: Figma node I8940:52745;5385:29819
+    images: ['/assets/cars/porsche-gt3-rs.png'],
     pricePerDay: 4500,
     specs: {
       topSpeed: '296 km/h',
