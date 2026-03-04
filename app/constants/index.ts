@@ -42,15 +42,15 @@ export const MOCK_CARS: Car[] = [
     id: '1',
     slug: 'rolls-royce-cullinan-mansory-2024',
     brand: 'Rolls Royce',
-    brandLogo: '/assets/brands/porsche.png', // placeholder until RR node fetched
+    brandLogo: '/assets/brands/rolls-royce.png',
     model: 'Cullinan Mansory 2024',
     year: 2024,
     category: 'super',
     images: [
+      '/assets/cars/cullinan-mansory-2024.png',
       '/assets/cars/ferrari-812-gts.png',
       '/assets/cars/mercedes-sl63-amg.png',
       '/assets/cars/ferrari-purosangue.png',
-      '/assets/cars/porsche-gt3-rs.png',
     ],
     pricePerDay: 2000,
     pricePerMonth: 45000,
