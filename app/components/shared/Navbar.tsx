@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Search, ChevronDown, HelpCircle } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/app/lib/utils';
@@ -16,20 +17,16 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 w-full bg-[#111] text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-6">
-        {/* Logo */}
-        <Link href="/" className="flex-shrink-0">
-          <div className="flex flex-col leading-none">
-            <div className="flex items-center gap-0.5">
-              {/* Speed lines */}
-              <svg width="28" height="20" viewBox="0 0 28 20" fill="none" className="mr-1">
-                <line x1="0" y1="5"  x2="22" y2="5"  stroke="#CDFF00" strokeWidth="3" strokeLinecap="round" />
-                <line x1="4" y1="10" x2="26" y2="10" stroke="#CDFF00" strokeWidth="3" strokeLinecap="round" />
-                <line x1="0" y1="15" x2="22" y2="15" stroke="#CDFF00" strokeWidth="3" strokeLinecap="round" />
-              </svg>
-              <span className="text-white font-extrabold text-xl tracking-tight">HEY</span>
-            </div>
-            <span className="text-white font-extrabold text-xl tracking-tight -mt-1">RENTER</span>
-          </div>
+        {/* Logo – pulled directly from Figma export */}
+        <Link href="/" className="flex-shrink-0" aria-label="Hey Renter – Home">
+          <Image
+            src="/assets/icons/logo.svg"
+            alt="Hey Renter"
+            width={124}
+            height={40}
+            priority
+            className="h-10 w-auto"
+          />
         </Link>
 
         {/* Nav Links */}
