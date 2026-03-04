@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+/* ── Custom utilities ───────────────────────────────────────────────── */
+
+/* Hide scrollbar but keep scrollability */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Font variable */
+:root {
+  --font-inter: 'Inter', sans-serif;
+}
+
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
