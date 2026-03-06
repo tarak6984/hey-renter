@@ -46,6 +46,7 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.cdnfonts.com" />
         <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/tt-norms-pro" />
+        <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/clash-display" />
       </head>
       <body className={`${inter.variable} antialiased`}>
         <TopBar />

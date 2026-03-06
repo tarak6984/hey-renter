@@ -1,31 +1,86 @@
 import Image from 'next/image';
 
 /**
- * Hero section – pixel-perfect from Figma node I8937:42821;5425:35599
- * Uses the exported hero-cars.png (2880×550) directly from Figma.
- * Typography matches: Heading 2 – 48/Clash Display, Body Large/Medium.
+ * Hero section – pixel-perfect from Figma node 8937-42820
+ *
+ * Figma specs:
+ *   BG: linear-gradient top→bottom rgba(222,222,222,0) → rgba(222,222,222,1)
+ *   Title & Body: centered, padding T=80px L=39px R=39px, gap=24px between them
+ *   Gap between text block and car image: 48px
+ *   Car images: full viewport width (no side padding), H=275px, bleeds to edges
+ *   Bottom padding: 64px (below car image)
+ *   SearchBar overlaps bottom of hero by 36px (negative margin in page layout)
+ *
+ *   Title: Clash Display, 48px, fw=700, lh=58px, color=#000, UPPERCASE, CENTER
+ *   Body:  TT Norms Pro, 18px, fw=500, lh=26px, color=#000, CENTER
  */
 export default function HeroSection() {
   return (
-    <section className="relative bg-[#EFEFEF] overflow-hidden">
-      {/* Title & Body – Figma: "Title & Body" frame */}
-      <div className="text-center pt-14 pb-0 px-4">
+    <section
+      style={{
+        background: 'linear-gradient(to bottom, rgba(222,222,222,0) 0%, rgba(222,222,222,1) 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+      }}
+    >
+      {/* ── Title & Body ── */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '24px',
+          textAlign: 'center',
+          paddingTop: '80px',
+          paddingLeft: '39px',
+          paddingRight: '39px',
+          paddingBottom: '0',
+        }}
+      >
         <h1
-          className="text-4xl md:text-5xl font-extrabold tracking-tight text-black uppercase leading-tight"
-          style={{ fontFamily: 'var(--font-inter), sans-serif', letterSpacing: '-0.02em' }}
+          style={{
+            fontFamily: 'var(--font-clash)',
+            fontSize: '48px',
+            fontWeight: 700,
+            lineHeight: '58px',
+            color: '#000000',
+            margin: 0,
+            textTransform: 'uppercase',
+            letterSpacing: '0',
+          }}
         >
-          RENT A LUXURY CAR IN DUBAI
+          Rent a Luxury Car in Dubai
         </h1>
-        <p className="mt-3 text-gray-700 text-lg font-medium">
+        <p
+          style={{
+            fontFamily: 'var(--font-tt-norms)',
+            fontSize: '18px',
+            fontWeight: 500,
+            lineHeight: '26px',
+            color: '#000000',
+            margin: 0,
+          }}
+        >
           Rent the Dream. Live the Lifestyle.
         </p>
       </div>
 
-      {/* Car Images – Figma node I8937:42821;5425:35599, exported at 2× (2880×550px) */}
-      <div className="relative w-full" style={{ aspectRatio: '2880/550' }}>
+      {/* ── 48px gap between text and image ── */}
+      <div style={{ height: '48px', flexShrink: 0 }} />
+
+      {/* ── Car Images – full viewport width, H=275px, bleeds edge-to-edge ── */}
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '275px',
+          flexShrink: 0,
+        }}
+      >
         <Image
           src="/assets/hero/hero-cars.png"
-          alt="Luxury cars showcase – Lamborghini Urus, Rolls Royce, Sports Car"
+          alt="Luxury cars showcase – Rolls Royce, Lamborghini Urus, Sports Car"
           fill
           className="object-cover object-center"
           priority
@@ -33,6 +88,9 @@ export default function HeroSection() {
           quality={90}
         />
       </div>
+
+      {/* ── 64px bottom padding ── */}
+      <div style={{ height: '64px', flexShrink: 0 }} />
     </section>
   );
 }
