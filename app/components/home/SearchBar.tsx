@@ -1,31 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PickupModal from '@/app/components/car-profile/PickupModal';
 
-/**
- * Search / Selection Bar – pixel-perfect from Figma node 8937-42822
- *
- * Figma specs:
- *   Container: W=907px H=72px, bg=white, borderRadius=10, paddingLeft=16, gap=16 HORIZONTAL
- *   Border: 1px #F0F0F0 | shadow: 0 2px 4px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.1)
- *
- *   Fields: Brand(160px) | / | Model(160px) | / | Dates & Time(272px)
- *   Field layout: VERTICAL, gap=14px
- *   Label: TT Norms Pro 18px fw=500 lh=26px color=#000 (full black)
- *   Value: TT Norms Pro 18px fw=500 lh=26px color=#000
- *   Value row: HORIZONTAL gap=8px (value text + arrow_back_ios 24×24 black)
- *
- *   Dividers: diagonal LINE nodes (rendered as italic "/" separator)
- *
- *   CTA: W=174px H=72px (self-stretch), bg=#12151C (inactive) / #B8F04F (active)
- *   CTA text: SPOIL ME, TT Norms Pro 16px fw=500 lh=24px white/black
- *   CTA icon: search 20×20 white/black, gap=7px
- *   CTA borderRadius: 0 10px 10px 0 (right corners only)
- */
+const BRAND_OPTIONS = [
+  { label: 'Any', logo: null },
+  { label: 'Ferrari', logo: '/assets/brands/ferrari.png' },
+  { label: 'Lamborghini', logo: null },
+  { label: 'Rolls Royce', logo: '/assets/brands/rolls-royce.png' },
+  { label: 'Porsche', logo: '/assets/brands/porsche.png' },
+  { label: 'Mercedes', logo: '/assets/brands/mercedes.png' },
+  { label: 'BMW', logo: null },
+  { label: 'Audi', logo: '/assets/brands/audi.png' },
+  { label: 'Brabus', logo: '/assets/brands/brabus.png' },
+  { label: 'Ford', logo: '/assets/brands/ford.png' },
+  { label: 'KIA', logo: '/assets/brands/kia.png' },
+] as const;
 
-const BRANDS = ['Any', 'Ferrari', 'Lamborghini', 'Rolls Royce', 'Porsche', 'Mercedes', 'BMW', 'Audi', 'Brabus', 'Ford', 'KIA'];
 const MODELS: Record<string, string[]> = {
   Any: ['Any'],
   Ferrari: ['Any', '812 GTS 2023', 'Purosangue 2024', 'SF90'],
@@ -59,7 +52,7 @@ export default function SearchBar() {
 
   return (
     <div
-      className="flex items-center overflow-hidden bg-white w-full max-w-4xl mx-auto"
+      className="flex items-stretch overflow-visible bg-white w-full max-w-[907px] mx-auto"
       style={{
         height: '72px',
         borderRadius: '10px',
@@ -69,19 +62,19 @@ export default function SearchBar() {
         gap: '16px',
       }}
     >
-      {/* ── Brand – 160px ── */}
-      <SelectField
+      <BrandSelectField
         label="Brand"
         value={brand}
-        onChange={(v) => { setBrand(v); setModel('Any'); }}
-        options={BRANDS}
+        onChange={(value) => {
+          setBrand(value);
+          setModel('Any');
+        }}
+        options={BRAND_OPTIONS}
         width={160}
       />
 
-      {/* ── Diagonal divider ── */}
       <SlashDivider />
 
-      {/* ── Model – 160px ── */}
       <SelectField
         label="Model"
         value={model}
@@ -90,64 +83,279 @@ export default function SearchBar() {
         width={160}
       />
 
-      {/* ── Diagonal divider ── */}
       <SlashDivider />
 
-      {/* ── Dates & Time – flex-1, opens PickupModal on click ── */}
       <button
-        className="flex flex-col flex-1 text-left"
-        style={{ gap: '14px', justifyContent: 'center', height: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+        className="flex flex-col flex-shrink-0 text-left"
+        style={{
+          width: '272px',
+          gap: '2px',
+          justifyContent: 'flex-start',
+          height: '100%',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: '9px 0 9px',
+        }}
         onClick={() => setModalOpen(true)}
       >
         <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: 'rgba(0,0,0,0.4)' }}>
           Dates &amp; Time
         </span>
         <div className="flex items-center" style={{ gap: '8px' }}>
-          <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: dateTime ? '#000' : 'rgba(0,0,0,0.4)' }}>
+          <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: '#000000' }}>
             {dateTime || 'Select'}
           </span>
-          <ArrowIcon />
+          <ArrowIcon expanded={modalOpen} />
         </div>
       </button>
 
-      {/* ── Date/Time Picker Modal ── */}
       <PickupModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        onConfirm={(val) => { setDateTime(val); setModalOpen(false); }}
+        onConfirm={(value) => {
+          setDateTime(value);
+          setModalOpen(false);
+        }}
       />
 
-      {/* ── SPOIL ME CTA – angled left edge via clip-path parallelogram ── */}
       <button
         onClick={handleSearch}
-        className="flex items-center justify-center flex-shrink-0 transition-colors self-stretch"
+        className="relative flex-shrink-0 transition-colors self-stretch"
         style={{
-          width: '190px',
-          gap: '7px',
+          width: '174px',
           background: isSelected ? '#B8F04F' : '#12151C',
           color: isSelected ? '#000000' : '#ffffff',
-          fontFamily: 'var(--font-tt-norms)',
-          fontSize: '16px',
-          fontWeight: 500,
-          lineHeight: '24px',
-          letterSpacing: '0.08em',
-          border: 'none',
+          border: '1px solid #F0F0F0',
           cursor: 'pointer',
-          /* Clip-path: angled top-left corner – parallelogram effect matching Figma */
-          clipPath: 'polygon(20px 0%, 100% 0%, 100% 100%, 0% 100%)',
+          clipPath: 'polygon(49px 0%, 100% 0%, 100% 100%, 0% 100%)',
           borderRadius: '0 10px 10px 0',
-          paddingLeft: '24px',
         }}
         aria-label="Search cars"
       >
-        SPOIL ME
-        <SearchIcon color={isSelected ? '#000000' : '#ffffff'} />
+        <span
+          className="absolute flex items-center whitespace-nowrap"
+          style={{
+            left: '54px',
+            top: '50%',
+            width: '103px',
+            height: '17.45px',
+            gap: '7px',
+            transform: 'translateY(-50%)',
+            fontFamily: 'var(--font-tt-norms)',
+            fontSize: '16px',
+            fontWeight: 500,
+            lineHeight: '24px',
+            letterSpacing: '0',
+          }}
+        >
+          <span className="flex items-center">SPOIL ME</span>
+          <SearchIcon color={isSelected ? '#000000' : '#ffffff'} />
+        </span>
       </button>
     </div>
   );
 }
 
-/* ── Sub-components ─────────────────────────────────────────────────────── */
+function BrandSelectField({
+  label,
+  value,
+  onChange,
+  options,
+  width,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: readonly { label: string; logo: string | null }[];
+  width: number;
+}) {
+  const [open, setOpen] = useState(false);
+  const fieldRef = useRef<HTMLDivElement>(null);
+  const selected = options.find((option) => option.label === value) ?? options[0];
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!fieldRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [open]);
+
+  return (
+    <div
+      ref={fieldRef}
+      className="relative flex flex-col flex-shrink-0"
+      style={{
+        width: `${width}px`,
+        gap: '2px',
+        justifyContent: 'flex-start',
+        height: '100%',
+        paddingTop: '9px',
+        paddingBottom: '9px',
+      }}
+    >
+      <span
+        style={{
+          fontFamily: 'var(--font-tt-norms)',
+          fontSize: '18px',
+          fontWeight: 500,
+          lineHeight: '26px',
+          color: 'rgba(0,0,0,0.4)',
+        }}
+      >
+        {label}
+      </span>
+
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="flex items-center justify-between bg-transparent text-left outline-none"
+        style={{
+          minHeight: '26px',
+          padding: 0,
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        <span className="flex min-w-0 items-center" style={{ gap: '8px' }}>
+          <BrandLogo label={selected.label} src={selected.logo} />
+          <span
+            style={{
+              fontFamily: 'var(--font-tt-norms)',
+              fontSize: '18px',
+              fontWeight: 500,
+              lineHeight: '26px',
+              color: '#000000',
+            }}
+          >
+            {selected.label}
+          </span>
+        </span>
+        <ArrowIcon expanded={open} />
+      </button>
+
+      {open ? (
+        <div
+          role="listbox"
+          aria-label={label}
+          className="absolute left-0 top-[calc(100%+8px)] z-30 overflow-y-auto rounded-[12px] bg-white"
+          style={{
+            width: '220px',
+            maxHeight: '320px',
+            border: '1px solid #E5E5E5',
+            boxShadow: '0px 20px 25px -5px rgba(0,0,0,0.1), 0px 10px 10px -5px rgba(0,0,0,0.04)',
+            padding: '8px',
+          }}
+        >
+          {options.map((option) => {
+            const active = option.label === value;
+
+            return (
+              <button
+                key={option.label}
+                type="button"
+                role="option"
+                aria-selected={active}
+                onClick={() => {
+                  onChange(option.label);
+                  setOpen(false);
+                }}
+                className="flex w-full items-center rounded-[10px] text-left transition-colors"
+                style={{
+                  gap: '10px',
+                  padding: '10px 12px',
+                  background: active ? 'rgba(18,21,28,0.06)' : 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                <BrandLogo label={option.label} src={option.logo} />
+                <span
+                  style={{
+                    fontFamily: 'var(--font-tt-norms)',
+                    fontSize: '16px',
+                    fontWeight: 500,
+                    lineHeight: '24px',
+                    color: '#000000',
+                  }}
+                >
+                  {option.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function BrandLogo({ label, src }: { label: string; src: string | null }) {
+  if (label === 'Any') {
+    return null;
+  }
+
+  if (!src) {
+    return (
+      <span
+        aria-hidden
+        className="flex items-center justify-center rounded-full"
+        style={{
+          width: '20px',
+          height: '20px',
+          background: 'rgba(18,21,28,0.08)',
+          color: '#12151C',
+          fontFamily: 'var(--font-tt-norms)',
+          fontSize: '10px',
+          fontWeight: 700,
+          lineHeight: '10px',
+          flexShrink: 0,
+        }}
+      >
+        {label.slice(0, 2).toUpperCase()}
+      </span>
+    );
+  }
+
+  return (
+    <span
+      aria-hidden
+      className="relative flex-shrink-0 overflow-hidden rounded-full bg-white"
+      style={{
+        width: '20px',
+        height: '20px',
+        border: '1px solid rgba(18,21,28,0.08)',
+      }}
+    >
+      <Image
+        src={src}
+        alt=""
+        fill
+        className="object-contain p-[2px]"
+        sizes="20px"
+      />
+    </span>
+  );
+}
 
 function SelectField({
   label, value, onChange, options, width,
@@ -161,9 +369,15 @@ function SelectField({
   return (
     <div
       className="flex flex-col flex-shrink-0"
-      style={{ width: `${width}px`, gap: '14px', justifyContent: 'center', height: '100%' }}
+      style={{
+        width: `${width}px`,
+        gap: '2px',
+        justifyContent: 'flex-start',
+        height: '100%',
+        paddingTop: '9px',
+        paddingBottom: '9px',
+      }}
     >
-      {/* Label – gray like Figma */}
       <span
         style={{
           fontFamily: 'var(--font-tt-norms)',
@@ -175,7 +389,6 @@ function SelectField({
       >
         {label}
       </span>
-      {/* Value row – black */}
       <div className="flex items-center" style={{ gap: '8px' }}>
         <select
           value={value}
@@ -189,7 +402,7 @@ function SelectField({
             color: '#000000',
           }}
         >
-          {options.map((o) => <option key={o}>{o}</option>)}
+          {options.map((option) => <option key={option}>{option}</option>)}
         </select>
         <ArrowIcon />
       </div>
@@ -197,33 +410,55 @@ function SelectField({
   );
 }
 
-/** Diagonal slash divider – matches Figma's italic "/" LINE separator */
 function SlashDivider() {
   return (
-    <div
-      className="flex-shrink-0 flex items-center justify-center self-stretch"
-      style={{ color: '#E0DFDF', fontSize: '28px', fontWeight: 300, lineHeight: 1, userSelect: 'none' }}
+    <svg
       aria-hidden
+      width="23"
+      height="33"
+      viewBox="0 0 23 33"
+      className="flex-shrink-0 self-center"
     >
-      /
-    </div>
-  );
-}
-
-/** arrow_back_ios rotated 270° – 24×24 black chevron down */
-function ArrowIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
-      <path d="M7 10l5 5 5-5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path
+        d="M1 32L22 1"
+        stroke="#E0DFDF"
+        strokeWidth="1"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
 
-/** Search icon – 20×20 */
+function ArrowIcon({ expanded = false }: { expanded?: boolean }) {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{
+        flexShrink: 0,
+        margin: '0 auto',
+        transform: expanded ? 'rotate(90deg)' : 'rotate(-90deg)',
+        transition: 'transform 180ms ease',
+      }}
+    >
+      <path
+        d="M15.5 6L9.5 12L15.5 18"
+        stroke="#000000"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function SearchIcon({ color }: { color: string }) {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
-      <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

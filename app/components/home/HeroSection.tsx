@@ -32,7 +32,7 @@ export default function HeroSection() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '24px',
+          gap: '8px',
           textAlign: 'center',
           paddingTop: '80px',
           paddingLeft: '39px',
