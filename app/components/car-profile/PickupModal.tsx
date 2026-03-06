@@ -78,13 +78,13 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
         }}
       >
         {/* ── Tabs ── */}
-        <div style={{ padding: '16px 16px 0' }}>
+        <div style={{ padding: '12px 12px 0' }}>
           <div
             style={{
               display: 'flex',
               backgroundColor: 'rgb(224,223,223)',
               borderRadius: '50px',
-              padding: '6px',
+              padding: '4px',
             }}
           >
             {(['Daily', 'Monthly', 'Hourly'] as RentalTab[]).map(t => (
@@ -93,11 +93,11 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
                 onClick={() => setTab(t)}
                 style={{
                   flex: 1,
-                  padding: '16px 0',
+                  padding: '8px 0',
                   fontFamily: 'var(--font-tt-norms)',
-                  fontSize: '18px',
+                  fontSize: '15px',
                   fontWeight: 500,
-                  lineHeight: '26px',
+                  lineHeight: '22px',
                   textAlign: 'center',
                   color: tab === t ? 'rgb(0,0,0)' : 'rgba(0,0,0,0.6)',
                   backgroundColor: tab === t ? '#ffffff' : 'transparent',
@@ -118,55 +118,41 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
         {(tab === 'Daily' || tab === 'Hourly') && (
           <div style={{ backgroundColor: '#ffffff' }}>
             {/* Month nav */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '11px 16px',
-                height: '46px',
-              }}
-            >
-              <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: '#000' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', height: '38px' }}>
+              <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '15px', fontWeight: 500, color: '#000' }}>
                 {MONTH_NAMES[viewMonth]} {viewYear}
               </span>
-              <div style={{ display: 'flex', gap: '9px' }}>
-                <button
-                  onClick={prevMonth}
-                  style={{ width: '24px', height: '24px', backgroundColor: 'rgb(217,217,217)', borderRadius: '4px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                >
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button onClick={prevMonth} style={{ width: '22px', height: '22px', backgroundColor: 'rgb(217,217,217)', borderRadius: '4px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <ChevronIcon dir="left" />
                 </button>
-                <button
-                  onClick={nextMonth}
-                  style={{ width: '24px', height: '24px', backgroundColor: 'rgb(217,217,217)', borderRadius: '4px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                >
+                <button onClick={nextMonth} style={{ width: '22px', height: '22px', backgroundColor: 'rgb(217,217,217)', borderRadius: '4px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <ChevronIcon dir="right" />
                 </button>
               </div>
             </div>
 
             {/* Day headers */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 47px)', padding: '0 16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '0 12px' }}>
               {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-                <div key={i} style={{ width: '47px', height: '47px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: '#000' }}>
+                <div key={i} style={{ height: '34px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-tt-norms)', fontSize: '13px', fontWeight: 500, color: 'rgba(0,0,0,0.5)' }}>
                   {d}
                 </div>
               ))}
             </div>
 
             {/* Day cells */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 47px)', padding: '0 16px 16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '0 12px 8px' }}>
               {days.map((d, i) => (
-                <div key={i} style={{ width: '47px', height: '47px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div key={i} style={{ height: '34px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {d !== null ? (
                     <button
                       onClick={() => setSelectedDay(d)}
                       style={{
-                        width: '40px', height: '40px', borderRadius: '50%',
+                        width: '32px', height: '32px', borderRadius: '50%',
                         backgroundColor: selectedDay === d ? '#000' : 'transparent',
                         color: selectedDay === d ? '#fff' : '#000',
-                        fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500,
+                        fontFamily: 'var(--font-tt-norms)', fontSize: '14px', fontWeight: 500,
                         border: 'none', cursor: 'pointer', transition: 'all 0.15s',
                       }}
                     >
@@ -179,19 +165,19 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
 
             {/* Time scroll – Daily only */}
             {tab === 'Daily' && (
-              <div style={{ borderTop: '1px solid #F0F0F0', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
+              <div style={{ borderTop: '1px solid #F0F0F0', padding: '10px 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
                 <TimeScroll value={selectedHour} min={1} max={12} onChange={setSelectedHour} />
-                <span style={{ fontSize: '24px', fontWeight: 700, color: '#000' }}>:</span>
+                <span style={{ fontSize: '20px', fontWeight: 700, color: '#000' }}>:</span>
                 <TimeScroll value={selectedMinute} min={0} max={59} onChange={setSelectedMinute} pad />
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                   {['AM', 'PM'].map(period => (
                     <button
                       key={period}
                       onClick={() => setIsPM(period === 'PM')}
                       style={{
-                        fontFamily: 'var(--font-tt-norms)', fontSize: '16px', fontWeight: 500,
+                        fontFamily: 'var(--font-tt-norms)', fontSize: '13px', fontWeight: 500,
                         color: (isPM && period === 'PM') || (!isPM && period === 'AM') ? '#000' : 'rgba(0,0,0,0.3)',
-                        background: 'none', border: 'none', cursor: 'pointer', padding: '2px 8px',
+                        background: 'none', border: 'none', cursor: 'pointer', padding: '1px 6px',
                       }}
                     >
                       {period}
@@ -203,12 +189,12 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
 
             {/* Duration – Hourly only */}
             {tab === 'Hourly' && (
-              <div style={{ borderTop: '1px solid #F0F0F0', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, color: '#000' }}>Duration (hours)</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <button onClick={() => setHours(h => Math.max(1, h - 1))} style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'rgb(224,223,223)', border: 'none', cursor: 'pointer', fontSize: '20px', fontWeight: 700 }}>−</button>
-                  <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '24px', fontWeight: 700, color: '#000', minWidth: '32px', textAlign: 'center' }}>{hours}</span>
-                  <button onClick={() => setHours(h => Math.min(24, h + 1))} style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'rgb(224,223,223)', border: 'none', cursor: 'pointer', fontSize: '20px', fontWeight: 700 }}>+</button>
+              <div style={{ borderTop: '1px solid #F0F0F0', padding: '10px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '15px', fontWeight: 500, color: '#000' }}>Duration (hours)</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <button onClick={() => setHours(h => Math.max(1, h - 1))} style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: 'rgb(224,223,223)', border: 'none', cursor: 'pointer', fontSize: '18px', fontWeight: 700 }}>−</button>
+                  <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '20px', fontWeight: 700, color: '#000', minWidth: '28px', textAlign: 'center' }}>{hours}</span>
+                  <button onClick={() => setHours(h => Math.min(24, h + 1))} style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: 'rgb(224,223,223)', border: 'none', cursor: 'pointer', fontSize: '18px', fontWeight: 700 }}>+</button>
                 </div>
               </div>
             )}
@@ -217,67 +203,54 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
 
         {/* ── MONTHLY: Circular arc picker ── */}
         {tab === 'Monthly' && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px', gap: '16px' }}>
-            <div style={{ position: 'relative', width: '313px', height: '313px' }}>
-              <svg width="313" height="313" viewBox="0 0 313 313">
-                {/* Outer ring bg */}
-                <circle cx="156.5" cy="156.5" r="140" fill="none" stroke="rgb(224,223,223)" strokeWidth="20"/>
-                {/* Progress arc – lime green */}
-                <circle
-                  cx="156.5" cy="156.5" r="140"
-                  fill="none"
-                  stroke="rgb(184,240,79)"
-                  strokeWidth="20"
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 12px', gap: '12px' }}>
+            <div style={{ position: 'relative', width: '220px', height: '220px' }}>
+              <svg width="220" height="220" viewBox="0 0 220 220">
+                <circle cx="110" cy="110" r="95" fill="none" stroke="rgb(224,223,223)" strokeWidth="16"/>
+                <circle cx="110" cy="110" r="95" fill="none" stroke="rgb(184,240,79)" strokeWidth="16"
                   strokeLinecap="round"
-                  strokeDasharray={`${(months / 12) * 879.6} 879.6`}
-                  transform="rotate(-90 156.5 156.5)"
+                  strokeDasharray={`${(months / 12) * 596.9} 596.9`}
+                  transform="rotate(-90 110 110)"
                 />
-                {/* Middle ring */}
-                <circle cx="156.5" cy="156.5" r="110" fill="none" stroke="rgb(224,223,223)" strokeWidth="1"/>
-                {/* Inner ring */}
-                <circle cx="156.5" cy="156.5" r="80" fill="none" stroke="rgb(224,223,223)" strokeWidth="1"/>
+                <circle cx="110" cy="110" r="72" fill="none" stroke="rgb(224,223,223)" strokeWidth="1"/>
+                <circle cx="110" cy="110" r="50" fill="none" stroke="rgb(224,223,223)" strokeWidth="1"/>
               </svg>
-              {/* Center info */}
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '60px', fontWeight: 700, lineHeight: '72px', color: 'rgb(34,34,34)' }}>{months}</span>
-                <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 700, lineHeight: '26px', color: 'rgb(34,34,34)' }}>months</span>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
+                <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '44px', fontWeight: 700, lineHeight: '52px', color: 'rgb(34,34,34)' }}>{months}</span>
+                <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '14px', fontWeight: 700, color: 'rgb(34,34,34)' }}>months</span>
               </div>
-              {/* Month dots */}
               {[1,2,3,4,5,6,7,8,9,10,11,12].map(m => {
                 const angle = ((m / 12) * 360 - 90) * (Math.PI / 180);
-                const x = 156.5 + 140 * Math.cos(angle);
-                const y = 156.5 + 140 * Math.sin(angle);
+                const x = 110 + 95 * Math.cos(angle);
+                const y = 110 + 95 * Math.sin(angle);
                 return (
-                  <button
-                    key={m}
-                    onClick={() => setMonths(m)}
-                    style={{ position: 'absolute', left: x, top: y, transform: 'translate(-50%, -50%)', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer' }}
+                  <button key={m} onClick={() => setMonths(m)}
+                    style={{ position: 'absolute', left: x, top: y, transform: 'translate(-50%, -50%)', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer' }}
                     aria-label={`${m} months`}
                   >
-                    <div style={{ width: m === months ? '14px' : '10px', height: m === months ? '14px' : '10px', borderRadius: '50%', backgroundColor: m === months ? '#fff' : 'rgb(184,240,79)', border: m === months ? '2px solid rgb(184,240,79)' : 'none', boxShadow: m === months ? '0 0 0 2px rgb(184,240,79)' : 'none', transition: 'all 0.2s' }} />
+                    <div style={{ width: m === months ? '12px' : '8px', height: m === months ? '12px' : '8px', borderRadius: '50%', backgroundColor: m === months ? '#fff' : 'rgb(184,240,79)', border: m === months ? '2px solid rgb(184,240,79)' : 'none', boxShadow: m === months ? '0 0 0 2px rgb(184,240,79)' : 'none', transition: 'all 0.2s' }} />
                   </button>
                 );
               })}
             </div>
-            <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: '#000', textAlign: 'center' }}>Start Date &amp; Time</span>
+            <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '15px', fontWeight: 500, color: '#000', textAlign: 'center' }}>Start Date &amp; Time</span>
           </div>
         )}
 
         {/* ── CTA ── */}
-        <div style={{ padding: '16px', backgroundColor: '#fff' }}>
+        <div style={{ padding: '10px 12px 12px', backgroundColor: '#fff' }}>
           <button
             onClick={handleConfirm}
             style={{
               width: '100%',
-              height: '56px',
+              height: '46px',
               backgroundColor: 'rgb(184,240,79)',
               borderRadius: '10px',
               border: 'none',
               cursor: 'pointer',
               fontFamily: 'var(--font-tt-norms)',
-              fontSize: '18px',
+              fontSize: '16px',
               fontWeight: 500,
-              lineHeight: '26px',
               color: '#000',
               transition: 'opacity 0.2s',
             }}
@@ -300,9 +273,9 @@ function TimeScroll({ value, min, max, onChange, pad }: {
   const fmt = (n: number) => pad ? String(n).padStart(2, '0') : String(n);
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', userSelect: 'none' }}>
-      <button onClick={() => onChange(value >= max ? min : value + 1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.3)', fontSize: '20px', lineHeight: 1, padding: '4px' }}>▲</button>
-      <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '28px', fontWeight: 700, color: '#000', minWidth: '40px', textAlign: 'center' }}>{fmt(value)}</span>
-      <button onClick={() => onChange(value <= min ? max : value - 1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.3)', fontSize: '20px', lineHeight: 1, padding: '4px' }}>▼</button>
+      <button onClick={() => onChange(value >= max ? min : value + 1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.3)', fontSize: '16px', lineHeight: 1, padding: '2px' }}>▲</button>
+      <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '22px', fontWeight: 700, color: '#000', minWidth: '32px', textAlign: 'center' }}>{fmt(value)}</span>
+      <button onClick={() => onChange(value <= min ? max : value - 1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.3)', fontSize: '16px', lineHeight: 1, padding: '2px' }}>▼</button>
     </div>
   );
 }
