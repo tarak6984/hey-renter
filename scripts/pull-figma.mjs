@@ -141,21 +141,6 @@ function extractFigmaInput(input) {
   }
 }
 
-function extractFileKey(input) {
-  if (!input) return null;
-  if (!input.includes('figma.com')) return input.trim();
-
-  try {
-    const url = new URL(input);
-    const parts = url.pathname.split('/').filter(Boolean);
-    const designIndex = parts.findIndex((part) => part === 'design' || part === 'file');
-    if (designIndex === -1) return null;
-    return parts[designIndex + 1] ?? null;
-  } catch {
-    return null;
-  }
-}
-
 function normalizeNodeId(nodeId) {
   if (!nodeId) return null;
   return String(nodeId).replace(/-/g, ':');

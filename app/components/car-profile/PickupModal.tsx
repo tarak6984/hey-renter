@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { cn, getCalendarDays, MONTH_NAMES } from '@/app/lib/utils';
+import { getCalendarDays, MONTH_NAMES } from '@/app/lib/utils';
 
 interface PickupModalProps {
   open: boolean;

@@ -73,7 +73,7 @@ function CheckCircleIcon() {
 const RULES = [
   { icon: <PersonIcon />,   label: 'Minimum Age',      getValue: (c: Car) => `${c.minAge} Years old` },
   { icon: <SecurityIcon />, label: 'Security Deposit',  getValue: (c: Car) => c.securityDeposit ? 'Required' : 'No' },
-  { icon: <MoneyIcon />,    label: 'Security Deposit',  getValue: (_: Car) => '30 days' },
+  { icon: <MoneyIcon />,    label: 'Security Deposit',  getValue: () => '30 days' },
   { icon: <MileageIcon />,  label: 'Mileage',           getValue: (c: Car) => `${c.mileagePerDay} KM per rental` },
   { icon: <FuelIcon />,     label: 'Fuel Policy',       getValue: (c: Car) => c.fuelPolicy },
 ];

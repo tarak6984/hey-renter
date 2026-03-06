@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { CarSpec } from '@/app/types';
 
 interface SpecsGridProps {

@@ -41,7 +41,7 @@ export default function HomePage() {
       </div>
       <CategoryCards />
       <BrandsRow />
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="mx-auto w-full max-w-[1440px] px-[39px]">
         <SeoSection />
       </div>
     </>
