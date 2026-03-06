@@ -102,8 +102,8 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
           </div>
         </div>
 
-        {/* ── DAILY / HOURLY: Calendar ── */}
-        {(tab === 'Daily' || tab === 'Hourly') && (
+        {/* ── DAILY: Calendar ── */}
+        {tab === 'Daily' && (
           <div>
             {/* Month nav */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px 6px' }}>
@@ -188,17 +188,20 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
               </div>
             )}
 
-            {/* ── Duration stepper – Hourly only ── */}
-            {tab === 'Hourly' && (
-              <div style={{ borderTop: '1px solid #F0F0F0', padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '14px', fontWeight: 500, color: '#000' }}>Duration (hours)</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <button onClick={() => setHours(h => Math.max(1, h - 1))} style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: 'rgb(224,223,223)', border: 'none', cursor: 'pointer', fontSize: '16px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
-                  <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 700, color: '#000', minWidth: '24px', textAlign: 'center' }}>{hours}</span>
-                  <button onClick={() => setHours(h => Math.min(24, h + 1))} style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: 'rgb(224,223,223)', border: 'none', cursor: 'pointer', fontSize: '16px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
-                </div>
-              </div>
-            )}
+          </div>
+        )}
+
+        {/* ── HOURLY: Circular arc dial – matching Figma node 8984-7497 ── */}
+        {tab === 'Hourly' && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 12px', gap: '12px' }}>
+            <HourlyDial hours={hours} onChange={setHours} />
+            {/* Start Date & Time – underlined */}
+            <span style={{
+              fontFamily: 'var(--font-tt-norms)', fontSize: '15px', fontWeight: 500,
+              color: '#000', textDecoration: 'underline', cursor: 'pointer', textAlign: 'center',
+            }}>
+              Start Date &amp; Time
+            </span>
           </div>
         )}
 
@@ -248,6 +251,94 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ── HourlyDial – circular arc knob matching Figma node 8984-7497 ─────────── */
+function HourlyDial({ hours, onChange }: { hours: number; onChange: (h: number) => void }) {
+  const MAX = 24;
+  const cx = 130; const cy = 130; const r = 100;
+  const trackR = 110; // outer ring radius for tick dots
+
+  // Arc: starts at -90deg (top), goes clockwise
+  const fraction = hours / MAX;
+  const circumference = 2 * Math.PI * r;
+  const arcLength = fraction * circumference;
+
+  // Handle position on the arc
+  const handleAngle = (fraction * 360 - 90) * (Math.PI / 180);
+  const hx = cx + r * Math.cos(handleAngle);
+  const hy = cy + r * Math.sin(handleAngle);
+
+  // Drag interaction
+  const handleClick = (e: React.MouseEvent<SVGSVGElement>) => {
+    const svg = e.currentTarget;
+    const rect = svg.getBoundingClientRect();
+    const x = e.clientX - rect.left - cx;
+    const y = e.clientY - rect.top - cy;
+    let angle = Math.atan2(y, x) * (180 / Math.PI) + 90;
+    if (angle < 0) angle += 360;
+    const newHours = Math.max(1, Math.round((angle / 360) * MAX));
+    onChange(newHours);
+  };
+
+  // 24 tick marks around the outer ring
+  const ticks = Array.from({ length: 24 }, (_, i) => {
+    const a = ((i / 24) * 360 - 90) * (Math.PI / 180);
+    return { x: cx + trackR * Math.cos(a), y: cy + trackR * Math.sin(a), filled: i < hours };
+  });
+
+  return (
+    <div style={{ position: 'relative', width: '260px', height: '260px' }}>
+      <svg
+        width="260" height="260"
+        viewBox="0 0 260 260"
+        style={{ cursor: 'pointer' }}
+        onClick={handleClick}
+      >
+        {/* Outer gray track ring */}
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgb(224,223,223)" strokeWidth="18"
+          style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.10))' }}
+        />
+        {/* Gray fill inside ring (the "disk" background) */}
+        <circle cx={cx} cy={cy} r={r - 9} fill="rgb(245,245,245)" />
+
+        {/* Lime green arc progress */}
+        <circle
+          cx={cx} cy={cy} r={r}
+          fill="none"
+          stroke="rgb(184,240,79)"
+          strokeWidth="18"
+          strokeLinecap="round"
+          strokeDasharray={`${arcLength} ${circumference}`}
+          transform={`rotate(-90 ${cx} ${cy})`}
+        />
+
+        {/* Inner subtle ring */}
+        <circle cx={cx} cy={cy} r={r - 22} fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth="1"/>
+
+        {/* 24 tick dots */}
+        {ticks.map((t, i) => (
+          <circle key={i} cx={t.x} cy={t.y} r={i < hours ? 3 : 2.5}
+            fill={i < hours ? 'rgba(0,0,0,0.15)' : 'rgba(0,0,0,0.15)'}
+          />
+        ))}
+
+        {/* White handle at arc end */}
+        <circle cx={hx} cy={hy} r={18} fill="white"
+          style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.18))' }}
+        />
+
+        {/* Center: number */}
+        <text x={cx} y={cy - 6} textAnchor="middle" dominantBaseline="middle"
+          style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '48px', fontWeight: 700, fill: 'rgb(34,34,34)' }}
+        >{hours}</text>
+        {/* Center: "hours" label */}
+        <text x={cx} y={cy + 28} textAnchor="middle" dominantBaseline="middle"
+          style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '16px', fontWeight: 700, fill: 'rgb(34,34,34)' }}
+        >hours</text>
+      </svg>
     </div>
   );
 }
