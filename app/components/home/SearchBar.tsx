@@ -1,25 +1,27 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 /**
- * Search / Selection Bar – pixel-perfect from Figma nodes:
- *   Not Selected: 4961:55543 | Selected: 4961:55575
+ * Search / Selection Bar – pixel-perfect from Figma node 8937-42822
  *
- * Figma specs (Selected state):
- * - Container: white bg, border #F0F0F0 1px, border-radius 10px
- *   box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.06), 0px 4px 6px -1px rgba(0,0,0,0.1)
- *   padding: 0 0 0 16px, gap: 16px
- * - Brand column: width 160px, gap 14px
- * - Model column: width 160px, gap 14px
- * - Date column:  width 272px, gap 14px
- * - Label: Body Large/Medium Black/50% (font-size 18px, weight 500)
- * - Value: Body Large/Medium Black/100%
- * - Dividers: #E0DFDF vertical lines
- * - SPOIL ME button (not selected): #12151C bg, white text, 174×72px
- * - SPOIL ME button (selected): #B8F04F bg, black text, 174×72px
+ * Figma specs:
+ *   Container: W=907px H=72px, bg=white, borderRadius=10, paddingLeft=16, gap=16 HORIZONTAL
+ *   Border: 1px #F0F0F0 | shadow: 0 2px 4px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.1)
+ *
+ *   Fields: Brand(160px) | / | Model(160px) | / | Dates & Time(272px)
+ *   Field layout: VERTICAL, gap=14px
+ *   Label: TT Norms Pro 18px fw=500 lh=26px color=#000 (full black)
+ *   Value: TT Norms Pro 18px fw=500 lh=26px color=#000
+ *   Value row: HORIZONTAL gap=8px (value text + arrow_back_ios 24×24 black)
+ *
+ *   Dividers: diagonal LINE nodes (rendered as italic "/" separator)
+ *
+ *   CTA: W=174px H=72px (self-stretch), bg=#12151C (inactive) / #B8F04F (active)
+ *   CTA text: SPOIL ME, TT Norms Pro 16px fw=500 lh=24px white/black
+ *   CTA icon: search 20×20 white/black, gap=7px
+ *   CTA borderRadius: 0 10px 10px 0 (right corners only)
  */
 
 const BRANDS = ['Any', 'Ferrari', 'Lamborghini', 'Rolls Royce', 'Porsche', 'Mercedes', 'BMW', 'Audi', 'Brabus', 'Ford', 'KIA'];
@@ -57,14 +59,15 @@ export default function SearchBar() {
     <div
       className="flex items-center overflow-hidden bg-white w-full max-w-4xl mx-auto"
       style={{
-        borderRadius: 10,
+        height: '72px',
+        borderRadius: '10px',
         border: '1px solid #F0F0F0',
         boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.06), 0px 4px 6px -1px rgba(0,0,0,0.1)',
-        paddingLeft: 16,
-        gap: 16,
+        paddingLeft: '16px',
+        gap: '16px',
       }}
     >
-      {/* Brand – width 160px */}
+      {/* ── Brand – 160px ── */}
       <SelectField
         label="Brand"
         value={brand}
@@ -73,10 +76,10 @@ export default function SearchBar() {
         width={160}
       />
 
-      {/* Divider */}
-      <Divider />
+      {/* ── Diagonal divider ── */}
+      <SlashDivider />
 
-      {/* Model – width 160px */}
+      {/* ── Model – 160px ── */}
       <SelectField
         label="Model"
         value={model}
@@ -85,51 +88,72 @@ export default function SearchBar() {
         width={160}
       />
 
-      {/* Divider */}
-      <Divider />
+      {/* ── Diagonal divider ── */}
+      <SlashDivider />
 
-      {/* Dates & Time – width 272px */}
-      <div className="flex flex-col py-4" style={{ width: 272, gap: 14, flexShrink: 0 }}>
-        <span style={{ fontSize: 18, fontWeight: 500, lineHeight: '1.44em', color: 'rgba(0,0,0,0.5)' }}>
+      {/* ── Dates & Time – 272px ── */}
+      <div
+        className="flex flex-col flex-shrink-0"
+        style={{ width: '272px', gap: '14px', justifyContent: 'center', height: '100%' }}
+      >
+        <span
+          style={{
+            fontFamily: 'var(--font-tt-norms)',
+            fontSize: '18px',
+            fontWeight: 500,
+            lineHeight: '26px',
+            color: '#000000',
+          }}
+        >
           Dates &amp; Time
         </span>
-        <div className="flex items-center justify-between" style={{ gap: 8 }}>
+        <div className="flex items-center" style={{ gap: '8px' }}>
           <input
             type="text"
             placeholder="Select"
             value={dateTime}
             onChange={(e) => setDateTime(e.target.value)}
             className="outline-none bg-transparent w-full"
-            style={{ fontSize: 18, fontWeight: 500, lineHeight: '1.44em', color: '#000' }}
+            style={{
+              fontFamily: 'var(--font-tt-norms)',
+              fontSize: '18px',
+              fontWeight: 500,
+              lineHeight: '26px',
+              color: '#000000',
+            }}
           />
-          <ChevronDown size={24} className="text-gray-400 flex-shrink-0" />
+          <ArrowIcon />
         </div>
       </div>
 
-      {/* SPOIL ME CTA – 174×72px. Active: #B8F04F + black text. Inactive: #12151C + white text */}
+      {/* ── SPOIL ME CTA ── */}
       <button
         onClick={handleSearch}
-        className="flex items-center justify-center gap-1.5 flex-shrink-0 font-medium transition-colors"
+        className="flex items-center justify-center flex-shrink-0 transition-colors self-stretch"
         style={{
-          width: 174,
-          height: 72,
+          width: '174px',
+          gap: '7px',
           background: isSelected ? '#B8F04F' : '#12151C',
           color: isSelected ? '#000000' : '#ffffff',
-          fontSize: 16,
+          fontFamily: 'var(--font-tt-norms)',
+          fontSize: '16px',
           fontWeight: 500,
-          letterSpacing: '0.02em',
-          borderRadius: 0,
+          lineHeight: '24px',
+          letterSpacing: '0.08em',
+          borderRadius: '0 10px 10px 0',
+          border: 'none',
+          cursor: 'pointer',
         }}
         aria-label="Search cars"
       >
         SPOIL ME
-        <Search size={20} />
+        <SearchIcon color={isSelected ? '#000000' : '#ffffff'} />
       </button>
     </div>
   );
 }
 
-/* ── Sub-components ─────────────────────────────────────────────────────────── */
+/* ── Sub-components ─────────────────────────────────────────────────────── */
 
 function SelectField({
   label, value, onChange, options, width,
@@ -141,32 +165,69 @@ function SelectField({
   width: number;
 }) {
   return (
-    <div className="flex flex-col py-4 relative flex-shrink-0" style={{ width, gap: 14 }}>
-      {/* Label: Body Large/Medium Black/50% */}
-      <span style={{ fontSize: 18, fontWeight: 500, lineHeight: '1.44em', color: 'rgba(0,0,0,0.5)' }}>
+    <div
+      className="flex flex-col flex-shrink-0"
+      style={{ width: `${width}px`, gap: '14px', justifyContent: 'center', height: '100%' }}
+    >
+      <span
+        style={{
+          fontFamily: 'var(--font-tt-norms)',
+          fontSize: '18px',
+          fontWeight: 500,
+          lineHeight: '26px',
+          color: '#000000',
+        }}
+      >
         {label}
       </span>
-      {/* Value row */}
-      <div className="flex items-center justify-between" style={{ gap: 8 }}>
+      <div className="flex items-center" style={{ gap: '8px' }}>
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className="bg-transparent outline-none cursor-pointer appearance-none w-full"
-          style={{ fontSize: 18, fontWeight: 500, lineHeight: '1.44em', color: '#000' }}
+          style={{
+            fontFamily: 'var(--font-tt-norms)',
+            fontSize: '18px',
+            fontWeight: 500,
+            lineHeight: '26px',
+            color: '#000000',
+          }}
         >
           {options.map((o) => <option key={o}>{o}</option>)}
         </select>
-        <ChevronDown size={24} className="text-gray-400 pointer-events-none flex-shrink-0" />
+        <ArrowIcon />
       </div>
     </div>
   );
 }
 
-function Divider() {
+/** Diagonal slash divider – matches Figma's italic "/" LINE separator */
+function SlashDivider() {
   return (
     <div
-      className="flex-shrink-0 self-stretch"
-      style={{ width: 1, background: '#E0DFDF', margin: '16px 0' }}
-    />
+      className="flex-shrink-0 flex items-center justify-center self-stretch"
+      style={{ color: '#E0DFDF', fontSize: '28px', fontWeight: 300, lineHeight: 1, userSelect: 'none' }}
+      aria-hidden
+    >
+      /
+    </div>
+  );
+}
+
+/** arrow_back_ios rotated 270° – 24×24 black chevron down */
+function ArrowIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+      <path d="M7 10l5 5 5-5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+/** Search icon – 20×20 */
+function SearchIcon({ color }: { color: string }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+      <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
   );
 }
