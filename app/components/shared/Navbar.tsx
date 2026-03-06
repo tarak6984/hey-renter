@@ -2,110 +2,183 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, ChevronDown, HelpCircle } from 'lucide-react';
 import { useState } from 'react';
-import { cn } from '@/app/lib/utils';
 
 /**
- * Main navigation bar.
- * Sticky, dark background, HeyRenter logo, nav links with dropdowns, search.
+ * Navbar – main navigation bar.
+ * Figma specs:
+ *   bg=#12151C, height=80px, padding=16px 39px
+ *   Logo container: 248×40px (inner logo image: 125×40px)
+ *   CTAs: font=TT Norms Pro 18px fw=400, gap=16px, color=white
+ *   Chevrons: lime #B8F04F
+ *   Get Help icon: lime #B8F04F (help_outline)
+ *   Search: W=248 H=48, borderRadius=40, bg=rgba(255,255,255,0.10), padding=12px, icon=24px
+ *   Search focus: lime #B8F04F border
+ *   Layout: logo(248px) | CTAs(flex-1 center) | search(248px)
  */
 export default function Navbar() {
-  const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [focused, setFocused] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-[#111] text-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-6">
-        {/* Logo – pulled directly from Figma export */}
-        <Link href="/" className="flex-shrink-0" aria-label="Hey Renter – Home">
+    <nav
+      className="sticky top-0 z-50 w-full"
+      style={{ backgroundColor: '#12151C' }}
+    >
+      {/* Use relative+absolute to achieve true centering of nav links */}
+      <div
+        className="relative flex items-center justify-between"
+        style={{ height: '80px', paddingLeft: '39px', paddingRight: '39px' }}
+      >
+        {/* ── Logo – full SVG asset is 248×40px (includes speed lines + wordmark) ── */}
+        <Link
+          href="/"
+          aria-label="Hey Renter – Home"
+          className="flex-shrink-0 flex items-center z-10"
+        >
           <Image
             src="/assets/icons/logo.svg"
             alt="Hey Renter"
-            width={124}
+            width={248}
             height={40}
             priority
-            className="h-10 w-auto"
+            style={{ width: '248px', height: '40px' }}
           />
         </Link>
 
-        {/* Nav Links */}
-        <div className="hidden md:flex items-center gap-6 text-sm font-medium flex-1 justify-center">
-          <NavDropdown label="Rent by Category" />
-          <NavDropdown label="Rent by Brands" />
-          <Link href="/about" className="hover:text-[#CDFF00] transition-colors">About</Link>
-          <Link href="/help" className="flex items-center gap-1 hover:text-[#CDFF00] transition-colors">
-            <HelpCircle size={15} />
+        {/* ── Nav CTAs – absolutely centered in the full navbar width ── */}
+        <div
+          className="hidden md:flex items-center absolute left-1/2 -translate-x-1/2"
+          style={{ gap: '16px' }}
+        >
+          <NavItem label="Rent by Category" href="/listings?type=category" />
+          <NavItem label="Rent by Brands" href="/listings?type=brand" />
+          <Link
+            href="/about"
+            style={{
+              fontFamily: 'var(--font-tt-norms)',
+              fontSize: '18px',
+              fontWeight: 400,
+              color: '#fff',
+            }}
+            className="hover:opacity-80 transition-opacity whitespace-nowrap"
+          >
+            About
+          </Link>
+          <Link
+            href="/help"
+            className="flex items-center hover:opacity-80 transition-opacity"
+            style={{
+              fontFamily: 'var(--font-tt-norms)',
+              fontSize: '18px',
+              fontWeight: 400,
+              color: '#fff',
+              gap: '6px',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <HelpIcon />
             Get Help
           </Link>
         </div>
 
-        {/* Search */}
-        <div className="relative">
-          {searchOpen ? (
+        {/* ── Search Bar ── */}
+        <div className="flex-shrink-0 z-10">
+          <div
+            className="flex items-center transition-all duration-200"
+            style={{
+              width: '248px',
+              height: '48px',
+              borderRadius: '40px',
+              backgroundColor: 'rgba(255,255,255,0.10)',
+              padding: '0 14px',
+              gap: '8px',
+              border: focused ? '1.5px solid #B8F04F' : '1.5px solid transparent',
+            }}
+          >
+            <SearchIcon />
             <input
-              autoFocus
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              onBlur={() => !query && setSearchOpen(false)}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
               placeholder="Search..."
-              className="bg-[#222] text-white placeholder-gray-400 rounded-full px-4 py-2 pr-10 text-sm w-52 outline-none border border-gray-600 focus:border-[#CDFF00] transition-all"
+              className="flex-1 bg-transparent outline-none border-none"
+              style={{
+                fontFamily: 'var(--font-tt-norms)',
+                fontSize: '16px',
+                fontWeight: 400,
+                color: '#fff',
+              }}
             />
-          ) : (
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="flex items-center gap-2 bg-[#222] hover:bg-[#2a2a2a] text-gray-300 hover:text-white rounded-full px-4 py-2 text-sm transition-colors border border-transparent hover:border-gray-600"
-            >
-              <Search size={15} />
-              <span>Search...</span>
-            </button>
-          )}
-          {searchOpen && (
-            <Search size={15} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-          )}
+          </div>
         </div>
       </div>
     </nav>
   );
 }
 
-// ─── NavDropdown ─────────────────────────────────────────────────────────────
+/* ── NavItem – simple link with lime chevron, no dropdown ─────────────────── */
 
-function NavDropdown({ label }: { label: string }) {
-  const [open, setOpen] = useState(false);
-
-  const categoryLinks = [
-    'Super Cars', 'Luxury Cars', "SUV's", 'Convertible', 'Driver Service', 'Economy',
-  ];
-  const brandLinks = [
-    'Ferrari', 'Lamborghini', 'Rolls Royce', 'Porsche', 'Mercedes', 'BMW', 'Audi',
-  ];
-  const links = label === 'Rent by Category' ? categoryLinks : brandLinks;
-
+function NavItem({ label, href }: { label: string; href: string }) {
   return (
-    <div
-      className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+    <Link
+      href={href}
+      className="flex items-center hover:opacity-80 transition-opacity"
+      style={{
+        fontFamily: 'var(--font-tt-norms)',
+        fontSize: '18px',
+        fontWeight: 400,
+        color: '#fff',
+        gap: '6px',
+        whiteSpace: 'nowrap',
+      }}
     >
-      <button className="flex items-center gap-1 hover:text-[#CDFF00] transition-colors">
-        {label}
-        <ChevronDown size={14} className={cn('transition-transform', open && 'rotate-180')} />
-      </button>
-      {open && (
-        <div className="absolute top-full left-0 mt-2 w-52 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-2xl py-2 z-50">
-          {links.map((link) => (
-            <Link
-              key={link}
-              href={`/listings?${label === 'Rent by Category' ? 'category' : 'brand'}=${link.toLowerCase().replace(/\s+/g, '-')}`}
-              className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#2a2a2a] transition-colors"
-            >
-              {link}
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
+      {label}
+      <ChevronLime />
+    </Link>
+  );
+}
+
+/* ── Icons ────────────────────────────────────────────────────────────────── */
+
+/** Lime chevron – static, no rotation */
+function ChevronLime() {
+  return (
+    <svg
+      width="10" height="6" viewBox="0 0 10 6" fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="flex-shrink-0"
+    >
+      <path d="M1 1L5 5L9 1" stroke="#B8F04F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+/** help_outline – filled lime #B8F04F matching Figma */
+function HelpIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+      <path
+        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"
+        fill="#B8F04F"
+      />
+    </svg>
+  );
+}
+
+/** Search icon – white, 24×24 */
+function SearchIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+      <path
+        d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"
+        stroke="white"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
