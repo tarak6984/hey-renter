@@ -43,8 +43,21 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased bg-[#f5f5f5] text-gray-900`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+        <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/tt-norms-pro" />
+      </head>
+      <body className={`${inter.variable} antialiased`}>
         <TopBar />
+        {/* Gradient divider – very subtle, white 6% opacity center, transparent edges */}
+        <div
+          style={{
+            width: '100%',
+            height: '1px',
+            background: 'linear-gradient(to right, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%)',
+            backgroundColor: '#12151C',
+          }}
+        />
         <Navbar />
         <main>{children}</main>
         <Footer />
