@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import PickupModal from '@/app/components/car-profile/PickupModal';
 
 /**
  * Search / Selection Bar – pixel-perfect from Figma node 8937-42822
@@ -44,6 +45,7 @@ export default function SearchBar() {
   const [brand, setBrand] = useState('Any');
   const [model, setModel] = useState('Any');
   const [dateTime, setDateTime] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
 
   const isSelected = brand !== 'Any' || model !== 'Any' || dateTime !== '';
 
@@ -91,40 +93,29 @@ export default function SearchBar() {
       {/* ── Diagonal divider ── */}
       <SlashDivider />
 
-      {/* ── Dates & Time – flex-1 to fill remaining space ── */}
-      <div
-        className="flex flex-col flex-1"
-        style={{ gap: '14px', justifyContent: 'center', height: '100%' }}
+      {/* ── Dates & Time – flex-1, opens PickupModal on click ── */}
+      <button
+        className="flex flex-col flex-1 text-left"
+        style={{ gap: '14px', justifyContent: 'center', height: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+        onClick={() => setModalOpen(true)}
       >
-        <span
-          style={{
-            fontFamily: 'var(--font-tt-norms)',
-            fontSize: '18px',
-            fontWeight: 500,
-            lineHeight: '26px',
-            color: 'rgba(0,0,0,0.4)',
-          }}
-        >
+        <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: 'rgba(0,0,0,0.4)' }}>
           Dates &amp; Time
         </span>
         <div className="flex items-center" style={{ gap: '8px' }}>
-          <input
-            type="text"
-            placeholder="Select"
-            value={dateTime}
-            onChange={(e) => setDateTime(e.target.value)}
-            className="outline-none bg-transparent w-full"
-            style={{
-              fontFamily: 'var(--font-tt-norms)',
-              fontSize: '18px',
-              fontWeight: 500,
-              lineHeight: '26px',
-              color: '#000000',
-            }}
-          />
+          <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: dateTime ? '#000' : 'rgba(0,0,0,0.4)' }}>
+            {dateTime || 'Select'}
+          </span>
           <ArrowIcon />
         </div>
-      </div>
+      </button>
+
+      {/* ── Date/Time Picker Modal ── */}
+      <PickupModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={(val) => { setDateTime(val); setModalOpen(false); }}
+      />
 
       {/* ── SPOIL ME CTA – angled left edge via clip-path parallelogram ── */}
       <button
