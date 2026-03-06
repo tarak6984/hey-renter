@@ -1,23 +1,104 @@
+const STATS = [
+  {
+    width: 252.94,
+    value: '500+',
+    valueWidth: 131,
+    labelLines: ['Rental', 'Companies'],
+    labelWidth: 83,
+  },
+  {
+    width: 265.94,
+    value: '3,000+',
+    valueWidth: 179,
+    labelLines: ['Rental', 'Cars'],
+    labelWidth: 48,
+  },
+];
+
 /**
- * Stats row showing "500+ Rental Companies" and "3,000+ Rental Cars".
+ * Home stats strip from Figma node 8937:42823.
  */
 export default function StatsRow() {
   return (
-    <div className="flex items-center justify-center gap-12 py-10">
-      <StatItem value="500+" label="Rental" label2="Companies" />
-      <StatItem value="3,000+" label="Rental" label2="Cars" />
+    <section className="w-full">
+      <div className="mx-auto flex h-10 w-full max-w-[1440px] items-center justify-center gap-10 px-[39px]">
+        {STATS.map((stat) => (
+          <StatItem
+            key={stat.value}
+            width={stat.width}
+            value={stat.value}
+            valueWidth={stat.valueWidth}
+            labelLines={stat.labelLines}
+            labelWidth={stat.labelWidth}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function StatItem({
+  width,
+  value,
+  valueWidth,
+  labelLines,
+  labelWidth,
+}: {
+  width: number;
+  value: string;
+  valueWidth: number;
+  labelLines: string[];
+  labelWidth: number;
+}) {
+  return (
+    <div className="flex h-[35px] items-center gap-2" style={{ width: `${width}px` }}>
+      <span
+        style={{
+          width: `${valueWidth}px`,
+          display: 'flex',
+          alignItems: 'center',
+          fontFamily: 'var(--font-clash)',
+          fontSize: '48px',
+          fontWeight: 700,
+          lineHeight: '58px',
+          color: '#000000',
+        }}
+      >
+        {value}
+      </span>
+
+      <DividerSlash />
+
+      <div
+        className="flex flex-col justify-center"
+        style={{
+          width: labelWidth,
+          height: 35,
+          fontFamily: 'var(--font-tt-norms)',
+          fontSize: '16px',
+          fontWeight: 500,
+          lineHeight: '24px',
+          color: '#000000',
+        }}
+      >
+        {labelLines.map((line) => (
+          <span key={line}>{line}</span>
+        ))}
+      </div>
     </div>
   );
 }
 
-function StatItem({ value, label, label2 }: { value: string; label: string; label2: string }) {
+function DividerSlash() {
   return (
-    <div className="flex items-center gap-3">
-      <span className="text-4xl md:text-5xl font-extrabold text-black tracking-tighter">{value}</span>
-      <div className="flex flex-col text-sm text-gray-500 leading-tight">
-        <span>{label}</span>
-        <span>{label2}</span>
-      </div>
+    <div
+      aria-hidden
+      className="flex h-[35px] w-10 flex-shrink-0 items-center justify-center"
+    >
+      <span
+        className="block w-10 border-t border-[#E0DFDF]"
+        style={{ transform: 'rotate(-55deg)' }}
+      />
     </div>
   );
 }

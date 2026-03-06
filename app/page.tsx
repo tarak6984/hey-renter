@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Metadata } from 'next';
 import HeroSection from '@/app/components/home/HeroSection';
 import SearchBar from '@/app/components/home/SearchBar';
@@ -26,7 +27,18 @@ export default function HomePage() {
       >
         <SearchBar />
       </div>
-      <StatsRow />
+      <div style={{ marginTop: '56px' }}>
+        <StatsRow />
+      </div>
+      <div className="flex justify-center mt-8">
+        <Image
+          src="/assets/icons/scroll-down.svg"
+          alt="Scroll down"
+          width={32}
+          height={48}
+          priority
+        />
+      </div>
       <CategoryCards />
       <BrandsRow />
       <div className="max-w-7xl mx-auto px-4">
