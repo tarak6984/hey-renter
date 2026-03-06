@@ -19,7 +19,11 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <div className="max-w-7xl mx-auto px-4">
+      {/* SearchBar overlaps hero bottom by 36px – matches Figma itemSpacing=-36 */}
+      <div
+        className="flex justify-center px-4"
+        style={{ marginTop: '-36px', position: 'relative', zIndex: 10 }}
+      >
         <SearchBar />
       </div>
       <StatsRow />

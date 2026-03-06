@@ -21,6 +21,7 @@ html {
 :root {
   --font-inter: 'Inter', sans-serif;
   --font-tt-norms: 'TT Norms Pro', 'Inter', sans-serif;
+  --font-clash: 'Clash Display', 'Inter', sans-serif;
   --background: #ffffff;
   --foreground: #171717;
 }
