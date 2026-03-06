@@ -91,10 +91,10 @@ export default function SearchBar() {
       {/* ── Diagonal divider ── */}
       <SlashDivider />
 
-      {/* ── Dates & Time – 272px ── */}
+      {/* ── Dates & Time – flex-1 to fill remaining space ── */}
       <div
-        className="flex flex-col flex-shrink-0"
-        style={{ width: '272px', gap: '14px', justifyContent: 'center', height: '100%' }}
+        className="flex flex-col flex-1"
+        style={{ gap: '14px', justifyContent: 'center', height: '100%' }}
       >
         <span
           style={{
@@ -102,7 +102,7 @@ export default function SearchBar() {
             fontSize: '18px',
             fontWeight: 500,
             lineHeight: '26px',
-            color: '#000000',
+            color: 'rgba(0,0,0,0.4)',
           }}
         >
           Dates &amp; Time
@@ -126,12 +126,12 @@ export default function SearchBar() {
         </div>
       </div>
 
-      {/* ── SPOIL ME CTA ── */}
+      {/* ── SPOIL ME CTA – angled left edge via clip-path parallelogram ── */}
       <button
         onClick={handleSearch}
         className="flex items-center justify-center flex-shrink-0 transition-colors self-stretch"
         style={{
-          width: '174px',
+          width: '190px',
           gap: '7px',
           background: isSelected ? '#B8F04F' : '#12151C',
           color: isSelected ? '#000000' : '#ffffff',
@@ -140,9 +140,12 @@ export default function SearchBar() {
           fontWeight: 500,
           lineHeight: '24px',
           letterSpacing: '0.08em',
-          borderRadius: '0 10px 10px 0',
           border: 'none',
           cursor: 'pointer',
+          /* Clip-path: angled top-left corner – parallelogram effect matching Figma */
+          clipPath: 'polygon(20px 0%, 100% 0%, 100% 100%, 0% 100%)',
+          borderRadius: '0 10px 10px 0',
+          paddingLeft: '24px',
         }}
         aria-label="Search cars"
       >
@@ -169,17 +172,19 @@ function SelectField({
       className="flex flex-col flex-shrink-0"
       style={{ width: `${width}px`, gap: '14px', justifyContent: 'center', height: '100%' }}
     >
+      {/* Label – gray like Figma */}
       <span
         style={{
           fontFamily: 'var(--font-tt-norms)',
           fontSize: '18px',
           fontWeight: 500,
           lineHeight: '26px',
-          color: '#000000',
+          color: 'rgba(0,0,0,0.4)',
         }}
       >
         {label}
       </span>
+      {/* Value row – black */}
       <div className="flex items-center" style={{ gap: '8px' }}>
         <select
           value={value}

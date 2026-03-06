@@ -22,6 +22,8 @@ export default function HeroSection() {
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
+        width: '100%',
+        maxWidth: '100vw',
       }}
     >
       {/* ── Title & Body ── */}
