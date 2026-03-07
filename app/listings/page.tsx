@@ -99,7 +99,12 @@ function ListingsResults({
             <>
               <div className="mt-6 grid justify-items-center gap-6 sm:grid-cols-2 xl:grid-cols-4">
                 {paginatedCars.map((car, i) => (
-                  <CarCard key={`${car.id}-${i}`} car={car} whatsappEnabled={false} />
+                  <CarCard
+                    key={`${car.id}-${i}`}
+                    car={car}
+                    whatsappEnabled={false}
+                    imagePriority={i < 4}
+                  />
                 ))}
               </div>
 

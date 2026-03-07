@@ -9,6 +9,7 @@ import { Car } from '@/app/types';
 interface CarCardProps {
   car: Car;
   whatsappEnabled?: boolean;
+  imagePriority?: boolean;
 }
 
 const LISTING_IMAGE_OVERRIDES: Record<string, string> = {
@@ -54,7 +55,11 @@ const BRAND_GALLERY_IMAGES: Record<string, string[]> = {
 /**
  * Car listing card from the Figma "Browser & Mobile/Car Cards" component.
  */
-export default function CarCard({ car, whatsappEnabled = true }: CarCardProps) {
+export default function CarCard({
+  car,
+  whatsappEnabled = true,
+  imagePriority = false,
+}: CarCardProps) {
   const [wishlisted, setWishlisted] = useState(false);
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
   const primaryImage = LISTING_IMAGE_OVERRIDES[car.images[0]] ?? car.images[0];
@@ -89,7 +94,9 @@ export default function CarCard({ car, whatsappEnabled = true }: CarCardProps) {
           fill
           className="object-cover object-center"
           sizes="(max-width: 420px) 100vw, 318px"
-          quality={75}
+          quality={72}
+          priority={imagePriority}
+          loading={imagePriority ? 'eager' : 'lazy'}
           onError={() =>
             setFailedImages((current) => ({
               ...current,
