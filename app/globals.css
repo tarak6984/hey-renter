@@ -1,12 +1,19 @@
 @import "tailwindcss";
 
-/* ── Custom utilities ───────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Custom utilities */
 
 /* Hide scrollbar but keep scrollability */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -14,9 +21,10 @@
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
-/* ── TT Norms Pro – loaded via <link> in layout.tsx head ────────────── */
+/* TT Norms Pro is loaded via a link tag in layout.tsx. */
 
 :root {
   --font-inter: 'Inter', sans-serif;
@@ -36,10 +44,10 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-tt-norms);
-  min-width: 1440px;
+  overflow-x: clip;
 }
 
-/* Search input placeholder – white at ~50% opacity */
+/* Search input placeholder - white at ~50% opacity */
 input::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }

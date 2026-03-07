@@ -5,7 +5,7 @@ import { CAR_CATEGORIES } from '@/app/constants';
 export default function CategoryCards() {
   return (
     <section className="py-8">
-      <div className="mx-auto w-full max-w-[1440px]">
+      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-0">
         <div className="relative aspect-[1440/272] w-full">
           <Image
             src="/assets/categories/Category Listing.png"

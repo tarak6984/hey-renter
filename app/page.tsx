@@ -8,29 +8,25 @@ import BrandsRow from '@/app/components/home/BrandsRow';
 import SeoSection from '@/app/components/ui/SeoSection';
 
 export const metadata: Metadata = {
-  title: 'Hey Renter – Rent a Luxury Car in Dubai',
+  title: 'Hey Renter - Rent a Luxury Car in Dubai',
   description:
     'Rent a luxury car in Dubai. 500+ rental companies, 3,000+ cars. Super cars, SUVs, convertibles and more. Best rates guaranteed.',
 };
 
 /**
- * Home page – assembles all home sections in the order defined by the Figma design.
+ * Home page - assembles all sections in the order defined by the Figma design.
  */
 export default function HomePage() {
   return (
     <>
       <HeroSection />
-      {/* SearchBar overlaps hero bottom by 36px – matches Figma itemSpacing=-36 */}
-      <div
-        className="flex justify-center px-4"
-        style={{ marginTop: '-36px', position: 'relative', zIndex: 10 }}
-      >
+      <div className="relative z-10 -mt-6 flex justify-center px-4 sm:px-6 md:-mt-[36px] md:px-[39px]">
         <SearchBar />
       </div>
-      <div style={{ marginTop: '56px' }}>
+      <div className="mt-12 md:mt-14">
         <StatsRow />
       </div>
-      <div className="flex justify-center mt-8">
+      <div className="mt-8 flex justify-center">
         <Image
           src="/assets/icons/scroll-down.svg"
           alt="Scroll down"
@@ -41,7 +37,7 @@ export default function HomePage() {
       </div>
       <CategoryCards />
       <BrandsRow />
-      <div className="mx-auto w-full max-w-[1440px] px-[39px]">
+      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-[39px]">
         <SeoSection />
       </div>
     </>

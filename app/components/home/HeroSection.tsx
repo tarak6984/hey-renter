@@ -1,18 +1,12 @@
 import Image from 'next/image';
 
+const HERO_IMAGE_WIDTH = 2880;
+const HERO_IMAGE_HEIGHT = 550;
+
 /**
- * Hero section – pixel-perfect from Figma node 8937-42820
- *
- * Figma specs:
- *   BG: linear-gradient top→bottom rgba(222,222,222,0) → rgba(222,222,222,1)
- *   Title & Body: centered, padding T=80px L=39px R=39px, gap=24px between them
- *   Gap between text block and car image: 48px
- *   Car images: full viewport width (no side padding), H=275px, bleeds to edges
- *   Bottom padding: 64px (below car image)
- *   SearchBar overlaps bottom of hero by 36px (negative margin in page layout)
- *
- *   Title: Clash Display, 48px, fw=700, lh=58px, color=#000, UPPERCASE, CENTER
- *   Body:  TT Norms Pro, 18px, fw=500, lh=26px, color=#000, CENTER
+ * Home hero section based on the 1440px Figma desktop frame.
+ * The artwork is rendered at its native aspect ratio so browser zoom
+ * does not re-crop the cars when the effective viewport changes.
  */
 export default function HeroSection() {
   return (
@@ -23,29 +17,16 @@ export default function HeroSection() {
         flexDirection: 'column',
         overflow: 'hidden',
         width: '100%',
-        maxWidth: '100vw',
       }}
     >
-      {/* ── Title & Body ── */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '8px',
-          textAlign: 'center',
-          paddingTop: '80px',
-          paddingLeft: '39px',
-          paddingRight: '39px',
-          paddingBottom: '0',
-        }}
-      >
+      <div className="flex flex-col items-center gap-2 px-4 pt-14 text-center sm:px-6 md:px-[39px] md:pt-20">
         <h1
+          className="max-w-[16ch]"
           style={{
             fontFamily: 'var(--font-clash)',
-            fontSize: '48px',
+            fontSize: 'clamp(36px, 4vw, 48px)',
             fontWeight: 700,
-            lineHeight: '58px',
+            lineHeight: '1.2',
             color: '#000000',
             margin: 0,
             textTransform: 'uppercase',
@@ -57,9 +38,9 @@ export default function HeroSection() {
         <p
           style={{
             fontFamily: 'var(--font-tt-norms)',
-            fontSize: '18px',
+            fontSize: 'clamp(16px, 1.5vw, 18px)',
             fontWeight: 500,
-            lineHeight: '26px',
+            lineHeight: '1.45',
             color: '#000000',
             margin: 0,
           }}
@@ -68,31 +49,29 @@ export default function HeroSection() {
         </p>
       </div>
 
-      {/* ── 48px gap between text and image ── */}
-      <div style={{ height: '48px', flexShrink: 0 }} />
+      <div className="h-10 shrink-0 md:h-12" />
 
-      {/* ── Car Images – full viewport width, H=275px, bleeds edge-to-edge ── */}
-      <div
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: '275px',
-          flexShrink: 0,
-        }}
-      >
-        <Image
-          src="/assets/hero/hero-cars.png"
-          alt="Luxury cars showcase – Rolls Royce, Lamborghini Urus, Sports Car"
-          fill
-          className="object-cover object-center"
-          priority
-          sizes="100vw"
-          quality={90}
-        />
+      <div className="mx-auto w-full max-w-[1440px]">
+        <div
+          className="relative w-full"
+          style={{
+            aspectRatio: `${HERO_IMAGE_WIDTH} / ${HERO_IMAGE_HEIGHT}`,
+            flexShrink: 0,
+          }}
+        >
+          <Image
+            src="/assets/hero/hero-cars-figma.png"
+            alt="Luxury cars showcase - Rolls Royce, Lamborghini Urus, Sports Car"
+            fill
+            className="object-contain object-center"
+            priority
+            sizes="(max-width: 1440px) 100vw, 1440px"
+            quality={90}
+          />
+        </div>
       </div>
 
-      {/* ── 64px bottom padding ── */}
-      <div style={{ height: '64px', flexShrink: 0 }} />
+      <div className="h-12 shrink-0 md:h-16" />
     </section>
   );
 }

@@ -51,64 +51,144 @@ export default function SearchBar() {
   };
 
   return (
-    <div
-      className="flex items-stretch overflow-visible bg-white w-full max-w-[907px] mx-auto"
-      style={{
-        height: '72px',
-        borderRadius: '10px',
-        border: '1px solid #F0F0F0',
-        boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.06), 0px 4px 6px -1px rgba(0,0,0,0.1)',
-        paddingLeft: '16px',
-        gap: '16px',
-      }}
-    >
-      <BrandSelectField
-        label="Brand"
-        value={brand}
-        onChange={(value) => {
-          setBrand(value);
-          setModel('Any');
-        }}
-        options={BRAND_OPTIONS}
-        width={160}
-      />
-
-      <SlashDivider />
-
-      <SelectField
-        label="Model"
-        value={model}
-        onChange={setModel}
-        options={MODELS[brand] ?? ['Any']}
-        width={160}
-      />
-
-      <SlashDivider />
-
-      <button
-        className="flex flex-col flex-shrink-0 text-left"
+    <>
+      <div
+        className="hidden w-full max-w-[907px] items-stretch overflow-visible bg-white md:flex"
         style={{
-          width: '272px',
-          gap: '2px',
-          justifyContent: 'flex-start',
-          height: '100%',
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          padding: '9px 0 9px',
+          height: '72px',
+          borderRadius: '10px',
+          border: '1px solid #F0F0F0',
+          boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.06), 0px 4px 6px -1px rgba(0,0,0,0.1)',
+          paddingLeft: '16px',
+          gap: '16px',
         }}
-        onClick={() => setModalOpen(true)}
       >
-        <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: 'rgba(0,0,0,0.4)' }}>
-          Dates &amp; Time
-        </span>
-        <div className="flex items-center" style={{ gap: '8px' }}>
-          <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: '#000000' }}>
-            {dateTime || 'Select'}
+        <BrandSelectField
+          label="Brand"
+          value={brand}
+          onChange={(value) => {
+            setBrand(value);
+            setModel('Any');
+          }}
+          options={BRAND_OPTIONS}
+          width={160}
+        />
+
+        <SlashDivider />
+
+        <SelectField
+          label="Model"
+          value={model}
+          onChange={setModel}
+          options={MODELS[brand] ?? ['Any']}
+          width={160}
+        />
+
+        <SlashDivider />
+
+        <button
+          className="flex flex-col flex-shrink-0 text-left"
+          style={{
+            width: '272px',
+            gap: '2px',
+            justifyContent: 'flex-start',
+            height: '100%',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '9px 0 9px',
+          }}
+          onClick={() => setModalOpen(true)}
+        >
+          <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: 'rgba(0,0,0,0.4)' }}>
+            Dates &amp; Time
           </span>
-          <ArrowIcon expanded={modalOpen} />
+          <div className="flex items-center" style={{ gap: '8px' }}>
+            <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: '#000000' }}>
+              {dateTime || 'Select'}
+            </span>
+            <ArrowIcon expanded={modalOpen} />
+          </div>
+        </button>
+
+        <button
+          onClick={handleSearch}
+          className="relative flex-shrink-0 self-stretch transition-colors"
+          style={{
+            width: '174px',
+            background: isSelected ? '#B8F04F' : '#12151C',
+            color: isSelected ? '#000000' : '#ffffff',
+            border: '1px solid #F0F0F0',
+            cursor: 'pointer',
+            clipPath: 'polygon(49px 0%, 100% 0%, 100% 100%, 0% 100%)',
+            borderRadius: '0 10px 10px 0',
+          }}
+          aria-label="Search cars"
+        >
+          <span
+            className="absolute flex items-center whitespace-nowrap"
+            style={{
+              left: '54px',
+              top: '50%',
+              width: '103px',
+              height: '17.45px',
+              gap: '7px',
+              transform: 'translateY(-50%)',
+              fontFamily: 'var(--font-tt-norms)',
+              fontSize: '16px',
+              fontWeight: 500,
+              lineHeight: '24px',
+              letterSpacing: '0',
+            }}
+          >
+            <span className="flex items-center">SPOIL ME</span>
+            <SearchIcon color={isSelected ? '#000000' : '#ffffff'} />
+          </span>
+        </button>
+      </div>
+
+      <div className="w-full max-w-[420px] rounded-[10px] border border-[#F0F0F0] bg-white p-4 shadow-[0px_2px_4px_-1px_rgba(0,0,0,0.06),0px_4px_6px_-1px_rgba(0,0,0,0.1)] md:hidden">
+        <div className="space-y-4">
+          <MobileSelectField
+            label="Brand"
+            value={brand}
+            options={BRAND_OPTIONS.map((option) => option.label)}
+            onChange={(value) => {
+              setBrand(value);
+              setModel('Any');
+            }}
+          />
+          <MobileSelectField
+            label="Model"
+            value={model}
+            options={MODELS[brand] ?? ['Any']}
+            onChange={setModel}
+          />
+          <button
+            type="button"
+            onClick={() => setModalOpen(true)}
+            className="flex w-full items-center justify-between rounded-[10px] border border-black/10 px-4 py-3 text-left"
+          >
+            <div className="flex flex-col gap-1">
+              <span className="text-sm font-medium text-black/40">Dates &amp; Time</span>
+              <span className="text-base font-medium text-black">{dateTime || 'Select'}</span>
+            </div>
+            <ArrowIcon expanded={modalOpen} />
+          </button>
+          <button
+            type="button"
+            onClick={handleSearch}
+            className="flex h-14 w-full items-center justify-center gap-2 rounded-[10px] font-medium transition-colors"
+            style={{
+              background: isSelected ? '#B8F04F' : '#12151C',
+              color: isSelected ? '#000000' : '#ffffff',
+            }}
+          >
+            SPOIL ME
+            <SearchIcon color={isSelected ? '#000000' : '#ffffff'} />
+          </button>
         </div>
-      </button>
+      </div>
 
       <PickupModal
         open={modalOpen}
@@ -118,42 +198,34 @@ export default function SearchBar() {
           setModalOpen(false);
         }}
       />
+    </>
+  );
+}
 
-      <button
-        onClick={handleSearch}
-        className="relative flex-shrink-0 transition-colors self-stretch"
-        style={{
-          width: '174px',
-          background: isSelected ? '#B8F04F' : '#12151C',
-          color: isSelected ? '#000000' : '#ffffff',
-          border: '1px solid #F0F0F0',
-          cursor: 'pointer',
-          clipPath: 'polygon(49px 0%, 100% 0%, 100% 100%, 0% 100%)',
-          borderRadius: '0 10px 10px 0',
-        }}
-        aria-label="Search cars"
+function MobileSelectField({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: string[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="flex flex-col gap-1">
+      <span className="text-sm font-medium text-black/40">{label}</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-12 rounded-[10px] border border-black/10 bg-white px-4 text-base font-medium text-black outline-none"
       >
-        <span
-          className="absolute flex items-center whitespace-nowrap"
-          style={{
-            left: '54px',
-            top: '50%',
-            width: '103px',
-            height: '17.45px',
-            gap: '7px',
-            transform: 'translateY(-50%)',
-            fontFamily: 'var(--font-tt-norms)',
-            fontSize: '16px',
-            fontWeight: 500,
-            lineHeight: '24px',
-            letterSpacing: '0',
-          }}
-        >
-          <span className="flex items-center">SPOIL ME</span>
-          <SearchIcon color={isSelected ? '#000000' : '#ffffff'} />
-        </span>
-      </button>
-    </div>
+        {options.map((option) => (
+          <option key={option}>{option}</option>
+        ))}
+      </select>
+    </label>
   );
 }
 

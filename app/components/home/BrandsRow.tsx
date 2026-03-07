@@ -9,14 +9,14 @@ const SVG_WIDTH = 1440;
 export default function BrandsRow() {
   return (
     <section className="bg-white py-8">
-      <div className="overflow-x-auto scrollbar-hide">
-        <div className="relative mx-auto aspect-[1440/112] min-w-[1440px] max-w-[1440px]">
+      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-0">
+        <div className="relative mx-auto aspect-[1440/112] w-full">
           <Image
             src="/assets/brands/Rent by Brands.svg"
             alt="Rent by brands"
             fill
             priority
-            sizes="1440px"
+            sizes="(max-width: 1440px) 100vw, 1440px"
             className="object-contain"
           />
 
