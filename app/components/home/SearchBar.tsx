@@ -33,21 +33,44 @@ const MODELS: Record<string, string[]> = {
   KIA: ['Any', 'Stinger', 'EV6'],
 };
 
-export default function SearchBar() {
-  const router = useRouter();
-  const [brand, setBrand] = useState('Any');
-  const [model, setModel] = useState('Any');
-  const [dateTime, setDateTime] = useState('');
-  const [modalOpen, setModalOpen] = useState(false);
+interface SearchBarProps {
+  initialBrand?: string;
+  initialModel?: string;
+  initialDateTime?: string;
+  destinationPath?: string;
+  navigationMode?: 'push' | 'replace';
+}
 
-  const isSelected = brand !== 'Any' || model !== 'Any' || dateTime !== '';
+export default function SearchBar({
+  initialBrand = 'Any',
+  initialModel = 'Any',
+  initialDateTime = '',
+  destinationPath = '/listings',
+  navigationMode = 'push',
+}: SearchBarProps) {
+  const router = useRouter();
+  const [brand, setBrand] = useState(initialBrand);
+  const [model, setModel] = useState(initialModel);
+  const [dateTime, setDateTime] = useState(initialDateTime);
+  const [modalOpen, setModalOpen] = useState(false);
+  const availableModels = MODELS[brand] ?? ['Any'];
+  const safeModel = availableModels.includes(model) ? model : 'Any';
+
+  const isSelected = brand !== 'Any' || safeModel !== 'Any' || dateTime !== '';
 
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (brand !== 'Any') params.set('brand', brand);
-    if (model !== 'Any') params.set('model', model);
+    if (safeModel !== 'Any') params.set('model', safeModel);
     if (dateTime) params.set('dateTime', dateTime);
-    router.push(`/listings?${params.toString()}`);
+
+    const target = params.toString() ? `${destinationPath}?${params.toString()}` : destinationPath;
+    if (navigationMode === 'replace') {
+      router.replace(target);
+      return;
+    }
+
+    router.push(target);
   };
 
   return (
@@ -78,16 +101,16 @@ export default function SearchBar() {
 
         <SelectField
           label="Model"
-          value={model}
+          value={safeModel}
           onChange={setModel}
-          options={MODELS[brand] ?? ['Any']}
+          options={availableModels}
           width={160}
         />
 
         <SlashDivider />
 
         <button
-          className="flex flex-col flex-shrink-0 text-left"
+          className="flex flex-shrink-0 flex-col text-left"
           style={{
             width: '272px',
             gap: '2px',
@@ -100,11 +123,27 @@ export default function SearchBar() {
           }}
           onClick={() => setModalOpen(true)}
         >
-          <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: 'rgba(0,0,0,0.4)' }}>
+          <span
+            style={{
+              fontFamily: 'var(--font-tt-norms)',
+              fontSize: '18px',
+              fontWeight: 500,
+              lineHeight: '26px',
+              color: 'rgba(0,0,0,0.4)',
+            }}
+          >
             Dates &amp; Time
           </span>
           <div className="flex items-center" style={{ gap: '8px' }}>
-            <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, lineHeight: '26px', color: '#000000' }}>
+            <span
+              style={{
+                fontFamily: 'var(--font-tt-norms)',
+                fontSize: '18px',
+                fontWeight: 500,
+                lineHeight: '26px',
+                color: '#000000',
+              }}
+            >
               {dateTime || 'Select'}
             </span>
             <ArrowIcon expanded={modalOpen} />
@@ -161,7 +200,7 @@ export default function SearchBar() {
           <MobileSelectField
             label="Model"
             value={model}
-            options={MODELS[brand] ?? ['Any']}
+            options={availableModels}
             onChange={setModel}
           />
           <button
@@ -273,7 +312,7 @@ function BrandSelectField({
   return (
     <div
       ref={fieldRef}
-      className="relative flex flex-col flex-shrink-0"
+      className="relative flex flex-shrink-0 flex-col"
       style={{
         width: `${width}px`,
         gap: '2px',
@@ -430,7 +469,11 @@ function BrandLogo({ label, src }: { label: string; src: string | null }) {
 }
 
 function SelectField({
-  label, value, onChange, options, width,
+  label,
+  value,
+  onChange,
+  options,
+  width,
 }: {
   label: string;
   value: string;
@@ -440,7 +483,7 @@ function SelectField({
 }) {
   return (
     <div
-      className="flex flex-col flex-shrink-0"
+      className="flex flex-shrink-0 flex-col"
       style={{
         width: `${width}px`,
         gap: '2px',
@@ -465,7 +508,7 @@ function SelectField({
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="bg-transparent outline-none cursor-pointer appearance-none w-full"
+          className="w-full appearance-none cursor-pointer bg-transparent outline-none"
           style={{
             fontFamily: 'var(--font-tt-norms)',
             fontSize: '18px',
@@ -474,7 +517,9 @@ function SelectField({
             color: '#000000',
           }}
         >
-          {options.map((option) => <option key={option}>{option}</option>)}
+          {options.map((option) => (
+            <option key={option}>{option}</option>
+          ))}
         </select>
         <ArrowIcon />
       </div>
@@ -491,12 +536,7 @@ function SlashDivider() {
       viewBox="0 0 23 33"
       className="flex-shrink-0 self-center"
     >
-      <path
-        d="M1 32L22 1"
-        stroke="#E0DFDF"
-        strokeWidth="1"
-        strokeLinecap="round"
-      />
+      <path d="M1 32L22 1" stroke="#E0DFDF" strokeWidth="1" strokeLinecap="round" />
     </svg>
   );
 }
@@ -529,8 +569,21 @@ function ArrowIcon({ expanded = false }: { expanded?: boolean }) {
 
 function SearchIcon({ color }: { color: string }) {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
-      <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ flexShrink: 0 }}
+    >
+      <path
+        d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
