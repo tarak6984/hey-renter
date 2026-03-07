@@ -1,17 +1,53 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
+import { MOCK_CARS } from '@/app/constants';
 import Breadcrumb from '@/app/components/shared/Breadcrumb';
+
+const CONFIRMATION_WHATSAPP_NUMBER = '8801788656498';
 
 /**
  * Confirmation page based on Figma node 8984:17660.
  */
 export default function ConfirmationPage() {
+  return (
+    <Suspense fallback={<div style={{ background: '#F5F5F5', minHeight: '100vh' }} />}>
+      <ConfirmationContent />
+    </Suspense>
+  );
+}
+
+function ConfirmationContent() {
+  const searchParams = useSearchParams();
   const bookingId = '#001232';
   const [copied, setCopied] = useState(false);
   const [passportFile, setPassportFile] = useState<File | null>(null);
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
+  const carId = searchParams.get('carId') || '';
+  const slug = searchParams.get('slug') || '';
+  const dateTime = searchParams.get('dateTime') || '';
+  const phone = searchParams.get('phone') || '';
+  const countryCode = searchParams.get('countryCode') || '+971';
+  const fullName = searchParams.get('fullName') || '';
+  const car =
+    MOCK_CARS.find((item) => item.id === carId) ||
+    MOCK_CARS.find((item) => item.slug === slug) ||
+    MOCK_CARS[0];
+  const whatsappMessage = [
+    'Hello Hey Renter,',
+    '',
+    'My booking is confirmed and I would like to continue on WhatsApp.',
+    'Please do not remove the information below so we can assist you faster.',
+    `Booking ID: ${bookingId}`,
+    `Car: ${car.brand} ${car.model}`,
+    `Pickup Date & Time: ${dateTime || 'Not selected yet'}`,
+    `Best Rate: AED ${car.pricePerDay.toLocaleString()}/day`,
+    `Phone: ${phone ? `${countryCode} ${phone}` : 'Not provided yet'}`,
+    `Full Name: ${fullName || 'Not provided yet'}`,
+  ].join('\n');
+  const whatsappHref = `https://wa.me/${CONFIRMATION_WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(bookingId);
@@ -25,7 +61,7 @@ export default function ConfirmationPage() {
         items={[
           { label: 'Home', href: '/' },
           { label: 'Super Cars', href: '/listings?category=super' },
-          { label: 'Cullinan 2024', href: '/cars/rolls-royce-cullinan-mansory-2024' },
+          { label: car.model, href: `/cars/${car.slug}` },
           { label: 'Confirmation' },
         ]}
       />
@@ -92,7 +128,7 @@ export default function ConfirmationPage() {
               </h2>
 
               <a
-                href="https://wa.me/971000000000"
+                href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex w-full items-center justify-center"

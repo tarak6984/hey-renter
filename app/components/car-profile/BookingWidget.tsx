@@ -38,6 +38,7 @@ export default function BookingWidget({
     'Hello Hey Renter,',
     '',
     'I would like to negotiate this car rental offer.',
+    'Please do not remove the information below so we can assist you faster.',
     `Car: ${carBrand} ${carModel}`,
     `Pickup Date & Time: ${selectedDate || 'Not selected yet'}`,
     `Best Rate: AED ${pricePerDay.toLocaleString()}/day`,
@@ -48,7 +49,15 @@ export default function BookingWidget({
 
   const handleReserve = () => {
     if (!phone || !fullName) return;
-    router.push(`/confirmation?carId=${carId}&slug=${slug}`);
+    const params = new URLSearchParams({
+      carId,
+      slug,
+      dateTime: selectedDate,
+      phone: normalizedPhone,
+      countryCode,
+      fullName: normalizedName,
+    });
+    router.push(`/confirmation?${params.toString()}`);
   };
 
   return (

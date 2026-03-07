@@ -10,7 +10,7 @@ import Pagination from '@/app/components/listings/Pagination';
 import SeoSection from '@/app/components/ui/SeoSection';
 import { MOCK_CARS } from '@/app/constants';
 
-const CARS_PER_PAGE = 8;
+const CARS_PER_PAGE = 16;
 
 /**
  * Listings page - search bar at top, filter bar, car grid, pagination, SEO section.
@@ -99,7 +99,7 @@ function ListingsResults({
             <>
               <div className="mt-6 grid justify-items-center gap-6 sm:grid-cols-2 xl:grid-cols-4">
                 {paginatedCars.map((car, i) => (
-                  <CarCard key={`${car.id}-${i}`} car={car} />
+                  <CarCard key={`${car.id}-${i}`} car={car} whatsappEnabled={false} />
                 ))}
               </div>
 
