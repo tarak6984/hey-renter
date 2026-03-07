@@ -9,24 +9,20 @@ interface FilterBarProps {
   onUnlimitedMileageChange?: (v: boolean) => void;
 }
 
+type ActiveFilter = 'noDeposit' | 'unlimitedMileage' | 'offers' | null;
+
 /**
  * Filter bar shown above the listings grid.
  * Matches Figma node 8937:50404: result row + filter tags.
  */
 export default function FilterBar({ total, onNoDepositChange, onUnlimitedMileageChange }: FilterBarProps) {
-  const [noDeposit, setNoDeposit] = useState(true);
-  const [unlimitedMileage, setUnlimitedMileage] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<ActiveFilter>('noDeposit');
 
-  const toggleNoDeposit = () => {
-    const next = !noDeposit;
-    setNoDeposit(next);
-    onNoDepositChange?.(next);
-  };
-
-  const toggleUnlimitedMileage = () => {
-    const next = !unlimitedMileage;
-    setUnlimitedMileage(next);
-    onUnlimitedMileageChange?.(next);
+  const toggleFilter = (filter: Exclude<ActiveFilter, null>) => {
+    const nextFilter = activeFilter === filter ? null : filter;
+    setActiveFilter(nextFilter);
+    onNoDepositChange?.(nextFilter === 'noDeposit');
+    onUnlimitedMileageChange?.(nextFilter === 'unlimitedMileage');
   };
 
   return (
@@ -68,10 +64,10 @@ export default function FilterBar({ total, onNoDepositChange, onUnlimitedMileage
 
       <div className="flex min-h-[76px] flex-wrap items-center gap-[19px] px-[39px] py-4">
         <FilterPill
-          active={noDeposit}
-          icon={<NoDepositIcon active={noDeposit} />}
-          suffixIcon={noDeposit ? <CancelIcon /> : undefined}
-          onClick={toggleNoDeposit}
+          active={activeFilter === 'noDeposit'}
+          icon={<NoDepositIcon active={activeFilter === 'noDeposit'} />}
+          suffixIcon={activeFilter === 'noDeposit' ? <CancelIcon /> : undefined}
+          onClick={() => toggleFilter('noDeposit')}
         >
           No Deposit
         </FilterPill>
@@ -79,13 +75,19 @@ export default function FilterBar({ total, onNoDepositChange, onUnlimitedMileage
           Category
         </FilterPill>
         <FilterPill
-          active={unlimitedMileage}
-          icon={<UnlimitedMileageIcon />}
-          onClick={toggleUnlimitedMileage}
+          active={activeFilter === 'unlimitedMileage'}
+          icon={<UnlimitedMileageIcon active={activeFilter === 'unlimitedMileage'} />}
+          suffixIcon={activeFilter === 'unlimitedMileage' ? <CancelIcon /> : undefined}
+          onClick={() => toggleFilter('unlimitedMileage')}
         >
           Unlimited mileage
         </FilterPill>
-        <FilterPill active={false} icon={<OffersIcon />} onClick={() => {}}>
+        <FilterPill
+          active={activeFilter === 'offers'}
+          icon={<OffersIcon active={activeFilter === 'offers'} />}
+          suffixIcon={activeFilter === 'offers' ? <CancelIcon /> : undefined}
+          onClick={() => toggleFilter('offers')}
+        >
           Offers
         </FilterPill>
       </div>
@@ -197,26 +199,26 @@ function CategoryChevron() {
   );
 }
 
-function UnlimitedMileageIcon() {
+function UnlimitedMileageIcon({ active }: { active: boolean }) {
   return (
     <span className="flex h-6 w-6 items-center justify-center">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
         <path
           d="M3.175 16.825C2.39167 16.0417 2 15.1 2 14L2 5.825C1.41667 5.60833 0.9375 5.24583 0.5625 4.7375C0.1875 4.22917 0 3.65 0 3C0 2.16667 0.291667 1.45833 0.875 0.875C1.45833 0.291667 2.16667 0 3 0C3.83333 0 4.54167 0.291667 5.125 0.875C5.70833 1.45833 6 2.16667 6 3C6 3.65 5.8125 4.22917 5.4375 4.7375C5.0625 5.24583 4.58333 5.60833 4 5.825L4 14C4 14.55 4.19583 15.0208 4.5875 15.4125C4.97917 15.8042 5.45 16 6 16C6.55 16 7.02083 15.8042 7.4125 15.4125C7.80417 15.0208 8 14.55 8 14L8 4C8 2.9 8.39167 1.95833 9.175 1.175C9.95833 0.391667 10.9 0 12 0C13.1 0 14.0417 0.391667 14.825 1.175C15.6083 1.95833 16 2.9 16 4L16 12.175C16.5833 12.3917 17.0625 12.7542 17.4375 13.2625C17.8125 13.7708 18 14.35 18 15C18 15.8333 17.7083 16.5417 17.125 17.125C16.5417 17.7083 15.8333 18 15 18C14.1667 18 13.4583 17.7083 12.875 17.125C12.2917 16.5417 12 15.8333 12 15C12 14.35 12.1875 13.7667 12.5625 13.25C12.9375 12.7333 13.4167 12.375 14 12.175L14 4C14 3.45 13.8042 2.97917 13.4125 2.5875C13.0208 2.19583 12.55 2 12 2C11.45 2 10.9792 2.19583 10.5875 2.5875C10.1958 2.97917 10 3.45 10 4L10 14C10 15.1 9.60833 16.0417 8.825 16.825C8.04167 17.6083 7.1 18 6 18C4.9 18 3.95833 17.6083 3.175 16.825ZM3 4C3.28333 4 3.52083 3.90417 3.7125 3.7125C3.90417 3.52083 4 3.28333 4 3C4 2.71667 3.90417 2.47917 3.7125 2.2875C3.52083 2.09583 3.28333 2 3 2C2.71667 2 2.47917 2.09583 2.2875 2.2875C2.09583 2.47917 2 2.71667 2 3C2 3.28333 2.09583 3.52083 2.2875 3.7125C2.47917 3.90417 2.71667 4 3 4ZM15 16C15.2833 16 15.5208 15.9042 15.7125 15.7125C15.9042 15.5208 16 15.2833 16 15C16 14.7167 15.9042 14.4792 15.7125 14.2875C15.5208 14.0958 15.2833 14 15 14C14.7167 14 14.4792 14.0958 14.2875 14.2875C14.0958 14.4792 14 14.7167 14 15C14 15.2833 14.0958 15.5208 14.2875 15.7125C14.4792 15.9042 14.7167 16 15 16Z"
-          fill="#1C1B1F"
+          fill={active ? '#FFFFFF' : '#1C1B1F'}
         />
       </svg>
     </span>
   );
 }
 
-function OffersIcon() {
+function OffersIcon({ active }: { active: boolean }) {
   return (
     <span className="flex h-6 w-6 items-center justify-center">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
         <path
           d="M10 20C9.6 20 9.21667 19.925 8.85 19.775C8.48333 19.625 8.15833 19.4083 7.875 19.125C7.39167 18.6417 6.975 18.325 6.625 18.175C6.275 18.025 5.75 17.95 5.05 17.95C4.21667 17.95 3.50833 17.6583 2.925 17.075C2.34167 16.4917 2.05 15.7833 2.05 14.95C2.05 14.25 1.975 13.725 1.825 13.375C1.675 13.025 1.35833 12.6083 0.875 12.125C0.591667 11.8417 0.375 11.5167 0.225 11.15C0.075 10.7833 0 10.4 0 10C0 9.6 0.075 9.21667 0.225 8.85C0.375 8.48333 0.591667 8.15833 0.875 7.875C1.35833 7.39167 1.675 6.975 1.825 6.625C1.975 6.275 2.05 5.75 2.05 5.05C2.05 4.21667 2.34167 3.50833 2.925 2.925C3.50833 2.34167 4.21667 2.05 5.05 2.05C5.75 2.05 6.275 1.975 6.625 1.825C6.975 1.675 7.39167 1.35833 7.875 0.875C8.15833 0.591667 8.48333 0.375 8.85 0.225C9.21667 0.075 9.6 0 10 0C10.4 0 10.7833 0.075 11.15 0.225C11.5167 0.375 11.8417 0.591667 12.125 0.875C12.6083 1.35833 13.025 1.675 13.375 1.825C13.725 1.975 14.25 2.05 14.95 2.05C15.7833 2.05 16.4917 2.34167 17.075 2.925C17.6583 3.50833 17.95 4.21667 17.95 5.05C17.95 5.75 18.025 6.275 18.175 6.625C18.325 6.975 18.6417 7.39167 19.125 7.875C19.4083 8.15833 19.625 8.48333 19.775 8.85C19.925 9.21667 20 9.6 20 10C20 10.4 19.925 10.7833 19.775 11.15C19.625 11.5167 19.4083 11.8417 19.125 12.125C18.6417 12.6083 18.325 13.025 18.175 13.375C18.025 13.725 17.95 14.25 17.95 14.95C17.95 15.7833 17.6583 16.4917 17.075 17.075C16.4917 17.6583 15.7833 17.95 14.95 17.95C14.25 17.95 13.725 18.025 13.375 18.175C13.025 18.325 12.6083 18.6417 12.125 19.125C11.8417 19.4083 11.5167 19.625 11.15 19.775C10.7833 19.925 10.4 20 10 20ZM10 18C10.1333 18 10.2625 17.9708 10.3875 17.9125C10.5125 17.8542 10.6167 17.7833 10.7 17.7C11.3833 17.0167 12.025 16.5542 12.625 16.3125C13.225 16.0708 14 15.95 14.95 15.95C15.2333 15.95 15.4708 15.8542 15.6625 15.6625C15.8542 15.4708 15.95 15.2333 15.95 14.95C15.95 13.9833 16.0708 13.2042 16.3125 12.6125C16.5542 12.0208 17.0167 11.3833 17.7 10.7C17.9 10.5 18 10.2667 18 10C18 9.73333 17.9 9.5 17.7 9.3C17.0167 8.61667 16.5542 7.975 16.3125 7.375C16.0708 6.775 15.95 6 15.95 5.05C15.95 4.76667 15.8542 4.52917 15.6625 4.3375C15.4708 4.14583 15.2333 4.05 14.95 4.05C13.9833 4.05 13.2042 3.92917 12.6125 3.6875C12.0208 3.44583 11.3833 2.98333 10.7 2.3C10.6167 2.21667 10.5125 2.14583 10.3875 2.0875C10.2625 2.02917 10.1333 2 10 2C9.86667 2 9.7375 2.02917 9.6125 2.0875C9.4875 2.14583 9.38333 2.21667 9.3 2.3C8.61667 2.98333 7.975 3.44583 7.375 3.6875C6.775 3.92917 6 4.05 5.05 4.05C4.76667 4.05 4.52917 4.14583 4.3375 4.3375C4.14583 4.52917 4.05 4.76667 4.05 5.05C4.05 6.01667 3.92917 6.79583 3.6875 7.3875C3.44583 7.97917 2.98333 8.61667 2.3 9.3C2.1 9.5 2 9.73333 2 10C2 10.2667 2.1 10.5 2.3 10.7C2.98333 11.3833 3.44583 12.025 3.6875 12.625C3.92917 13.225 4.05 14 4.05 14.95C4.05 15.2333 4.14583 15.4708 4.3375 15.6625C4.52917 15.8542 4.76667 15.95 5.05 15.95C6.01667 15.95 6.79583 16.0708 7.3875 16.3125C7.97917 16.5542 8.61667 17.0167 9.3 17.7C9.38333 17.7833 9.4875 17.8542 9.6125 17.9125C9.7375 17.9708 9.86667 18 10 18ZM12.5 14C12.9167 14 13.2708 13.8542 13.5625 13.5625C13.8542 13.2708 14 12.9167 14 12.5C14 12.0833 13.8542 11.7292 13.5625 11.4375C13.2708 11.1458 12.9167 11 12.5 11C12.0833 11 11.7292 11.1458 11.4375 11.4375C11.1458 11.7292 11 12.0833 11 12.5C11 12.9167 11.1458 13.2708 11.4375 13.5625C11.7292 13.8542 12.0833 14 12.5 14ZM7.45 13.95L13.95 7.45L12.55 6.05L6.05 12.55L7.45 13.95ZM8.5625 8.5625C8.85417 8.27083 9 7.91667 9 7.5C9 7.08333 8.85417 6.72917 8.5625 6.4375C8.27083 6.14583 7.91667 6 7.5 6C7.08333 6 6.72917 6.14583 6.4375 6.4375C6.14583 6.72917 6 7.08333 6 7.5C6 7.91667 6.14583 8.27083 6.4375 8.5625C6.72917 8.85417 7.08333 9 7.5 9C7.91667 9 8.27083 8.85417 8.5625 8.5625Z"
-          fill="#1C1B1F"
+          fill={active ? '#FFFFFF' : '#1C1B1F'}
         />
       </svg>
     </span>
