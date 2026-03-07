@@ -80,11 +80,11 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
   const handleConfirm = () => {
     if (tab === 'Daily') {
       const start = rangeStart ? fmtDate(rangeStart) : '';
-      const end = rangeEnd ? ` → ${fmtDate(rangeEnd)}` : '';
+      const end = rangeEnd ? ` - ${fmtDate(rangeEnd)}` : '';
       const time = `${selectedHour}:${String(selectedMinute).padStart(2, '0')} ${isPM ? 'PM' : 'AM'}`;
       onConfirm(`${start}${end}, ${time}`);
     } else if (tab === 'Monthly') {
-      const start = monthlyRangeStart ? `${fmtDate(monthlyRangeStart)}${monthlyRangeEnd ? ` → ${fmtDate(monthlyRangeEnd)}` : ''} · ` : '';
+      const start = monthlyRangeStart ? `${fmtDate(monthlyRangeStart)}${monthlyRangeEnd ? ` - ${fmtDate(monthlyRangeEnd)}` : ''} · ` : '';
       onConfirm(`${start}${months} month${months > 1 ? 's' : ''}`);
     } else {
       // Hourly: "Mar 10, 8:00 PM · 3 hrs"
@@ -299,7 +299,7 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
                       style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '15px', fontWeight: 500, color: '#000', textDecoration: 'underline', cursor: 'pointer', textAlign: 'center' }}
                     >
                       {monthlyRangeStart
-                        ? `${fmtDate(monthlyRangeStart)}${monthlyRangeEnd ? ` → ${fmtDate(monthlyRangeEnd)}` : ''}`
+                        ? `${fmtDate(monthlyRangeStart)}${monthlyRangeEnd ? ` - ${fmtDate(monthlyRangeEnd)}` : ''}`
                         : 'Start Date'}
                     </span>
                   </>
@@ -484,7 +484,7 @@ function CalendarPicker({ viewYear, viewMonth, rangeStart, rangeEnd, onPrevMonth
       {/* Selected range label — full date inside calendar */}
       {rangeStart && (
         <div style={{ textAlign: 'center', fontFamily: 'var(--font-tt-norms)', fontSize: '12px', color: 'rgba(0,0,0,0.45)', padding: '0 14px 4px' }}>
-          {fmtDateFull(rangeStart)}{rangeEnd ? ` → ${fmtDateFull(rangeEnd)}` : ' → pick end date'}
+          {fmtDateFull(rangeStart)}{rangeEnd ? ` - ${fmtDateFull(rangeEnd)}` : ' - pick end date'}
         </div>
       )}
 

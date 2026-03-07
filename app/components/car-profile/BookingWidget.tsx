@@ -7,21 +7,44 @@ import PickupModal from '@/app/components/car-profile/PickupModal';
 
 interface BookingWidgetProps {
   carId: string;
+  carBrand: string;
+  carModel: string;
   pricePerDay: number;
   slug: string;
 }
+
+const NEGOTIATION_WHATSAPP_NUMBER = '8801788656498';
 
 /**
  * Sticky booking sidebar widget on the Car Profile page.
  * Handles date selection, phone, name, reserve + WhatsApp CTA.
  */
-export default function BookingWidget({ carId, pricePerDay, slug }: BookingWidgetProps) {
+export default function BookingWidget({
+  carId,
+  carBrand,
+  carModel,
+  pricePerDay,
+  slug,
+}: BookingWidgetProps) {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [phone, setPhone] = useState('');
   const [fullName, setFullName] = useState('');
   const [countryCode, setCountryCode] = useState('+971');
+  const normalizedPhone = phone.trim();
+  const normalizedName = fullName.trim();
+  const whatsappMessage = [
+    'Hello Hey Renter,',
+    '',
+    'I would like to negotiate this car rental offer.',
+    `Car: ${carBrand} ${carModel}`,
+    `Pickup Date & Time: ${selectedDate || 'Not selected yet'}`,
+    `Best Rate: AED ${pricePerDay.toLocaleString()}/day`,
+    `Phone: ${normalizedPhone ? `${countryCode} ${normalizedPhone}` : 'Not provided yet'}`,
+    `Full Name: ${normalizedName || 'Not provided yet'}`,
+  ].join('\n');
+  const whatsappHref = `https://wa.me/${NEGOTIATION_WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
 
   const handleReserve = () => {
     if (!phone || !fullName) return;
@@ -108,7 +131,7 @@ export default function BookingWidget({ carId, pricePerDay, slug }: BookingWidge
         <div className="text-center">
           <p className="text-xs text-gray-500 mb-2">Want a better deal?</p>
           <a
-            href="https://wa.me/971000000000"
+            href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full bg-[#25D366] hover:bg-[#1ebe5b] text-white font-semibold py-3 rounded-full flex items-center justify-center gap-2 transition-colors text-sm"

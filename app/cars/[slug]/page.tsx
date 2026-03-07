@@ -99,7 +99,13 @@ export default async function CarProfilePage({ params }: PageProps) {
           </div>
 
           <div>
-            <BookingWidget carId={car.id} pricePerDay={car.pricePerDay} slug={car.slug} />
+            <BookingWidget
+              carId={car.id}
+              carBrand={car.brand}
+              carModel={car.model}
+              pricePerDay={car.pricePerDay}
+              slug={car.slug}
+            />
           </div>
         </div>
 

@@ -12,6 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://hey-renter.com'),
   title: {
     default: 'Hey Renter - Rent a Luxury Car in Dubai',
     template: '%s | Hey Renter',
@@ -19,6 +20,10 @@ export const metadata: Metadata = {
   description:
     'Rent luxury, super, SUV, convertible and economy cars in Dubai. Best rates from 500+ rental companies. No deposit options available.',
   keywords: ['luxury car rental dubai', 'rent supercar dubai', 'hey renter', 'car hire dubai'],
+  icons: {
+    icon: [{ url: '/icon', type: 'image/png' }],
+    shortcut: '/icon',
+  },
   openGraph: {
     title: 'Hey Renter - Rent a Luxury Car in Dubai',
     description: 'Rent the Dream. Live the Lifestyle.',
@@ -26,11 +31,20 @@ export const metadata: Metadata = {
     siteName: 'Hey Renter',
     locale: 'en_AE',
     type: 'website',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Hey Renter logo',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Hey Renter - Rent a Luxury Car in Dubai',
     description: 'Rent the Dream. Live the Lifestyle.',
+    images: ['/twitter-image'],
   },
   robots: {
     index: true,
