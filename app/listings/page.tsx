@@ -10,7 +10,9 @@ import Pagination from '@/app/components/listings/Pagination';
 import SeoSection from '@/app/components/ui/SeoSection';
 import { MOCK_CARS } from '@/app/constants';
 
-const CARS_PER_PAGE = 16;
+const CARS_PER_PAGE = 12;
+const LISTING_PAGE_COUNT = 2;
+const LISTING_CARD_COUNT = CARS_PER_PAGE * LISTING_PAGE_COUNT;
 
 /**
  * Listings page - search bar at top, filter bar, car grid, pagination, SEO section.
@@ -63,11 +65,11 @@ function ListingsResults({
     });
 
     const repeated: typeof MOCK_CARS = [];
-    while (repeated.length < Math.max(filtered.length, 16) && filtered.length > 0) {
+    while (repeated.length < LISTING_CARD_COUNT && filtered.length > 0) {
       repeated.push(...filtered);
     }
 
-    return filtered.length > 0 ? repeated.slice(0, Math.max(filtered.length, 16)) : [];
+    return filtered.length > 0 ? repeated.slice(0, LISTING_CARD_COUNT) : [];
   }, [brand, model]);
 
   const paginatedCars = allCars.slice((page - 1) * CARS_PER_PAGE, page * CARS_PER_PAGE);
