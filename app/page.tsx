@@ -32,7 +32,6 @@ export default function HomePage() {
           alt="Scroll down"
           width={32}
           height={48}
-          priority
         />
       </div>
       <CategoryCards />

@@ -60,13 +60,13 @@ export default function HeroSection() {
           }}
         >
           <Image
-            src="/assets/hero/hero-cars-figma.png"
+            src="/assets/home-optimized/hero-cars.webp"
             alt="Luxury cars showcase - Rolls Royce, Lamborghini Urus, Sports Car"
             fill
             className="object-contain object-center"
             priority
             sizes="(max-width: 1440px) 100vw, 1440px"
-            quality={90}
+            quality={78}
           />
         </div>
       </div>

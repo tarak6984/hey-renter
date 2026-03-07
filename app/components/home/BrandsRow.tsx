@@ -12,12 +12,12 @@ export default function BrandsRow() {
       <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-0">
         <div className="relative mx-auto aspect-[1440/112] w-full">
           <Image
-            src="/assets/brands/Rent by Brands.svg"
+            src="/assets/home-optimized/brands-row.webp"
             alt="Rent by brands"
             fill
-            priority
             sizes="(max-width: 1440px) 100vw, 1440px"
             className="object-contain"
+            quality={78}
           />
 
           {CAR_BRANDS.map((brand, index) => {

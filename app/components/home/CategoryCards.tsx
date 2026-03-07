@@ -8,13 +8,12 @@ export default function CategoryCards() {
       <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-0">
         <div className="relative aspect-[1440/272] w-full">
           <Image
-            src="/assets/categories/Category Listing.png"
+            src="/assets/home-optimized/category-listing.webp"
             alt="Car categories"
             fill
             className="object-contain"
             sizes="(max-width: 1440px) 100vw, 1440px"
-            quality={100}
-            priority
+            quality={78}
           />
 
           <div className="absolute inset-0 grid grid-cols-6 gap-[2.083333%] px-[2.708333%]">
