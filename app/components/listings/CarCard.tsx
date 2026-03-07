@@ -12,41 +12,42 @@ interface CarCardProps {
 }
 
 const LISTING_IMAGE_OVERRIDES: Record<string, string> = {
-  '/assets/cars/mercedes-sl63-amg.png': '/assets/cars/Mercedes/DSC01709-1-scaled.jpg',
-  '/assets/cars/ferrari-purosangue.png': '/assets/cars/Ferrari/1-13.png',
-  '/assets/cars/porsche-gt3-rs.png': '/assets/cars/Porsche/DSC07802-scaled.jpg',
+  '/assets/cars/mercedes-sl63-amg.png': '/assets/cars/listings/mercedes-1.webp',
+  '/assets/cars/ferrari-purosangue.png': '/assets/cars/listings/ferrari-1.webp',
+  '/assets/cars/porsche-gt3-rs.png': '/assets/cars/listings/porsche-1.webp',
+  '/assets/cars/cullinan-mansory-2024.png': '/assets/cars/listings/rolls-royce-1.webp',
 };
 
 const BRAND_GALLERY_IMAGES: Record<string, string[]> = {
   ferrari: [
-    '/assets/cars/Ferrari/1-13.png',
-    '/assets/cars/Ferrari/2-13.png',
-    '/assets/cars/Ferrari/4-13.png',
-    '/assets/cars/Ferrari/6-13.png',
+    '/assets/cars/listings/ferrari-1.webp',
+    '/assets/cars/listings/ferrari-2.webp',
+    '/assets/cars/listings/ferrari-3.webp',
+    '/assets/cars/listings/ferrari-4.webp',
   ],
   mercedes: [
-    '/assets/cars/Mercedes/DSC01709-1-scaled.jpg',
-    '/assets/cars/Mercedes/DSC01690-scaled.jpg',
-    '/assets/cars/Mercedes/DSC01792-3-scaled.jpg',
-    '/assets/cars/Mercedes/DSC01806-scaled.jpg',
+    '/assets/cars/listings/mercedes-1.webp',
+    '/assets/cars/listings/mercedes-2.webp',
+    '/assets/cars/listings/mercedes-3.webp',
+    '/assets/cars/listings/mercedes-4.webp',
   ],
   porsche: [
-    '/assets/cars/Porsche/DSC07802-scaled.jpg',
-    '/assets/cars/Porsche/DSC07818-scaled.jpg',
-    '/assets/cars/Porsche/DSC07856-scaled.jpg',
-    '/assets/cars/Porsche/DSC07937-1-scaled.jpg',
+    '/assets/cars/listings/porsche-1.webp',
+    '/assets/cars/listings/porsche-2.webp',
+    '/assets/cars/listings/porsche-3.webp',
+    '/assets/cars/listings/porsche-4.webp',
   ],
   mclaren: [
-    '/assets/cars/McLaren/DSC06051.jpg',
-    '/assets/cars/McLaren/DSC06060.jpg',
-    '/assets/cars/McLaren/DSC06221.jpg',
-    '/assets/cars/McLaren/DSC06246.jpg',
+    '/assets/cars/listings/mclaren-1.webp',
+    '/assets/cars/listings/mclaren-2.webp',
+    '/assets/cars/listings/mclaren-3.webp',
+    '/assets/cars/listings/mclaren-4.webp',
   ],
   'rolls royce': [
-    '/assets/cars/RollsRoyce/rolls royce front.png',
-    '/assets/cars/RollsRoyce/rolls royce side.png',
-    '/assets/cars/RollsRoyce/rolls royce back.png',
-    '/assets/cars/RollsRoyce/rolls-royce-last-image.png',
+    '/assets/cars/listings/rolls-royce-1.webp',
+    '/assets/cars/listings/rolls-royce-2.webp',
+    '/assets/cars/listings/rolls-royce-3.webp',
+    '/assets/cars/listings/rolls-royce-4.webp',
   ],
 };
 
@@ -88,8 +89,7 @@ export default function CarCard({ car, whatsappEnabled = true }: CarCardProps) {
           fill
           className="object-cover object-center"
           sizes="(max-width: 420px) 100vw, 318px"
-          quality={85}
-          unoptimized
+          quality={75}
           onError={() =>
             setFailedImages((current) => ({
               ...current,
