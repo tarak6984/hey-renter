@@ -8,11 +8,11 @@ import PickupModal from '@/app/components/car-profile/PickupModal';
 const BRAND_OPTIONS = [
   { label: 'Any', logo: null },
   { label: 'Ferrari', logo: '/assets/brands/ferrari.png' },
-  { label: 'Lamborghini', logo: null },
+  { label: 'Lamborghini', logo: '/assets/brands/lamborghini.svg' },
   { label: 'Rolls Royce', logo: '/assets/brands/rolls-royce.png' },
   { label: 'Porsche', logo: '/assets/brands/porsche.png' },
   { label: 'Mercedes', logo: '/assets/brands/mercedes.png' },
-  { label: 'BMW', logo: null },
+  { label: 'BMW', logo: '/assets/brands/bmw.svg' },
   { label: 'Audi', logo: '/assets/brands/audi.png' },
   { label: 'Brabus', logo: '/assets/brands/brabus.png' },
   { label: 'Ford', logo: '/assets/brands/ford.png' },
