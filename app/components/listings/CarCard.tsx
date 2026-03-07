@@ -17,12 +17,50 @@ const LISTING_IMAGE_OVERRIDES: Record<string, string> = {
   '/assets/cars/porsche-gt3-rs.png': '/assets/cars/Porsche/DSC07802-scaled.jpg',
 };
 
+const BRAND_GALLERY_IMAGES: Record<string, string[]> = {
+  ferrari: [
+    '/assets/cars/Ferrari/1-13.png',
+    '/assets/cars/Ferrari/2-13.png',
+    '/assets/cars/Ferrari/4-13.png',
+    '/assets/cars/Ferrari/6-13.png',
+  ],
+  mercedes: [
+    '/assets/cars/Mercedes/DSC01709-1-scaled.jpg',
+    '/assets/cars/Mercedes/DSC01690-scaled.jpg',
+    '/assets/cars/Mercedes/DSC01792-3-scaled.jpg',
+    '/assets/cars/Mercedes/DSC01806-scaled.jpg',
+  ],
+  porsche: [
+    '/assets/cars/Porsche/DSC07802-scaled.jpg',
+    '/assets/cars/Porsche/DSC07818-scaled.jpg',
+    '/assets/cars/Porsche/DSC07856-scaled.jpg',
+    '/assets/cars/Porsche/DSC07937-1-scaled.jpg',
+  ],
+  mclaren: [
+    '/assets/cars/McLaren/DSC06051.jpg',
+    '/assets/cars/McLaren/DSC06060.jpg',
+    '/assets/cars/McLaren/DSC06221.jpg',
+    '/assets/cars/McLaren/DSC06246.jpg',
+  ],
+  'rolls royce': [
+    '/assets/cars/RollsRoyce/rolls royce front.png',
+    '/assets/cars/RollsRoyce/rolls royce side.png',
+    '/assets/cars/RollsRoyce/rolls royce back.png',
+    '/assets/cars/RollsRoyce/rolls-royce-last-image.png',
+  ],
+};
+
 /**
  * Car listing card from the Figma "Browser & Mobile/Car Cards" component.
  */
 export default function CarCard({ car, whatsappEnabled = true }: CarCardProps) {
   const [wishlisted, setWishlisted] = useState(false);
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
   const primaryImage = LISTING_IMAGE_OVERRIDES[car.images[0]] ?? car.images[0];
+  const galleryImages = BRAND_GALLERY_IMAGES[car.brand.toLowerCase()] ?? [primaryImage];
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const requestedImage = galleryImages[activeImageIndex] ?? primaryImage;
+  const activeImage = failedImages[requestedImage] ? primaryImage : requestedImage;
 
   const specs = [
     car.specs.engine,
@@ -44,12 +82,20 @@ export default function CarCard({ car, whatsappEnabled = true }: CarCardProps) {
     >
       <div className="relative h-[225px] flex-shrink-0 overflow-hidden rounded-[10px] bg-[#D8D8D8]">
         <Image
-          src={primaryImage}
-          alt={`${car.brand} ${car.model}`}
+          key={activeImage}
+          src={activeImage}
+          alt={`${car.brand} ${car.model} image ${activeImageIndex + 1}`}
           fill
           className="object-cover object-center"
           sizes="(max-width: 420px) 100vw, 318px"
           quality={85}
+          unoptimized
+          onError={() =>
+            setFailedImages((current) => ({
+              ...current,
+              [requestedImage]: true,
+            }))
+          }
         />
         <div
           className="absolute inset-0"
@@ -61,7 +107,7 @@ export default function CarCard({ car, whatsappEnabled = true }: CarCardProps) {
 
         {car.noDeposit ? (
           <div
-            className="absolute left-2 top-2 flex items-center"
+            className="absolute left-2 top-2 z-20 flex items-center"
             style={{
               background: 'rgba(47, 50, 56, 0.7)',
               border: '1px solid #B8F04F',
@@ -89,7 +135,7 @@ export default function CarCard({ car, whatsappEnabled = true }: CarCardProps) {
           onClick={() => setWishlisted(!wishlisted)}
           aria-label="Add to wishlist"
           aria-pressed={wishlisted}
-          className="absolute right-2 top-2 flex items-center justify-center rounded-full bg-transparent transition-opacity hover:opacity-80"
+          className="absolute right-2 top-2 z-20 flex items-center justify-center rounded-full bg-transparent transition-opacity hover:opacity-80"
           style={{
             width: 32,
             height: 32,
@@ -102,18 +148,46 @@ export default function CarCard({ car, whatsappEnabled = true }: CarCardProps) {
           />
         </button>
 
-        <div className="absolute inset-x-2 bottom-2 flex items-center gap-1">
-          {[68.5, 68.5, 68.5, 68.5].map((width, index) => (
-            <span
-              key={`${width}-${index}`}
-              className="h-1 rounded-full"
-              style={{
-                width,
-                background: index === 0 ? '#FFFFFF' : 'rgba(0,0,0,0.4)',
-              }}
-            />
-          ))}
-        </div>
+        {galleryImages.length > 1 ? (
+          <>
+            <div className="absolute inset-0 z-10 flex">
+              {galleryImages.map((image, index) => (
+                <button
+                  key={`${image}-overlay`}
+                  type="button"
+                  aria-label={`Preview image ${index + 1}`}
+                  aria-pressed={index === activeImageIndex}
+                  onMouseEnter={() => setActiveImageIndex(index)}
+                  onFocus={() => setActiveImageIndex(index)}
+                  onClick={() => setActiveImageIndex(index)}
+                  className="flex-1 bg-transparent"
+                />
+              ))}
+            </div>
+
+            <div className="absolute inset-x-2 bottom-0 z-20 flex h-8 items-end gap-1 pb-2">
+            {galleryImages.map((image, index) => (
+              <button
+                key={image}
+                type="button"
+                aria-label={`Preview image ${index + 1}`}
+                aria-pressed={index === activeImageIndex}
+                onMouseEnter={() => setActiveImageIndex(index)}
+                onFocus={() => setActiveImageIndex(index)}
+                onClick={() => setActiveImageIndex(index)}
+                className="flex h-full flex-1 items-end rounded-sm bg-transparent"
+              >
+                <span
+                  className="block h-1 w-full rounded-full transition-colors"
+                  style={{
+                    background: index === activeImageIndex ? '#FFFFFF' : 'rgba(0,0,0,0.4)',
+                  }}
+                />
+              </button>
+            ))}
+            </div>
+          </>
+        ) : null}
       </div>
 
       <div className="flex flex-1 flex-col justify-between">
