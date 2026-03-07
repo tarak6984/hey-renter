@@ -11,16 +11,22 @@ interface BreadcrumbProps {
 }
 
 /**
- * Breadcrumb navigation – used on Car Profile and Confirmation pages.
+ * Breadcrumb navigation used on Car Profile and Confirmation pages.
  */
 export default function Breadcrumb({ items }: BreadcrumbProps) {
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm py-4 px-4 max-w-7xl mx-auto">
+    <nav
+      aria-label="Breadcrumb"
+      className="mx-auto flex w-full max-w-[1440px] items-center gap-1.5 px-4 py-4 text-sm sm:px-6 md:px-[39px]"
+    >
       {items.map((item, i) => (
         <span key={i} className="flex items-center gap-1.5">
-          {i > 0 && <ChevronRight size={14} className="text-gray-400" />}
+          {i > 0 ? <ChevronRight size={14} className="text-gray-400" /> : null}
           {item.href ? (
-            <Link href={item.href} className="text-gray-600 hover:text-black transition-colors font-medium">
+            <Link
+              href={item.href}
+              className="font-medium text-gray-600 transition-colors hover:text-black"
+            >
               {item.label}
             </Link>
           ) : (

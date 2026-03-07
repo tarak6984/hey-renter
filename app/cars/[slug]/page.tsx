@@ -18,7 +18,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const car = MOCK_CARS.find(c => c.slug === slug);
+  const car = MOCK_CARS.find((c) => c.slug === slug);
   if (!car) return { title: 'Car Not Found' };
   return {
     title: `${car.model} | Hey Renter`,
@@ -27,33 +27,33 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
-  return MOCK_CARS.map(car => ({ slug: car.slug }));
+  return MOCK_CARS.map((car) => ({ slug: car.slug }));
 }
 
 /**
- * Car Profile page – image gallery, specs, general rules, booking widget, FAQs, other options.
+ * Car Profile page - image gallery, specs, general rules, booking widget, FAQs, other options.
  */
 export default async function CarProfilePage({ params }: PageProps) {
   const { slug } = await params;
-  const car = MOCK_CARS.find(c => c.slug === slug);
+  const car = MOCK_CARS.find((c) => c.slug === slug);
   if (!car) notFound();
 
-  const otherCars = MOCK_CARS.filter(c => c.id !== car.id);
+  const otherCars = MOCK_CARS.filter((c) => c.id !== car.id);
 
   return (
-    <div className="bg-[#f5f5f5] min-h-screen">
-      {/* Breadcrumb */}
-      <Breadcrumb items={[
-        { label: 'Home', href: '/' },
-        { label: 'Super Cars', href: '/listings?category=super' },
-        { label: car.model },
-      ]} />
+    <div className="min-h-screen bg-[#f5f5f5]">
+      <Breadcrumb
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Super Cars', href: '/listings?category=super' },
+          { label: car.model },
+        ]}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 pb-16">
-        {/* Car title row */}
-        <div className="flex items-start justify-between mb-5">
+      <div className="mx-auto w-full max-w-[1440px] px-4 pb-16 sm:px-6 md:px-[39px]">
+        <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white rounded-lg border border-gray-200 flex items-center justify-center overflow-hidden">
+            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-white">
               <Image src={car.brandLogo} alt={car.brand} width={32} height={32} className="object-contain" />
             </div>
             <div>
@@ -62,73 +62,64 @@ export default async function CarProfilePage({ params }: PageProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="w-10 h-10 border border-gray-200 rounded-full flex items-center justify-center hover:bg-white transition-colors" aria-label="Wishlist">
+            <button className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-white" aria-label="Wishlist">
               <Heart size={18} className="text-gray-500" />
             </button>
-            <button className="w-10 h-10 border border-gray-200 rounded-full flex items-center justify-center hover:bg-white transition-colors" aria-label="Share">
+            <button className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-white" aria-label="Share">
               <Share2 size={18} className="text-gray-500" />
             </button>
           </div>
         </div>
 
-        {/* Two-column layout: gallery+details | booking widget */}
-        <div className="grid lg:grid-cols-[1fr_380px] gap-8 items-start">
-          {/* Left column */}
+        <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_380px]">
           <div>
             <ImageGallery images={car.images} alt={car.model} />
 
-            {/* Specs */}
             <div className="mt-6">
-              <h2 className="text-lg font-extrabold mb-3">Specifications</h2>
+              <h2 className="mb-3 text-lg font-extrabold">Specifications</h2>
               <SpecsGrid specs={car.specs} />
             </div>
 
-            {/* General Rules + Documents */}
             <GeneralRules car={car} />
 
-            {/* How it feels to drive */}
-            <div className="mt-8 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-              <h2 className="text-lg font-extrabold mb-3">How it feels to drive?</h2>
-              <p className="text-sm text-gray-600 leading-7 mb-3">
+            <div className="mt-8 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+              <h2 className="mb-3 text-lg font-extrabold">How it feels to drive?</h2>
+              <p className="mb-3 text-sm leading-7 text-gray-600">
                 Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
               </p>
-              <p className="text-sm text-gray-600 leading-7 mb-3">
+              <p className="mb-3 text-sm leading-7 text-gray-600">
                 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s.
               </p>
-              <button className="w-full py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 mt-2">
-                SEE MORE ▾
+              <button className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 py-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50">
+                SEE MORE
               </button>
             </div>
 
-            {/* FAQ */}
             <FaqAccordion />
           </div>
 
-          {/* Right column – Booking widget */}
           <div>
             <BookingWidget carId={car.id} pricePerDay={car.pricePerDay} slug={car.slug} />
           </div>
         </div>
 
-        {/* Other Options */}
         <section className="mt-16">
-          <h2 className="text-2xl font-extrabold mb-2 text-center">OTHER OPTIONS</h2>
-          <p className="text-gray-500 text-sm text-center mb-6">
+          <h2 className="mb-2 text-center text-2xl font-extrabold">OTHER OPTIONS</h2>
+          <p className="mb-6 text-center text-sm text-gray-500">
             Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {otherCars.slice(0, 4).map(c => (
-              <CarCard key={c.id} car={c} />
+          <div className="flex flex-wrap justify-center gap-5 xl:justify-start">
+            {otherCars.slice(0, 4).map((otherCar) => (
+              <CarCard key={otherCar.id} car={otherCar} />
             ))}
           </div>
-          <div className="flex justify-center mt-6">
-            <button className="border border-gray-300 rounded-full px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-white transition-all flex items-center gap-2">
-              SEE – 1,289 OTHER OPTIONS ›
+          <div className="mt-6 flex justify-center">
+            <button className="flex items-center gap-2 rounded-full border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 transition-all hover:bg-white">
+              SEE - 1,289 OTHER OPTIONS
             </button>
           </div>
         </section>
 
-        {/* SEO */}
         <SeoSection />
       </div>
     </div>

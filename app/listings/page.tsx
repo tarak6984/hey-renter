@@ -1,25 +1,30 @@
 'use client';
 
-import { useState, useMemo, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { Suspense, useMemo, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronDown, Search } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import CarCard from '@/app/components/listings/CarCard';
 import FilterBar from '@/app/components/listings/FilterBar';
 import Pagination from '@/app/components/listings/Pagination';
 import SeoSection from '@/app/components/ui/SeoSection';
-import { MOCK_CARS, CAR_BRANDS } from '@/app/constants';
+import { CAR_BRANDS, MOCK_CARS } from '@/app/constants';
 
-const BRANDS = ['Any', ...CAR_BRANDS.map(b => b.name)];
+const BRANDS = ['Any', ...CAR_BRANDS.map((brand) => brand.name)];
 const MODELS = ['Any', '812 GTS 2023', 'Urus 2023', 'Cullinan', 'GT3 RS 2024', 'SL 63 AMG 2022'];
 const CARS_PER_PAGE = 8;
 
 /**
- * Listings page – search bar at top, filter bar, 4-column car grid, pagination, SEO section.
+ * Listings page - search bar at top, filter bar, car grid, pagination, SEO section.
  */
 export default function ListingsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-gray-400">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center text-gray-400">
+          Loading...
+        </div>
+      }
+    >
       <ListingsContent />
     </Suspense>
   );
@@ -34,13 +39,12 @@ function ListingsContent() {
   const [dateTime, setDateTime] = useState(searchParams.get('dateTime') || '');
   const [page, setPage] = useState(1);
 
-  // Simulate more results by repeating mock data
   const allCars = useMemo(() => {
-    const filtered = MOCK_CARS.filter(car => {
+    const filtered = MOCK_CARS.filter((car) => {
       if (brand !== 'Any' && car.brand.toLowerCase() !== brand.toLowerCase()) return false;
       return true;
     });
-    // Repeat to simulate 280 results
+
     const repeated: typeof MOCK_CARS = [];
     while (repeated.length < 16) repeated.push(...filtered);
     return repeated.slice(0, 16);
@@ -48,6 +52,7 @@ function ListingsContent() {
 
   const paginatedCars = allCars.slice((page - 1) * CARS_PER_PAGE, page * CARS_PER_PAGE);
   const totalPages = Math.ceil(allCars.length / CARS_PER_PAGE);
+  const isSelected = brand !== 'Any' || model !== 'Any' || dateTime !== '';
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -59,12 +64,39 @@ function ListingsContent() {
   };
 
   return (
-    <div className="bg-[#f5f5f5] min-h-screen">
-      {/* Search bar – pixel-perfect from Figma node 8937:44972 (Selected state) */}
-      <div className="bg-[#F5F5F5] border-b border-gray-200 py-6 px-[39px]">
-        <div className="max-w-7xl mx-auto flex justify-center">
+    <div className="min-h-screen bg-[#f5f5f5]">
+      <div className="border-b border-gray-200 bg-[#F5F5F5] px-4 py-6 sm:px-6 md:px-[39px]">
+        <div className="mx-auto flex w-full max-w-[1440px] justify-center">
+          <div className="w-full max-w-[926px] rounded-[10px] border border-[#F0F0F0] bg-white p-4 shadow-[0px_2px_4px_-1px_rgba(0,0,0,0.06),0px_4px_6px_-1px_rgba(0,0,0,0.1)] lg:hidden">
+            <div className="space-y-4">
+              <MobileSearchField label="Brand" value={brand} onChange={setBrand} options={BRANDS} />
+              <MobileSearchField label="Model" value={model} onChange={setModel} options={MODELS} />
+              <label className="flex flex-col gap-1">
+                <span className="text-sm font-medium text-black/40">Dates &amp; Time</span>
+                <input
+                  type="text"
+                  placeholder="Select"
+                  value={dateTime}
+                  onChange={(e) => setDateTime(e.target.value)}
+                  className="h-12 rounded-[10px] border border-black/10 bg-white px-4 text-base font-medium text-black outline-none"
+                />
+              </label>
+              <button
+                onClick={handleSearch}
+                className="flex h-14 w-full items-center justify-center gap-2 rounded-[10px] text-base font-medium transition-colors"
+                style={{
+                  background: isSelected ? '#B8F04F' : '#12151C',
+                  color: isSelected ? '#000' : '#fff',
+                }}
+              >
+                SPOIL ME
+                <Search size={18} />
+              </button>
+            </div>
+          </div>
+
           <div
-            className="flex items-center overflow-hidden bg-white"
+            className="hidden w-full max-w-[926px] items-center overflow-hidden bg-white lg:flex"
             style={{
               borderRadius: 10,
               border: '1px solid #F0F0F0',
@@ -73,36 +105,32 @@ function ListingsContent() {
               gap: 16,
             }}
           >
-            {/* Brand – 160px */}
             <SearchSelect label="Brand" value={brand} onChange={setBrand} options={BRANDS} width={160} />
             <div className="self-stretch flex-shrink-0" style={{ width: 1, background: '#E0DFDF', margin: '16px 0' }} />
-            {/* Model – 160px */}
             <SearchSelect label="Model" value={model} onChange={setModel} options={MODELS} width={160} />
             <div className="self-stretch flex-shrink-0" style={{ width: 1, background: '#E0DFDF', margin: '16px 0' }} />
-            {/* Dates & Time – 272px */}
-            <div className="flex flex-col py-4 flex-shrink-0" style={{ width: 272, gap: 14 }}>
+            <div className="flex flex-shrink-0 flex-col py-4" style={{ width: 272, gap: 14 }}>
               <span style={{ fontSize: 18, fontWeight: 500, color: 'rgba(0,0,0,0.5)' }}>Dates &amp; Time</span>
               <div className="flex items-center gap-2">
                 <input
                   type="text"
                   placeholder="Select"
                   value={dateTime}
-                  onChange={e => setDateTime(e.target.value)}
-                  className="outline-none bg-transparent flex-1"
+                  onChange={(e) => setDateTime(e.target.value)}
+                  className="flex-1 bg-transparent outline-none"
                   style={{ fontSize: 18, fontWeight: 500, color: '#000' }}
                 />
-                <ChevronDown size={24} className="text-gray-400 flex-shrink-0" />
+                <ChevronDown size={24} className="flex-shrink-0 text-gray-400" />
               </div>
             </div>
-            {/* SPOIL ME – 174×72px, lime green when selected */}
             <button
               onClick={handleSearch}
-              className="flex items-center justify-center gap-2 flex-shrink-0 font-medium transition-colors"
+              className="flex flex-shrink-0 items-center justify-center gap-2 font-medium transition-colors"
               style={{
                 width: 174,
                 height: 72,
-                background: (brand !== 'Any' || model !== 'Any' || dateTime) ? '#B8F04F' : '#12151C',
-                color: (brand !== 'Any' || model !== 'Any' || dateTime) ? '#000' : '#fff',
+                background: isSelected ? '#B8F04F' : '#12151C',
+                color: isSelected ? '#000' : '#fff',
                 fontSize: 16,
                 fontWeight: 500,
               }}
@@ -113,52 +141,86 @@ function ListingsContent() {
         </div>
       </div>
 
-      {/* Main content */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-6 md:px-[39px]">
         <FilterBar total={280} />
 
-        {/* Car grid – Figma card width 318px, gap from design */}
-        <div className="flex flex-wrap gap-6 mt-6 justify-start">
+        <div className="mt-6 flex flex-wrap justify-center gap-6 xl:justify-start">
           {paginatedCars.map((car, i) => (
             <CarCard key={`${car.id}-${i}`} car={car} />
           ))}
         </div>
 
-        {/* Pagination */}
         <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
 
-        {/* See other options CTA */}
-        <div className="flex justify-center my-6">
-          <button className="border border-gray-300 rounded-full px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-white hover:border-gray-500 transition-all flex items-center gap-2">
-            SEE – 1,289 OTHER OPTIONS
+        <div className="my-6 flex justify-center">
+          <button className="flex items-center gap-2 rounded-full border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 transition-all hover:border-gray-500 hover:bg-white">
+            SEE - 1,289 OTHER OPTIONS
             <ChevronDown size={15} />
           </button>
         </div>
 
-        {/* SEO */}
         <SeoSection />
       </div>
     </div>
   );
 }
 
-function SearchSelect({ label, value, onChange, options, width }: {
-  label: string; value: string; onChange: (v: string) => void; options: string[]; width: number;
+function SearchSelect({
+  label,
+  value,
+  onChange,
+  options,
+  width,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+  width: number;
 }) {
   return (
-    <div className="flex flex-col py-4 flex-shrink-0" style={{ width, gap: 14 }}>
+    <div className="flex flex-shrink-0 flex-col py-4" style={{ width, gap: 14 }}>
       <span style={{ fontSize: 18, fontWeight: 500, color: 'rgba(0,0,0,0.5)' }}>{label}</span>
       <div className="flex items-center gap-2">
         <select
           value={value}
-          onChange={e => onChange(e.target.value)}
-          className="bg-transparent outline-none cursor-pointer appearance-none w-full"
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full appearance-none cursor-pointer bg-transparent outline-none"
           style={{ fontSize: 18, fontWeight: 500, color: '#000' }}
         >
-          {options.map(o => <option key={o}>{o}</option>)}
+          {options.map((option) => (
+            <option key={option}>{option}</option>
+          ))}
         </select>
-        <ChevronDown size={24} className="text-gray-400 pointer-events-none flex-shrink-0" />
+        <ChevronDown size={24} className="pointer-events-none flex-shrink-0 text-gray-400" />
       </div>
     </div>
+  );
+}
+
+function MobileSearchField({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+}) {
+  return (
+    <label className="flex flex-col gap-1">
+      <span className="text-sm font-medium text-black/40">{label}</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-12 rounded-[10px] border border-black/10 bg-white px-4 text-base font-medium text-black outline-none"
+      >
+        {options.map((option) => (
+          <option key={option}>{option}</option>
+        ))}
+      </select>
+    </label>
   );
 }

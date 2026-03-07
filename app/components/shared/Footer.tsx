@@ -9,13 +9,11 @@ import { FOOTER_COLUMNS, FOOTER_SEO_LINKS } from '@/app/constants';
 export default function Footer() {
   return (
     <footer className="bg-[#12151C] text-white">
-      {/* Main footer grid */}
-      <div className="max-w-7xl mx-auto px-6 pt-14 pb-10">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
-          {/* Brand column */}
-          <div className="md:col-span-1 space-y-4">
+      <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-14 sm:px-6 md:px-[39px]">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-5">
+          <div className="space-y-4 md:col-span-2 xl:col-span-1">
             <LogoMark />
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <p className="text-sm leading-relaxed text-gray-400">
               Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
             </p>
             <div className="space-y-1 text-sm text-white">
@@ -26,33 +24,26 @@ export default function Footer() {
             <SocialIcons />
           </div>
 
-          {/* Company */}
           <FooterLinkColumn title="Company" links={FOOTER_COLUMNS.company} />
-
-          {/* Renters */}
           <FooterLinkColumn title="Renters" links={FOOTER_COLUMNS.renters} />
-
-          {/* Rental Companies */}
           <FooterLinkColumn title="Rental Companies" links={FOOTER_COLUMNS.rentalCompanies} />
 
-          {/* Payment Gateways */}
           <div>
-            <h4 className="font-semibold text-sm mb-4 text-gray-400">Payment Gateways</h4>
+            <h4 className="mb-4 text-sm font-semibold text-gray-400">Payment Gateways</h4>
             <PaymentMethods />
           </div>
         </div>
       </div>
 
-      {/* SEO link grid */}
       <div className="border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="mx-auto grid max-w-[1440px] grid-cols-2 gap-8 px-4 py-8 sm:px-6 md:px-[39px] lg:grid-cols-4">
           {FOOTER_SEO_LINKS.map((col, i) => (
             <div key={i}>
-              <h5 className="text-gray-400 text-xs font-semibold mb-3">{col.heading}</h5>
+              <h5 className="mb-3 text-xs font-semibold text-gray-400">{col.heading}</h5>
               <ul className="space-y-1.5">
                 {col.links.map((link) => (
                   <li key={link}>
-                    <Link href="#" className="text-white hover:text-[#CDFF00] text-xs transition-colors">
+                    <Link href="#" className="text-xs text-white transition-colors hover:text-[#CDFF00]">
                       {link}
                     </Link>
                   </li>
@@ -63,15 +54,12 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Copyright */}
-      <div className="border-t border-gray-800 py-4 text-center text-white/90 text-xs">
+      <div className="border-t border-gray-800 py-4 text-center text-xs text-white/90">
         &copy; 2025 Hey Renter. All Rights Reserved
       </div>
     </footer>
   );
 }
-
-// Sub-components
 
 function LogoMark() {
   return (
@@ -88,11 +76,11 @@ function LogoMark() {
 function FooterLinkColumn({ title, links }: { title: string; links: string[] }) {
   return (
     <div>
-      <h4 className="font-semibold text-sm mb-4 text-gray-400">{title}</h4>
+      <h4 className="mb-4 text-sm font-semibold text-gray-400">{title}</h4>
       <ul className="space-y-2">
         {links.map((link) => (
           <li key={link}>
-            <Link href="#" className="text-white hover:text-[#CDFF00] text-sm transition-colors">
+            <Link href="#" className="text-sm text-white transition-colors hover:text-[#CDFF00]">
               {link}
             </Link>
           </li>

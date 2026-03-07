@@ -9,7 +9,7 @@ interface PaginationProps {
 }
 
 /**
- * Pagination component – Prev / page numbers / Next.
+ * Pagination component - Prev / page numbers / Next.
  */
 export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
   const pages = buildPageArray(currentPage, totalPages);
@@ -22,7 +22,9 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
 
       {pages.map((p, i) =>
         p === '...' ? (
-          <span key={`ellipsis-${i}`} className="w-9 text-center text-gray-400 text-sm">…</span>
+          <span key={`ellipsis-${i}`} className="w-9 text-center text-sm text-gray-400">
+            ...
+          </span>
         ) : (
           <PageBtn
             key={p}
@@ -42,7 +44,10 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
 }
 
 function PageBtn({
-  children, active, disabled, onClick,
+  children,
+  active,
+  disabled,
+  onClick,
 }: {
   children: React.ReactNode;
   active?: boolean;
@@ -54,9 +59,9 @@ function PageBtn({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'w-9 h-9 rounded-lg text-sm font-medium transition-colors',
+        'h-9 w-9 rounded-lg text-sm font-medium transition-colors',
         active ? 'bg-black text-white' : 'text-gray-600 hover:bg-gray-100',
-        disabled && 'opacity-40 pointer-events-none'
+        disabled && 'pointer-events-none opacity-40'
       )}
     >
       {children}
@@ -68,7 +73,9 @@ function buildPageArray(current: number, total: number): (number | '...')[] {
   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
   const pages: (number | '...')[] = [1];
   if (current > 3) pages.push('...');
-  for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p++) pages.push(p);
+  for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p++) {
+    pages.push(p);
+  }
   if (current < total - 2) pages.push('...');
   pages.push(total);
   return pages;

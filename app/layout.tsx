@@ -13,14 +13,14 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Hey Renter – Rent a Luxury Car in Dubai',
+    default: 'Hey Renter - Rent a Luxury Car in Dubai',
     template: '%s | Hey Renter',
   },
   description:
     'Rent luxury, super, SUV, convertible and economy cars in Dubai. Best rates from 500+ rental companies. No deposit options available.',
   keywords: ['luxury car rental dubai', 'rent supercar dubai', 'hey renter', 'car hire dubai'],
   openGraph: {
-    title: 'Hey Renter – Rent a Luxury Car in Dubai',
+    title: 'Hey Renter - Rent a Luxury Car in Dubai',
     description: 'Rent the Dream. Live the Lifestyle.',
     url: 'https://hey-renter.com',
     siteName: 'Hey Renter',
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Hey Renter – Rent a Luxury Car in Dubai',
+    title: 'Hey Renter - Rent a Luxury Car in Dubai',
     description: 'Rent the Dream. Live the Lifestyle.',
   },
   robots: {
@@ -50,7 +50,6 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} antialiased`}>
         <TopBar />
-        {/* Gradient divider – very subtle, white 6% opacity center, transparent edges */}
         <div
           style={{
             width: '100%',
@@ -60,7 +59,7 @@ export default function RootLayout({
           }}
         />
         <Navbar />
-        <main>{children}</main>
+        <main className="min-w-0">{children}</main>
         <Footer />
       </body>
     </html>
