@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Calendar, Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -49,7 +49,6 @@ export default function BookingWidget({
   const [fullName, setFullName] = useState('');
   const [countryCode, setCountryCode] = useState('+971');
   const [errors, setErrors] = useState<BookingErrors>({});
-  const [toastMessage, setToastMessage] = useState('');
   const pickupButtonRef = useRef<HTMLButtonElement>(null);
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const fullNameInputRef = useRef<HTMLInputElement>(null);
@@ -70,16 +69,7 @@ export default function BookingWidget({
     `Full Name: ${normalizedName || 'Not provided yet'}`,
   ].join('\n');
   const whatsappHref = `https://wa.me/${NEGOTIATION_WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
-
-  useEffect(() => {
-    if (!toastMessage) return;
-
-    const timeoutId = window.setTimeout(() => {
-      setToastMessage('');
-    }, 2800);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [toastMessage]);
+  const hasValidationErrors = Object.keys(errors).length > 0;
 
   const handleReserve = () => {
     const nextErrors: BookingErrors = {};
@@ -96,7 +86,6 @@ export default function BookingWidget({
 
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
-      setToastMessage('Please fill in the required information.');
 
       if (nextErrors.selectedDate) {
         pickupButtonRef.current?.focus();
@@ -122,21 +111,19 @@ export default function BookingWidget({
 
   return (
     <>
-      <div
-        aria-live="polite"
-        className={`pointer-events-none fixed left-1/2 top-6 z-[70] w-[calc(100%-32px)] max-w-[420px] -translate-x-1/2 transition-all duration-200 ${
-          toastMessage ? 'translate-y-0 opacity-100' : '-translate-y-3 opacity-0'
-        }`}
-      >
-        <div className="rounded-[14px] border border-[#F3B2B2] bg-white px-4 py-3 text-[15px] font-medium leading-6 text-[#C62828] shadow-[0_14px_32px_rgba(0,0,0,0.14)]">
-          {toastMessage}
-        </div>
-      </div>
-
       <div className="sticky top-24 flex flex-col gap-6 rounded-[20px] bg-white px-4 pb-4 pt-6 shadow-[0_2px_4px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.1)]">
         <h3 className="text-center text-[18px] font-medium leading-[26px] text-black">
           Get the Best Offer for This Car in Minutes
         </h3>
+
+        {hasValidationErrors ? (
+          <div
+            aria-live="polite"
+            className="rounded-[12px] border border-[#F3B2B2] bg-white px-4 py-3 text-[15px] font-medium leading-6 text-[#C62828]"
+          >
+            Please fill in the required information.
+          </div>
+        ) : null}
 
         <div className="flex flex-col gap-4">
           <button
