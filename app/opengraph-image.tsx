@@ -11,5 +11,8 @@ export const contentType = 'image/png';
 export default async function OpenGraphImage() {
   const logoSrc = await getLogoDataUrl();
 
-  return new ImageResponse(<BrandShareFrame logoSrc={logoSrc} />, size);
+  return new ImageResponse(
+    <BrandShareFrame logoSrc={logoSrc} showTagline={false} logoWidth={760} />,
+    size
+  );
 }

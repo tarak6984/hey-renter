@@ -12,9 +12,11 @@ export async function getLogoDataUrl() {
 export function BrandShareFrame({
   logoSrc,
   showTagline = true,
+  logoWidth,
 }: {
   logoSrc: string;
   showTagline?: boolean;
+  logoWidth?: number;
 }) {
   return (
     <div
@@ -52,7 +54,7 @@ export function BrandShareFrame({
         src={logoSrc}
         alt="Hey Renter logo"
         style={{
-          width: showTagline ? 720 : 220,
+          width: logoWidth ?? (showTagline ? 720 : 220),
           height: 'auto',
         }}
       />

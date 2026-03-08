@@ -21,8 +21,12 @@ export const metadata: Metadata = {
     'Rent luxury, super, SUV, convertible and economy cars in Dubai. Best rates from 500+ rental companies. No deposit options available.',
   keywords: ['luxury car rental dubai', 'rent supercar dubai', 'hey renter', 'car hire dubai'],
   icons: {
-    icon: [{ url: '/icon', type: 'image/png' }],
-    shortcut: '/icon',
+    icon: [
+      { url: '/assets/icons/logo.svg', type: 'image/svg+xml' },
+      { url: '/icon', type: 'image/png', sizes: '64x64' },
+    ],
+    shortcut: '/assets/icons/logo.svg',
+    apple: '/assets/icons/logo.svg',
   },
   openGraph: {
     title: 'Hey Renter - Rent a Luxury Car in Dubai',

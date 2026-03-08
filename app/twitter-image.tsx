@@ -11,5 +11,8 @@ export const contentType = 'image/png';
 export default async function TwitterImage() {
   const logoSrc = await getLogoDataUrl();
 
-  return new ImageResponse(<BrandShareFrame logoSrc={logoSrc} />, size);
+  return new ImageResponse(
+    <BrandShareFrame logoSrc={logoSrc} showTagline={false} logoWidth={760} />,
+    size
+  );
 }
