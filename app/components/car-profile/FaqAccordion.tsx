@@ -1,66 +1,84 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import { cn } from '@/app/lib/utils';
 import { FAQ_ITEMS } from '@/app/constants';
 
 /**
- * Expandable FAQ accordion matching the Figma Car Profile design.
- * Second item starts expanded (highlighted in lime green) per design.
+ * FAQ section aligned to the Car Profile Figma block.
+ * The second item starts expanded per the design.
  */
 export default function FaqAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(1);
 
   return (
-    <section className="mt-10">
-      <h2 className="text-2xl font-extrabold mb-2">FAQ</h2>
-      <p className="text-gray-500 text-sm mb-6">
-        Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
-      </p>
+    <section className="mt-16">
+      <div className="flex flex-col items-center gap-6">
+        <h2
+          className="text-center text-black"
+          style={{
+            fontFamily: 'var(--font-clash)',
+            fontSize: '30px',
+            fontWeight: 600,
+            lineHeight: '38px',
+          }}
+        >
+          FAQ
+        </h2>
 
-      <div className="space-y-2">
+        <p className="text-center text-[18px] font-normal leading-[26px] text-black">
+          Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
+        </p>
+      </div>
+
+      <div className="mt-10 space-y-6">
         {FAQ_ITEMS.map((item, i) => {
           const isOpen = openIndex === i;
-          const isHighlighted = isOpen && i === 1;
 
           return (
-            <div
-              key={i}
-              className={cn(
-                'rounded-xl border transition-all overflow-hidden',
-                isHighlighted
-                  ? 'border-[#CDFF00] bg-[#f9ffe0]'
-                  : 'border-gray-200 bg-white'
-              )}
-            >
+            <div key={i} className="space-y-4">
               <button
+                type="button"
                 onClick={() => setOpenIndex(isOpen ? null : i)}
-                className="w-full flex items-center justify-between px-5 py-4 text-left"
+                className={cn(
+                  'flex min-h-[72px] w-full items-center justify-between rounded-[10px] border-2 px-6 py-6 text-left transition-colors',
+                  isOpen ? 'border-black/10 bg-black/20' : 'border-black/10 bg-black/[0.06]'
+                )}
               >
-                <span className="text-sm font-semibold text-gray-800">{item.question}</span>
-                <ChevronDown
-                  size={18}
-                  className={cn(
-                    'text-gray-400 flex-shrink-0 ml-4 transition-transform',
-                    isOpen && 'rotate-180'
-                  )}
-                />
+                <span className="pr-4 text-[18px] font-medium leading-[26px] text-black">
+                  {item.question}
+                </span>
+                <AccordionArrow expanded={isOpen} />
               </button>
-              {isOpen && (
-                <div className="px-5 pb-4 text-sm text-gray-600 leading-relaxed">
-                  {item.answer}
+
+              {isOpen ? (
+                <div className="rounded-[10px] border border-black/20 bg-[#B8F04F] px-6 py-6">
+                  <p className="text-[16px] font-medium leading-[24px] text-black">
+                    {item.answer}
+                  </p>
                 </div>
-              )}
+              ) : null}
             </div>
           );
         })}
       </div>
 
-      <button className="w-full mt-4 py-3.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-        SEE – 200 FAQs
-        <ChevronDown size={15} />
+      <button className="mt-10 flex h-14 w-full items-center justify-center gap-2 rounded-[10px] border-2 border-black px-5 pl-6 text-[18px] font-medium leading-[26px] text-black transition-colors hover:bg-white/70">
+        SEE - 200 FAQs
+        <ChevronRight size={24} strokeWidth={2.5} aria-hidden="true" />
       </button>
     </section>
+  );
+}
+
+function AccordionArrow({ expanded }: { expanded: boolean }) {
+  return (
+    <ChevronDown
+      size={24}
+      strokeWidth={2.5}
+      aria-hidden="true"
+      className={cn('flex-shrink-0 text-black transition-transform', expanded && 'rotate-180')}
+    />
   );
 }

@@ -1,208 +1,325 @@
+import Image from 'next/image';
 import { Car } from '@/app/types';
 
 interface GeneralRulesProps {
   car: Car;
 }
 
-/**
- * General Rules + Documents/Languages/Payments – pixel-perfect from Figma node 7350:98323
- *
- * Figma tokens:
- * - Container: layout_WSFAWY – row, gap (from design), fills white
- * - General Rules card: white, /shadow/md, border-radius 20px
- *   - Insurance term: Black/6% bg, Black/6% border 1px, border-radius 10px
- *   - Each rule row: row, icon 32×32, text col gap 4px
- *   - Values: Body Medium/Medium 16px/500 Black/100%
- *   - Labels: Body Small/Medium 14px/500 Black/50%
- * - Documents card: white, /shadow/md, border-radius 20px
- *   - check_circle icon: green
- *   - Language pills: border #E0DFDF 1px, border-radius 100px, padding 4px 8px
- *   - Payment pills: same as language pills
- */
+type RuleItem = {
+  key: string;
+  label: string;
+  value: (car: Car) => string;
+  detail: (car: Car) => string;
+  icon: React.ReactNode;
+};
 
-// Figma rule icons (inline SVG matching Figma component specs)
-function PersonIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="8" r="3.5" stroke="black" strokeWidth="1.5"/>
-      <path d="M5 20c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  );
-}
-function SecurityIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M12 3L4 6.5v5c0 4.418 3.355 8.555 8 9.5 4.645-.945 8-5.082 8-9.5v-5L12 3z" stroke="black" strokeWidth="1.5" strokeLinejoin="round"/>
-    </svg>
-  );
-}
-function MoneyIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke="black" strokeWidth="1.5"/>
-      <path d="M12 7v10M9.5 9.5C9.5 8.395 10.619 8 12 8s2.5.395 2.5 1.5S13.381 11 12 11s-2.5.895-2.5 2 1.119 2 2.5 2 2.5-.395 2.5-1.5" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  );
-}
-function MileageIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M12 5C8.134 5 5 8.134 5 12s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7z" stroke="black" strokeWidth="1.5"/>
-      <path d="M12 12l-3-3" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-      <circle cx="12" cy="12" r="1.5" fill="black"/>
-    </svg>
-  );
-}
-function FuelIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M7 21V7a2 2 0 012-2h6a2 2 0 012 2v4h1a1 1 0 011 1v4a1 1 0 01-1 1h-1v4" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M7 12h8" stroke="black" strokeWidth="1.5"/>
-    </svg>
-  );
-}
-function CheckCircleIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke="#22c55e" strokeWidth="1.5"/>
-      <path d="M8 12l3 3 5-5" stroke="#22c55e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-}
+const LANGUAGE_FLAGS: Record<string, { code: string; image: string }> = {
+  English: { code: 'US', image: '/assets/flags/english.png' },
+  Arabic: { code: 'SA', image: '/assets/flags/arabic.png' },
+  Russian: { code: 'RU', image: '/assets/flags/russian.png' },
+  French: { code: 'FR', image: '/assets/flags/french.png' },
+  Italian: { code: 'IT', image: '/assets/flags/italian.png' },
+  German: { code: 'DE', image: '/assets/flags/german.png' },
+};
 
-const RULES = [
-  { icon: <PersonIcon />,   label: 'Minimum Age',      getValue: (c: Car) => `${c.minAge} Years old` },
-  { icon: <SecurityIcon />, label: 'Security Deposit',  getValue: (c: Car) => c.securityDeposit ? 'Required' : 'No' },
-  { icon: <MoneyIcon />,    label: 'Security Deposit',  getValue: () => '30 days' },
-  { icon: <MileageIcon />,  label: 'Mileage',           getValue: (c: Car) => `${c.mileagePerDay} KM per rental` },
-  { icon: <FuelIcon />,     label: 'Fuel Policy',       getValue: (c: Car) => c.fuelPolicy },
+const PAYMENT_ICONS: Record<string, React.ReactNode> = {
+  'Credit Card': <CreditCardIcon />,
+  'Bank Card': <BankCardIcon />,
+  Cash: <CashIcon />,
+  Crypto: <CryptoIcon />,
+};
+
+const RULES: RuleItem[] = [
+  {
+    key: 'minimum-age',
+    label: 'Minimum Age',
+    value: (car: Car) => `${car.minAge}`,
+    detail: () => 'Years old',
+    icon: <SmileIcon />,
+  },
+  {
+    key: 'security-deposit',
+    label: 'Security Deposit',
+    value: (car: Car) => (car.securityDeposit ? 'Required' : 'No'),
+    detail: () => '',
+    icon: <ShieldIcon />,
+  },
+  {
+    key: 'deposit-days',
+    label: 'Security Deposit',
+    value: () => '30',
+    detail: () => 'days',
+    icon: <MoneyIcon />,
+  },
+  {
+    key: 'mileage',
+    label: 'Mileage',
+    value: (car: Car) => `${car.mileagePerDay} Km per rental`,
+    detail: () => 'Then AED 6 per km',
+    icon: <MileageIcon />,
+  },
+  {
+    key: 'fuel-policy',
+    label: 'Fuel Policy',
+    value: (car: Car) => car.fuelPolicy,
+    detail: () => '',
+    icon: <FuelIcon />,
+  },
 ];
 
 export default function GeneralRules({ car }: GeneralRulesProps) {
   return (
-    <div className="grid md:grid-cols-2 gap-5 mt-5">
+    <div className="mt-[30px] grid gap-[30px] md:grid-cols-2">
+      <section className="rounded-[20px] bg-white px-6 py-6 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_4px_6px_-1px_rgba(0,0,0,0.1)]">
+        <h2 className="text-[18px] font-medium leading-[26px] text-black">General Rules</h2>
 
-      {/* ── General Rules card ── */}
-      <div
-        className="bg-white flex flex-col"
-        style={{
-          borderRadius: 20,
-          boxShadow: '0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06)',
-          padding: 24,
-          gap: 16,
-        }}
-      >
-        {/* Title */}
-        <p style={{ fontSize: 18, fontWeight: 500, color: '#000', margin: 0 }}>General Rules</p>
-
-        {/* Insurance pill */}
-        <div
-          className="flex items-center justify-between"
-          style={{
-            background: 'rgba(0,0,0,0.06)',
-            border: '1px solid rgba(0,0,0,0.06)',
-            borderRadius: 10,
-            padding: '12px 16px',
-          }}
-        >
-          <div className="flex flex-col" style={{ gap: 4 }}>
-            <p style={{ fontSize: 16, fontWeight: 500, color: '#000', margin: 0 }}>{car.insurance}</p>
-            <p style={{ fontSize: 14, fontWeight: 500, color: 'rgba(0,0,0,0.5)', margin: 0 }}>
-              Excess amount 2K - 5K AED depend on vehicle
-            </p>
-          </div>
-          {/* Shield icon */}
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-            <path d="M12 3L4 6.5v5c0 4.418 3.355 8.555 8 9.5 4.645-.945 8-5.082 8-9.5v-5L12 3z" stroke="black" strokeOpacity="0.5" strokeWidth="1.5" strokeLinejoin="round"/>
-          </svg>
-        </div>
-
-        {/* Rules list */}
-        <div className="flex flex-col" style={{ gap: 12 }}>
-          {RULES.map((rule, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-between"
-              style={{
-                background: 'rgba(0,0,0,0.06)',
-                border: '1px solid rgba(0,0,0,0.06)',
-                borderRadius: 10,
-                padding: '10px 16px',
-              }}
-            >
-              <div className="flex items-center" style={{ gap: 10 }}>
-                <div style={{ width: 24, height: 24, flexShrink: 0 }}>{rule.icon}</div>
-                <p style={{ fontSize: 16, fontWeight: 500, color: '#000', margin: 0 }}>{rule.label}</p>
-              </div>
-              <p style={{ fontSize: 16, fontWeight: 500, color: '#000', margin: 0 }}>
-                {rule.getValue(car)}
+        <div className="mt-6 rounded-[10px] border border-black/[0.06] bg-black/[0.06] px-4 py-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-[16px] font-medium leading-[24px] text-black">{car.insurance}</p>
+              <p className="mt-3 text-[14px] font-medium leading-[22px] text-black/50">
+                Excess amount 2K - 5K AED depend on vehicle
               </p>
             </div>
-          ))}
+            <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center text-[#0EAD69]">
+              <ShieldSuccessIcon />
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* ── Documents / Languages / Payments card ── */}
-      <div
-        className="bg-white flex flex-col"
-        style={{
-          borderRadius: 20,
-          boxShadow: '0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06)',
-          padding: 24,
-          gap: 20,
-        }}
-      >
-        {/* Documents Needed */}
-        <div className="flex flex-col" style={{ gap: 12 }}>
-          <p style={{ fontSize: 18, fontWeight: 500, color: '#000', margin: 0 }}>Documents Needed</p>
-          {car.documents.map((doc) => (
-            <div key={doc} className="flex items-center" style={{ gap: 10 }}>
-              <CheckCircleIcon />
-              <p style={{ fontSize: 16, fontWeight: 500, color: '#000', margin: 0 }}>{doc}</p>
+        <div className="mt-6 rounded-[10px] border border-black/[0.06] bg-black/[0.06] px-4 py-4">
+          {RULES.map((rule, index) => (
+            <div
+              key={rule.key}
+              className={`flex items-center justify-between gap-4 ${index > 0 ? 'mt-4 border-t border-black/10 pt-4' : ''}`}
+            >
+              <div className="flex min-w-0 items-center gap-2">
+                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center text-black">
+                  {rule.icon}
+                </div>
+                <p className="text-[16px] font-medium leading-[24px] text-black">{rule.label}</p>
+              </div>
+
+              <div className="flex flex-col items-end justify-center text-right">
+                <p className="text-[16px] font-medium leading-[24px] text-black">{rule.value(car)}</p>
+                {rule.detail(car) ? (
+                  <p className="text-[14px] font-medium leading-[22px] text-black/50">
+                    {rule.detail(car)}
+                  </p>
+                ) : null}
+              </div>
             </div>
           ))}
         </div>
+      </section>
 
-        {/* Languages */}
-        <div className="flex flex-col" style={{ gap: 12 }}>
-          <p style={{ fontSize: 18, fontWeight: 500, color: '#000', margin: 0 }}>Languages</p>
-          <div className="flex flex-wrap" style={{ gap: 8 }}>
-            {car.languages.map((lang) => (
-              <div
-                key={lang}
-                className="flex items-center"
-                style={{
-                  border: '1px solid #E0DFDF',
-                  borderRadius: 100,
-                  padding: '4px 8px',
-                }}
-              >
-                <span style={{ fontSize: 14, fontWeight: 500, color: 'rgba(0,0,0,0.8)' }}>{lang}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="flex flex-col gap-[30px]">
+        <section className="rounded-[20px] bg-white px-6 py-6 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_4px_6px_-1px_rgba(0,0,0,0.1)]">
+          <div className="flex flex-col gap-6">
+            <h2 className="text-[18px] font-medium leading-[26px] text-black">Documents Needed</h2>
 
-        {/* Payments */}
-        <div className="flex flex-col" style={{ gap: 12 }}>
-          <p style={{ fontSize: 18, fontWeight: 500, color: '#000', margin: 0 }}>Payments</p>
-          <div className="flex flex-wrap" style={{ gap: 8 }}>
-            {car.payments.map((p) => (
-              <div
-                key={p}
-                className="flex items-center"
-                style={{
-                  border: '1px solid #E0DFDF',
-                  borderRadius: 100,
-                  padding: '4px 8px',
-                }}
-              >
-                <span style={{ fontSize: 14, fontWeight: 500, color: 'rgba(0,0,0,0.8)' }}>{p}</span>
-              </div>
-            ))}
+            <div className="flex flex-col gap-4">
+              {car.documents.map((doc) => (
+                <div key={doc} className="flex min-h-6 items-center gap-2">
+                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center">
+                    <CheckCircleIcon />
+                  </div>
+                  <p className="flex-1 text-[16px] font-medium leading-[24px] text-black">{doc}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </section>
+
+        <section className="rounded-[20px] bg-white px-6 py-6 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_4px_6px_-1px_rgba(0,0,0,0.1)]">
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6">
+              <h2 className="text-[18px] font-medium leading-[26px] text-black">Languages</h2>
+
+              <div className="flex max-w-[367px] flex-wrap gap-2">
+                {car.languages.map((language) => {
+                  const flag = LANGUAGE_FLAGS[language];
+                  return (
+                    <TagPill key={language} paddingClassName="px-2 py-1">
+                      {flag ? (
+                        <Image
+                          src={flag.image}
+                          alt={`${language} flag`}
+                          width={16}
+                          height={16}
+                          className="h-4 w-4 rounded-full object-cover"
+                        />
+                      ) : null}
+                      <span className="text-[14px] font-medium leading-[22px] text-black/80">{language}</span>
+                    </TagPill>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              <h2 className="text-[18px] font-medium leading-[26px] text-black">Payments</h2>
+
+              <div className="flex max-w-[367px] flex-wrap gap-2">
+                {car.payments.map((payment) => (
+                  <TagPill key={payment} paddingClassName="px-[10px] py-1">
+                    <span className="flex h-4 w-4 flex-shrink-0 items-center justify-center text-black/80">
+                      {PAYMENT_ICONS[payment] ?? null}
+                    </span>
+                    <span className="text-[14px] font-medium leading-[22px] text-black/80">{payment}</span>
+                  </TagPill>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
+  );
+}
+
+function TagPill({
+  children,
+  paddingClassName,
+}: {
+  children: React.ReactNode;
+  paddingClassName: string;
+}) {
+  return (
+    <div
+      className={`inline-flex h-6 items-center gap-2 rounded-[100px] border border-[#E0DFDF] bg-white ${paddingClassName}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+function SmileIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M9.99 0C4.47 0 0 4.48 0 10C0 15.52 4.47 20 9.99 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 9.99 0ZM10 18C5.58 18 2 14.42 2 10C2 5.58 5.58 2 10 2C14.42 2 18 5.58 18 10C18 14.42 14.42 18 10 18ZM13.5 9C14.33 9 15 8.33 15 7.5C15 6.67 14.33 6 13.5 6C12.67 6 12 6.67 12 7.5C12 8.33 12.67 9 13.5 9ZM6.5 9C7.33 9 8 8.33 8 7.5C8 6.67 7.33 6 6.5 6C5.67 6 5 6.67 5 7.5C5 8.33 5.67 9 6.5 9ZM10 15.5C12.03 15.5 13.8 14.39 14.75 12.75C14.94 12.42 14.7 12 14.31 12L5.69 12C5.31 12 5.06 12.42 5.25 12.75C6.2 14.39 7.97 15.5 10 15.5Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function ShieldIcon() {
+  return (
+    <svg width="18" height="22" viewBox="0 0 18 22" fill="none" aria-hidden="true">
+      <path
+        d="M9 0L0 4L0 10C0 15.55 3.84 20.74 9 22C14.16 20.74 18 15.55 18 10L18 4L9 0ZM9 10.99L16 10.99C15.47 15.11 12.72 18.78 9 19.93L9 11L2 11L2 5.3L9 2.19L9 10.99Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function MoneyIcon() {
+  return (
+    <svg width="10.18" height="18" viewBox="0 0 10.18 18" fill="none" aria-hidden="true">
+      <path
+        d="M5.18 14.1C3.12 14.1 2.31 13.18 2.2 12L0 12C0.12 14.19 1.76 15.42 3.68 15.83L3.68 18L6.68 18L6.68 15.85C8.63 15.48 10.18 14.35 10.18 12.3C10.18 9.46 7.75 8.49 5.48 7.9C3.21 7.31 2.48 6.7 2.48 5.75C2.48 4.66 3.49 3.9 5.18 3.9C6.96 3.9 7.62 4.75 7.68 6L9.89 6C9.82 4.28 8.77 2.7 6.68 2.19L6.68 0L3.68 0L3.68 2.16C1.74 2.58 0.18 3.84 0.18 5.77C0.18 8.08 2.09 9.23 4.88 9.9C7.38 10.5 7.88 11.38 7.88 12.31C7.88 13 7.39 14.1 5.18 14.1L5.18 14.1Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function MileageIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M13.25 3C12.9 3 12.6042 2.87917 12.3625 2.6375C12.1208 2.39583 12 2.1 12 1.75C12 1.4 12.1208 1.10417 12.3625 0.8625C12.6042 0.620833 12.9 0.5 13.25 0.5C13.6 0.5 13.8958 0.620833 14.1375 0.8625C14.3792 1.10417 14.5 1.4 14.5 1.75C14.5 2.1 14.3792 2.39583 14.1375 2.6375C13.8958 2.87917 13.6 3 13.25 3ZM13.25 19.5C12.9 19.5 12.6042 19.3792 12.3625 19.1375C12.1208 18.8958 12 18.6 12 18.25C12 17.9 12.1208 17.6042 12.3625 17.3625C12.6042 17.1208 12.9 17 13.25 17C13.6 17 13.8958 17.1208 14.1375 17.3625C14.3792 17.6042 14.5 17.9 14.5 18.25C14.5 18.6 14.3792 18.8958 14.1375 19.1375C13.8958 19.3792 13.6 19.5 13.25 19.5ZM17.25 6.5C16.9 6.5 16.6042 6.37917 16.3625 6.1375C16.1208 5.89583 16 5.6 16 5.25C16 4.9 16.1208 4.60417 16.3625 4.3625C16.6042 4.12083 16.9 4 17.25 4C17.6 4 17.8958 4.12083 18.1375 4.3625C18.3792 4.60417 18.5 4.9 18.5 5.25C18.5 5.6 18.3792 5.89583 18.1375 6.1375C17.8958 6.37917 17.6 6.5 17.25 6.5ZM17.25 16C16.9 16 16.6042 15.8792 16.3625 15.6375C16.1208 15.3958 16 15.1 16 14.75C16 14.4 16.1208 14.1042 16.3625 13.8625C16.6042 13.6208 16.9 13.5 17.25 13.5C17.6 13.5 17.8958 13.6208 18.1375 13.8625C18.3792 14.1042 18.5 14.4 18.5 14.75C18.5 15.1 18.3792 15.3958 18.1375 15.6375C17.8958 15.8792 17.6 16 17.25 16ZM18.75 11.25C18.4 11.25 18.1042 11.1292 17.8625 10.8875C17.6208 10.6458 17.5 10.35 17.5 10C17.5 9.65 17.6208 9.35417 17.8625 9.1125C18.1042 8.87083 18.4 8.75 18.75 8.75C19.1 8.75 19.3958 8.87083 19.6375 9.1125C19.8792 9.35417 20 9.65 20 10C20 10.35 19.8792 10.6458 19.6375 10.8875C19.3958 11.1292 19.1 11.25 18.75 11.25ZM10 20C8.61667 20 7.31667 19.7375 6.1 19.2125C4.88333 18.6875 3.825 17.975 2.925 17.075C2.025 16.175 1.3125 15.1167 0.7875 13.9C0.2625 12.6833 0 11.3833 0 10C0 8.61667 0.2625 7.31667 0.7875 6.1C1.3125 4.88333 2.025 3.825 2.925 2.925C3.825 2.025 4.88333 1.3125 6.1 0.7875C7.31667 0.2625 8.61667 0 10 0L10 2C7.76667 2 5.875 2.775 4.325 4.325C2.775 5.875 2 7.76667 2 10C2 12.2333 2.775 14.125 4.325 15.675C5.875 17.225 7.76667 18 10 18L10 20ZM10 12C9.45 12 8.97917 11.8042 8.5875 11.4125C8.19583 11.0208 8 10.55 8 10C8 9.91667 8.00417 9.82917 8.0125 9.7375C8.02083 9.64583 8.04167 9.55833 8.075 9.475L6 7.4L7.4 6L9.475 8.075C9.54167 8.05833 9.71667 8.03333 10 8C10.55 8 11.0208 8.19583 11.4125 8.5875C11.8042 8.97917 12 9.45 12 10C12 10.55 11.8042 11.0208 11.4125 11.4125C11.0208 11.8042 10.55 12 10 12Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function FuelIcon() {
+  return (
+    <svg width="16.5" height="18" viewBox="0 0 16.5 18" fill="none" aria-hidden="true">
+      <path
+        d="M0 18L0 2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0L8 0C8.55 0 9.02083 0.195833 9.4125 0.5875C9.80417 0.979167 10 1.45 10 2L10 9L11 9C11.55 9 12.0208 9.19583 12.4125 9.5875C12.8042 9.97917 13 10.45 13 11L13 15.5C13 15.7833 13.0958 16.0208 13.2875 16.2125C13.4792 16.4042 13.7167 16.5 14 16.5C14.2833 16.5 14.5208 16.4042 14.7125 16.2125C14.9042 16.0208 15 15.7833 15 15.5L15 8.3C14.85 8.38333 14.6917 8.4375 14.525 8.4625C14.3583 8.4875 14.1833 8.5 14 8.5C13.3 8.5 12.7083 8.25833 12.225 7.775C11.7417 7.29167 11.5 6.7 11.5 6C11.5 5.46667 11.6458 4.9875 11.9375 4.5625C12.2292 4.1375 12.6167 3.83333 13.1 3.65L11 1.55L12.05 0.5L15.75 4.1C16 4.35 16.1875 4.64167 16.3125 4.975C16.4375 5.30833 16.5 5.65 16.5 6L16.5 15.5C16.5 16.2 16.2583 16.7917 15.775 17.275C15.2917 17.7583 14.7 18 14 18C13.3 18 12.7083 17.7583 12.225 17.275C11.7417 16.7917 11.5 16.2 11.5 15.5L11.5 10.5L10 10.5L10 18L0 18ZM2 7L8 7L8 2L2 2L2 7ZM14 7C14.2833 7 14.5208 6.90417 14.7125 6.7125C14.9042 6.52083 15 6.28333 15 6C15 5.71667 14.9042 5.47917 14.7125 5.2875C14.5208 5.09583 14.2833 5 14 5C13.7167 5 13.4792 5.09583 13.2875 5.2875C13.0958 5.47917 13 5.71667 13 6C13 6.28333 13.0958 6.52083 13.2875 6.7125C13.4792 6.90417 13.7167 7 14 7ZM2 16L8 16L8 9L2 9L2 16Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function ShieldSuccessIcon() {
+  return (
+    <svg width="18.01" height="19.72" viewBox="0 0 18.01 19.72" fill="none" aria-hidden="true">
+      <path
+        d="M9.00008 19.718C8.65063 19.7234 8.30584 19.6372 8.00008 19.468L7.70008 19.298C5.36335 17.9759 3.41934 16.0574 2.06655 13.7383C0.713767 11.4193 0.000670048 8.78274 8.0152e-05 6.09795L8.0152e-05 5.95795C-0.00308979 5.60384 0.0878186 5.25524 0.263514 4.94777C0.439209 4.6403 0.693391 4.385 1.00008 4.20795L8.00008 0.267949C8.30412 0.0924127 8.64901 0 9.00008 0C9.35115 0 9.69604 0.0924127 10.0001 0.267949L17.0001 4.20795C17.3068 4.385 17.561 4.6403 17.7366 4.94777C17.9123 5.25524 18.0033 5.60384 18.0001 5.95795L18.0001 6.09795C17.9975 8.78472 17.2814 11.4226 15.925 13.7418C14.5686 16.0611 12.6205 17.9785 10.2801 19.298L9.98008 19.468C9.68023 19.6339 9.34277 19.72 9.00008 19.718ZM9.00008 2.01795L2.00008 5.95795L2.00008 6.09795C2.00176 8.42905 2.62308 10.7178 3.80038 12.7298C4.97769 14.7417 6.66866 16.4046 8.70008 17.548L9.00008 17.718L9.30008 17.548C11.3315 16.4046 13.0225 14.7417 14.1998 12.7298C15.3771 10.7178 15.9984 8.42905 16.0001 6.09795L16.0001 5.95795L9.00008 2.01795Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function CheckCircleIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM8 15L3 10L4.41 8.59L8 12.17L15.59 4.58L17 6L8 15Z"
+        fill="#0EAD69"
+      />
+    </svg>
+  );
+}
+
+function CreditCardIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M11.3333 0L2 0C1.46957 0 0.960859 0.210714 0.585786 0.585786C0.210714 0.960859 5.92119e-16 1.46957 0 2L0 7.33333C5.92119e-16 7.86377 0.210714 8.37247 0.585786 8.74755C0.960859 9.12262 1.46957 9.33333 2 9.33333L11.3333 9.33333C11.8638 9.33333 12.3725 9.12262 12.7475 8.74755C13.1226 8.37247 13.3333 7.86377 13.3333 7.33333L13.3333 2C13.3333 1.46957 13.1226 0.960859 12.7475 0.585786C12.3725 0.210714 11.8638 0 11.3333 0ZM1.33333 2C1.33333 1.82319 1.40357 1.65362 1.5286 1.5286C1.65362 1.40357 1.82319 1.33333 2 1.33333L11.3333 1.33333C11.5101 1.33333 11.6797 1.40357 11.8047 1.5286C11.9298 1.65362 12 1.82319 12 2L12 2.66667L1.33333 2.66667L1.33333 2ZM12 7.33333C12 7.51014 11.9298 7.67971 11.8047 7.80474C11.6797 7.92976 11.5101 8 11.3333 8L2 8C1.82319 8 1.65362 7.92976 1.5286 7.80474C1.40357 7.67971 1.33333 7.51014 1.33333 7.33333L1.33333 4L12 4L12 7.33333Z"
+        fill="currentColor"
+      />
+      <path
+        d="M0.666667 1.33333L3.33333 1.33333C3.51014 1.33333 3.67971 1.2631 3.80474 1.13807C3.92976 1.01305 4 0.843478 4 0.666667C4 0.489856 3.92976 0.320287 3.80474 0.195262C3.67971 0.070238 3.51014 0 3.33333 0L0.666667 0C0.489856 0 0.320287 0.070238 0.195262 0.195262C0.070238 0.320287 0 0.489856 0 0.666667C0 0.843478 0.070238 1.01305 0.195262 1.13807C0.320287 1.2631 0.489856 1.33333 0.666667 1.33333Z"
+        fill="currentColor"
+      />
+      <path
+        d="M0.666667 1.33333L2 1.33333C2.17681 1.33333 2.34638 1.2631 2.47141 1.13807C2.59643 1.01305 2.66667 0.843478 2.66667 0.666667C2.66667 0.489856 2.59643 0.320287 2.47141 0.195262C2.34638 0.070238 2.17681 0 2 0L0.666667 0C0.489856 0 0.320287 0.070238 0.195262 0.195262C0.070238 0.320287 0 0.489856 0 0.666667C0 0.843478 0.070238 1.01305 0.195262 1.13807C0.320287 1.2631 0.489856 1.33333 0.666667 1.33333Z"
+        transform="translate(8 5.33333)"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function BankCardIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 13.3333 13.3333" fill="none" aria-hidden="true">
+      <path
+        d="M2 10.6667L2 6L3.33333 6L3.33333 10.6667L2 10.6667ZM6 10.6667L6 6L7.33333 6L7.33333 10.6667L6 10.6667ZM0 13.3333L0 12L13.3333 12L13.3333 13.3333L0 13.3333ZM10 10.6667L10 6L11.3333 6L11.3333 10.6667L10 10.6667ZM0 4.66667L0 3.33333L6.66667 0L13.3333 3.33333L13.3333 4.66667L0 4.66667ZM2.96667 3.33333L10.3667 3.33333L6.66667 1.5L2.96667 3.33333Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function CashIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 14.6667 10.6667" fill="none" aria-hidden="true">
+      <path
+        d="M8.66667 6C8.11111 6 7.63889 5.80556 7.25 5.41667C6.86111 5.02778 6.66667 4.55556 6.66667 4C6.66667 3.44444 6.86111 2.97222 7.25 2.58333C7.63889 2.19444 8.11111 2 8.66667 2C9.22222 2 9.69444 2.19444 10.0833 2.58333C10.4722 2.97222 10.6667 3.44444 10.6667 4C10.6667 4.55556 10.4722 5.02778 10.0833 5.41667C9.69444 5.80556 9.22222 6 8.66667 6ZM4 8C3.63333 8 3.31944 7.86944 3.05833 7.60833C2.79722 7.34722 2.66667 7.03333 2.66667 6.66667L2.66667 1.33333C2.66667 0.966667 2.79722 0.652778 3.05833 0.391667C3.31944 0.130556 3.63333 0 4 0L13.3333 0C13.7 0 14.0139 0.130556 14.275 0.391667C14.5361 0.652778 14.6667 0.966667 14.6667 1.33333L14.6667 6.66667C14.6667 7.03333 14.5361 7.34722 14.275 7.60833C14.0139 7.86944 13.7 8 13.3333 8L4 8ZM5.33333 6.66667L12 6.66667C12 6.3 12.1306 5.98611 12.3917 5.725C12.6528 5.46389 12.9667 5.33333 13.3333 5.33333L13.3333 2.66667C12.9667 2.66667 12.6528 2.53611 12.3917 2.275C12.1306 2.01389 12 1.7 12 1.33333L5.33333 1.33333C5.33333 1.7 5.20278 2.01389 4.94167 2.275C4.68056 2.53611 4.36667 2.66667 4 2.66667L4 5.33333C4.36667 5.33333 4.68056 5.46389 4.94167 5.725C5.20278 5.98611 5.33333 6.3 5.33333 6.66667ZM12.6667 10.6667L1.33333 10.6667C0.966667 10.6667 0.652778 10.5361 0.391667 10.275C0.130556 10.0139 0 9.7 0 9.33333L0 2L1.33333 2L1.33333 9.33333L12.6667 9.33333L12.6667 10.6667Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function CryptoIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 14.6667 14.6667" fill="none" aria-hidden="true">
+      <path
+        d="M7.33334 0C5.88294 -4.44089e-16 4.46512 0.430092 3.25915 1.23589C2.05319 2.04169 1.11326 3.187 0.55822 4.52699C0.00317744 5.86698 -0.142047 7.34147 0.140911 8.764C0.423869 10.1865 1.1223 11.4932 2.14789 12.5188C3.17347 13.5444 4.48015 14.2428 5.90267 14.5258C7.3252 14.8087 8.79969 14.6635 10.1397 14.1084C11.4797 13.5534 12.625 12.6135 13.4308 11.4075C14.2366 10.2016 14.6667 8.78373 14.6667 7.33333C14.6667 5.38841 13.8941 3.52315 12.5188 2.14788C11.1435 0.772617 9.27826 7.40149e-16 7.33334 0ZM7.33334 13.3333C6.14665 13.3333 4.98661 12.9814 3.99991 12.3222C3.01322 11.6629 2.24418 10.7258 1.79006 9.62943C1.33593 8.53308 1.21711 7.32668 1.44862 6.16279C1.68014 4.99891 2.25158 3.92981 3.0907 3.09069C3.92981 2.25158 4.99891 1.68013 6.16279 1.44862C7.32668 1.21711 8.53308 1.33593 9.62944 1.79006C10.7258 2.24418 11.6629 3.01322 12.3222 3.99991C12.9814 4.98661 13.3333 6.14665 13.3333 7.33333C13.3333 8.92463 12.7012 10.4508 11.576 11.576C10.4508 12.7012 8.92463 13.3333 7.33334 13.3333ZM8.66667 4L8.66667 3.33333C8.66667 3.15652 8.59643 2.98695 8.47141 2.86193C8.34638 2.7369 8.17681 2.66667 8 2.66667C7.82319 2.66667 7.65362 2.7369 7.5286 2.86193C7.40357 2.98695 7.33334 3.15652 7.33334 3.33333L7.33334 4L6.66667 4L6.66667 3.33333C6.66667 3.15652 6.59643 2.98695 6.47141 2.86193C6.34638 2.7369 6.17681 2.66667 6 2.66667C5.82319 2.66667 5.65362 2.7369 5.5286 2.86193C5.40357 2.98695 5.33334 3.15652 5.33334 3.33333L5.33334 4L4.66667 4C4.48986 4 4.32029 4.07024 4.19527 4.19526C4.07024 4.32029 4 4.48986 4 4.66667C4 4.84348 4.07024 5.01305 4.19527 5.13807C4.32029 5.26309 4.48986 5.33333 4.66667 5.33333L5.33334 5.33333L5.33334 9.33333L4.66667 9.33333C4.48986 9.33333 4.32029 9.40357 4.19527 9.52859C4.07024 9.65362 4 9.82319 4 10C4 10.1768 4.07024 10.3464 4.19527 10.4714C4.32029 10.5964 4.48986 10.6667 4.66667 10.6667L5.33334 10.6667L5.33334 11.3333C5.33334 11.5101 5.40357 11.6797 5.5286 11.8047C5.65362 11.9298 5.82319 12 6 12C6.17681 12 6.34638 11.9298 6.47141 11.8047C6.59643 11.6797 6.66667 11.5101 6.66667 11.3333L6.66667 10.6667L7.33334 10.6667L7.33334 11.3333C7.33334 11.5101 7.40357 11.6797 7.5286 11.8047C7.65362 11.9298 7.82319 12 8 12C8.17681 12 8.34638 11.9298 8.47141 11.8047C8.59643 11.6797 8.66667 11.5101 8.66667 11.3333L8.66667 10.6667C9.1971 10.6667 9.70581 10.456 10.0809 10.0809C10.456 9.70581 10.6667 9.1971 10.6667 8.66667C10.6656 8.17418 10.4828 7.69942 10.1533 7.33333C10.4828 6.96725 10.6656 6.49249 10.6667 6C10.6667 5.46957 10.456 4.96086 10.0809 4.58579C9.70581 4.21071 9.1971 4 8.66667 4ZM8.66667 9.33333L6.66667 9.33333L6.66667 8L8.66667 8C8.84348 8 9.01305 8.07024 9.13807 8.19526C9.2631 8.32029 9.33334 8.48985 9.33334 8.66667C9.33334 8.84348 9.2631 9.01305 9.13807 9.13807C9.01305 9.26309 8.84348 9.33333 8.66667 9.33333ZM8.66667 6.66667L6.66667 6.66667L6.66667 5.33333L8.66667 5.33333C8.84348 5.33333 9.01305 5.40357 9.13807 5.5286C9.2631 5.65362 9.33334 5.82319 9.33334 6C9.33334 6.17681 9.2631 6.34638 9.13807 6.4714C9.01305 6.59643 8.84348 6.66667 8.66667 6.66667Z"
+        fill="currentColor"
+      />
+    </svg>
   );
 }

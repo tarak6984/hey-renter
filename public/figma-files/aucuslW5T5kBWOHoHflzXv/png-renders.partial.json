@@ -1,0 +1,50 @@
+[
+  {
+    "id": "7350:98235",
+    "name": "Car Profile Page",
+    "type": "FRAME",
+    "file": "public/figma-files/aucuslW5T5kBWOHoHflzXv/renders/Test-Site-Car-Profile-Page__7350-98235.png",
+    "url": "https://figma-alpha-api.s3.us-west-2.amazonaws.com/images/a453eaef-7e01-4002-af05-ddf5cadb3b7e",
+    "scale": 2
+  },
+  {
+    "id": "8984:7910",
+    "name": "Image Preview",
+    "type": "FRAME",
+    "file": "public/figma-files/aucuslW5T5kBWOHoHflzXv/renders/Test-Site-Image-Preview__8984-7910.png",
+    "url": "https://figma-alpha-api.s3.us-west-2.amazonaws.com/images/b114e65e-205f-4077-9ffd-95721ef9c5b0",
+    "scale": 4
+  },
+  {
+    "id": "8937:42816",
+    "name": "Home Page",
+    "type": "FRAME",
+    "file": "public/figma-files/aucuslW5T5kBWOHoHflzXv/renders/Test-Site-Home-Page__8937-42816.png",
+    "url": "https://figma-alpha-api.s3.us-west-2.amazonaws.com/images/ad363de6-23f2-47d8-9a22-1f64eebb10b7",
+    "scale": 2
+  },
+  {
+    "id": "8937:44970",
+    "name": "Listings | From Search Bar",
+    "type": "FRAME",
+    "file": "public/figma-files/aucuslW5T5kBWOHoHflzXv/renders/Test-Site-Listings-From-Search-Bar__8937-44970.png",
+    "url": "https://figma-alpha-api.s3.us-west-2.amazonaws.com/images/1b3d30a9-9e90-49fe-ae20-e795eb1257cb",
+    "scale": 2
+  },
+  {
+    "id": "8940:52698",
+    "name": "Listings | From Other CTA",
+    "type": "FRAME",
+    "file": "public/figma-files/aucuslW5T5kBWOHoHflzXv/renders/Test-Site-Listings-From-Other-CTA__8940-52698.png",
+    "url": "https://figma-alpha-api.s3.us-west-2.amazonaws.com/images/9aecb3eb-aca0-46aa-a2e9-77136b958ba7",
+    "scale": 4
+  },
+  {
+    "id": "8984:7475",
+    "name": "Image Section",
+    "type": "GROUP",
+    "file": "public/figma-files/aucuslW5T5kBWOHoHflzXv/renders/Test-Site-Image-Section__8984-7475.png",
+    "url": "https://figma-alpha-api.s3.us-west-2.amazonaws.com/images/8cab2c45-e98f-4812-9a48-6b988b8e3f33",
+    "scale": 4
+  }
+]

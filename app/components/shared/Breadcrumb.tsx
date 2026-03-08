@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import { cn } from '@/app/lib/utils';
 
 interface BreadcrumbItem {
   label: string;
@@ -8,29 +9,47 @@ interface BreadcrumbItem {
 
 interface BreadcrumbProps {
   items: BreadcrumbItem[];
+  className?: string;
+  itemClassName?: string;
+  linkClassName?: string;
+  currentClassName?: string;
+  separatorClassName?: string;
 }
 
 /**
  * Breadcrumb navigation used on Car Profile and Confirmation pages.
  */
-export default function Breadcrumb({ items }: BreadcrumbProps) {
+export default function Breadcrumb({
+  items,
+  className,
+  itemClassName,
+  linkClassName,
+  currentClassName,
+  separatorClassName,
+}: BreadcrumbProps) {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="mx-auto flex w-full max-w-[1440px] items-center gap-1.5 px-4 py-4 text-sm sm:px-6 md:px-[39px]"
+      className={cn(
+        'mx-auto flex w-full max-w-[1440px] items-center gap-1.5 px-4 py-4 text-sm sm:px-6 md:px-[39px]',
+        className
+      )}
     >
       {items.map((item, i) => (
-        <span key={i} className="flex items-center gap-1.5">
-          {i > 0 ? <ChevronRight size={14} className="text-gray-400" /> : null}
+        <span key={i} className={cn('flex items-center gap-1.5', itemClassName)}>
+          {i > 0 ? <ChevronRight size={14} className={cn('text-gray-400', separatorClassName)} /> : null}
           {item.href ? (
             <Link
               href={item.href}
-              className="font-medium text-gray-600 transition-colors hover:text-black"
+              className={cn(
+                'font-medium text-gray-600 transition-colors hover:text-black',
+                linkClassName
+              )}
             >
               {item.label}
             </Link>
           ) : (
-            <span className="text-gray-400">{item.label}</span>
+            <span className={cn('text-gray-400', currentClassName)}>{item.label}</span>
           )}
         </span>
       ))}

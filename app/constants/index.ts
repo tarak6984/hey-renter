@@ -47,10 +47,10 @@ export const MOCK_CARS: Car[] = [
     year: 2024,
     category: 'super',
     images: [
-      '/assets/cars/cullinan-mansory-2024.png',
-      '/assets/cars/ferrari-812-gts.png',
-      '/assets/cars/mercedes-sl63-amg.png',
-      '/assets/cars/ferrari-purosangue.png',
+      '/assets/cars/listings/rolls-royce-1.webp',
+      '/assets/cars/listings/rolls-royce-2.webp',
+      '/assets/cars/listings/rolls-royce-3.webp',
+      '/assets/cars/listings/rolls-royce-4.webp',
     ],
     pricePerDay: 2000,
     pricePerMonth: 45000,
@@ -85,7 +85,12 @@ export const MOCK_CARS: Car[] = [
     year: 2023,
     category: 'super',
     // Image: Figma node I8940:52742;5385:29819 | imageRef: ee42c8cf...
-    images: ['/assets/cars/ferrari-812-gts.png'],
+    images: [
+      '/assets/cars/listings/ferrari-1.webp',
+      '/assets/cars/listings/ferrari-2.webp',
+      '/assets/cars/listings/ferrari-3.webp',
+      '/assets/cars/listings/ferrari-4.webp',
+    ],
     pricePerDay: 7000,
     specs: {
       topSpeed: '325 km/h',
@@ -116,7 +121,12 @@ export const MOCK_CARS: Car[] = [
     year: 2022,
     category: 'luxury',
     // Image: Figma node I8940:52743;5385:29819
-    images: ['/assets/cars/mercedes-sl63-amg.png'],
+    images: [
+      '/assets/cars/listings/mercedes-1.webp',
+      '/assets/cars/listings/mercedes-2.webp',
+      '/assets/cars/listings/mercedes-3.webp',
+      '/assets/cars/listings/mercedes-4.webp',
+    ],
     pricePerDay: 1900,
     specs: {
       topSpeed: '250 km/h',
@@ -147,7 +157,12 @@ export const MOCK_CARS: Car[] = [
     year: 2024,
     category: 'super',
     // Image: Figma node I8940:52744;5385:29819
-    images: ['/assets/cars/ferrari-purosangue.png'],
+    images: [
+      '/assets/cars/listings/ferrari-1.webp',
+      '/assets/cars/listings/ferrari-2.webp',
+      '/assets/cars/listings/ferrari-3.webp',
+      '/assets/cars/listings/ferrari-4.webp',
+    ],
     pricePerDay: 6700,
     specs: {
       topSpeed: '310 km/h',
@@ -178,7 +193,12 @@ export const MOCK_CARS: Car[] = [
     year: 2024,
     category: 'super',
     // Image: Figma node I8940:52745;5385:29819
-    images: ['/assets/cars/porsche-gt3-rs.png'],
+    images: [
+      '/assets/cars/listings/porsche-1.webp',
+      '/assets/cars/listings/porsche-2.webp',
+      '/assets/cars/listings/porsche-3.webp',
+      '/assets/cars/listings/porsche-4.webp',
+    ],
     pricePerDay: 4500,
     specs: {
       topSpeed: '296 km/h',
@@ -206,8 +226,7 @@ export const MOCK_CARS: Car[] = [
 
 export const FAQ_ITEMS = [
   { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.' },
-  { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.' },
-  { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.' },
+  { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum.' },
   { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.' },
   { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.' },
   { question: 'Lorem ipsum dolor sit amet consect.', answer: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.' },

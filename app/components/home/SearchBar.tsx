@@ -1,9 +1,13 @@
 'use client';
 
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import PickupModal from '@/app/components/car-profile/PickupModal';
+
+const PickupModal = dynamic(() => import('@/app/components/car-profile/PickupModal'), {
+  ssr: false,
+});
 
 const BRAND_OPTIONS = [
   { label: 'Any', logo: null },
@@ -229,14 +233,16 @@ export default function SearchBar({
         </div>
       </div>
 
-      <PickupModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onConfirm={(value) => {
-          setDateTime(value);
-          setModalOpen(false);
-        }}
-      />
+      {modalOpen ? (
+        <PickupModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onConfirm={(value) => {
+            setDateTime(value);
+            setModalOpen(false);
+          }}
+        />
+      ) : null}
     </>
   );
 }

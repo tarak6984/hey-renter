@@ -4,129 +4,233 @@ interface SpecsGridProps {
   specs: CarSpec;
 }
 
-/**
- * Specifications grid – pixel-perfect from Figma node 7350:98280
- *
- * Figma tokens:
- * - Container: white bg, shadow /shadow/md, border-radius 20px, padding (from layout_7W35XJ)
- * - Title: Body Large/Medium, Black/100%
- * - Grid: 2-col layout (layout_KVHAQV), border-radius 10px
- * - Each spec row: layout_U5BVZG (row, gap 12px)
- * - Icon: 32×32px SVG from Figma Outline component set
- * - Value text: Body Medium/Medium (16px/500), Black/100%
- * - Label text: Body Small/Medium (14px/500), Black/50%
- *
- * Icons sourced from Figma component set "Outline" (16:11461)
- * Using lucide-react equivalents as pixel-close substitutes.
- */
-
-// Figma spec icon mapping – using real Figma SVG paths where available
-const SPEC_ICONS: Record<string, React.ReactNode> = {
-  speed: (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <path d="M16 6C10.477 6 6 10.477 6 16C6 18.395 6.843 20.592 8.245 22.307L10.121 20.431C9.108 19.17 8.5 17.558 8.5 15.8C8.5 11.659 11.859 8.3 16 8.3C20.141 8.3 23.5 11.659 23.5 15.8C23.5 17.558 22.892 19.17 21.879 20.431L23.755 22.307C25.157 20.592 26 18.395 26 16C26 10.477 21.523 6 16 6Z" fill="black" fillOpacity="0.5"/>
-      <path d="M14.5 16.5L11 12L17.5 14.5L14.5 16.5Z" fill="black"/>
-      <circle cx="16" cy="16" r="2" fill="black"/>
-    </svg>
-  ),
-  engine: (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <rect x="10" y="10" width="12" height="12" rx="2" stroke="black" strokeWidth="1.5"/>
-      <path d="M6 14h4M22 14h4M6 18h4M22 18h4M14 6v4M14 22v4M18 6v4M18 22v4" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  ),
-  acceleration: (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <circle cx="16" cy="16" r="9" stroke="black" strokeWidth="1.5"/>
-      <path d="M16 10v6l4 2" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  ),
-  horsepower: (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <path d="M16 8l2 5h5l-4 3 1.5 5L16 18l-4.5 3 1.5-5-4-3h5z" stroke="black" strokeWidth="1.5" strokeLinejoin="round"/>
-    </svg>
-  ),
-  seats: (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <circle cx="16" cy="10" r="3" stroke="black" strokeWidth="1.5"/>
-      <path d="M10 24c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  ),
-  color: (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <circle cx="16" cy="16" r="6" stroke="black" strokeWidth="1.5"/>
-      <path d="M16 10V8M16 24v-2M10 16H8M24 16h-2M11.515 11.515L10.1 10.1M21.9 21.9l-1.415-1.415M11.515 20.485L10.1 21.9M21.9 10.1l-1.415 1.415" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  ),
-  transmission: (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <circle cx="10" cy="10" r="2.5" stroke="black" strokeWidth="1.5"/>
-      <circle cx="22" cy="10" r="2.5" stroke="black" strokeWidth="1.5"/>
-      <circle cx="10" cy="22" r="2.5" stroke="black" strokeWidth="1.5"/>
-      <path d="M10 12.5V19.5M22 12.5V19M16 10h3.5M10 10h3.5" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-      <path d="M16 19.5h3.5" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
-      <circle cx="16" cy="22" r="2.5" stroke="black" strokeWidth="1.5"/>
-    </svg>
-  ),
-  fuel: (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <path d="M10 26V10a2 2 0 012-2h8a2 2 0 012 2v6h1a1 1 0 011 1v5a1 1 0 01-1 1h-1v3" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M10 16h12" stroke="black" strokeWidth="1.5"/>
-    </svg>
-  ),
+type SpecItem = {
+  key: string;
+  label: string;
+  value: (specs: CarSpec) => string;
+  icon: React.ReactNode;
 };
 
-const SPECS = [
-  { key: 'speed',        icon: 'speed',        label: 'TOP SPEED',   getValue: (s: CarSpec) => s.topSpeed },
-  { key: 'engine',       icon: 'engine',       label: 'ENGINE',      getValue: (s: CarSpec) => s.engine },
-  { key: 'acceleration', icon: 'acceleration', label: '0-100 km/h',  getValue: (s: CarSpec) => s.acceleration },
-  { key: 'horsepower',   icon: 'horsepower',   label: 'HORSE POWER', getValue: (s: CarSpec) => s.horsepower },
-  { key: 'seats',        icon: 'seats',        label: 'SEAT CAPACITY',getValue: (s: CarSpec) => `${s.seats} Person` },
-  { key: 'color',        icon: 'color',        label: 'COLOR',       getValue: (s: CarSpec) => s.color },
-  { key: 'transmission', icon: 'transmission', label: 'TRANSMISSION', getValue: (s: CarSpec) => s.transmission },
-  { key: 'fuel',         icon: 'fuel',         label: 'FUEL TYPE',   getValue: (s: CarSpec) => s.fuelType },
+const specItems: SpecItem[] = [
+  {
+    key: 'speed',
+    label: 'TOP SPEED',
+    value: (specs) => specs.topSpeed,
+    icon: <TopSpeedIcon />,
+  },
+  {
+    key: 'engine',
+    label: 'ENGINE',
+    value: (specs) => specs.engine,
+    icon: <EngineIcon />,
+  },
+  {
+    key: 'acceleration',
+    label: '0-100 km/h',
+    value: (specs) => specs.acceleration,
+    icon: <AccelerationIcon />,
+  },
+  {
+    key: 'horsepower',
+    label: 'HORSE POWER',
+    value: (specs) => specs.horsepower,
+    icon: <HorsePowerIcon />,
+  },
+  {
+    key: 'seats',
+    label: 'SEAT CAPACITY',
+    value: (specs) => `${specs.seats} Person`,
+    icon: <SeatsIcon />,
+  },
+  {
+    key: 'color',
+    label: 'COLOR',
+    value: (specs) => specs.color,
+    icon: <ColorIcon />,
+  },
+  {
+    key: 'transmission',
+    label: 'TRANSMISSION',
+    value: (specs) => specs.transmission,
+    icon: <TransmissionIcon />,
+  },
+  {
+    key: 'fuel',
+    label: 'FUEL TYPE',
+    value: (specs) => specs.fuelType,
+    icon: <FuelIcon />,
+  },
 ];
 
 export default function SpecsGrid({ specs }: SpecsGridProps) {
   return (
-    <div
-      className="bg-white"
-      style={{
-        borderRadius: 20,
-        boxShadow: '0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06)',
-        padding: '24px',
-      }}
-    >
-      {/* Title – Body Large/Medium, Black/100% */}
-      <p style={{ fontSize: 18, fontWeight: 500, color: '#000', marginBottom: 20 }}>
+    <section className="rounded-[20px] border border-black/10 bg-white px-6 py-6 lg:min-h-[192px] lg:px-6 lg:py-6">
+      <h2 className="text-[18px] font-medium leading-[26px] text-black">
         Specifications
-      </p>
+      </h2>
 
-      {/* Grid – 2 cols on md+, 4 on lg */}
-      <div
-        style={{ borderRadius: 10 }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-5"
-      >
-        {SPECS.map(({ key, icon, label, getValue }) => (
-          <div key={key} className="flex items-center" style={{ gap: 12 }}>
-            {/* Icon – 32×32px */}
-            <div className="flex-shrink-0" style={{ width: 32, height: 32 }}>
-              {SPEC_ICONS[icon]}
+      <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-8">
+        {specItems.map((item) => (
+          <div key={item.key} className="flex items-center gap-3">
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center text-black lg:h-9 lg:w-9">
+              {item.icon}
             </div>
-            {/* Text */}
-            <div className="flex flex-col" style={{ gap: 2 }}>
-              {/* Value: Body Medium/Medium 16px/500, Black/100% */}
-              <p style={{ fontSize: 16, fontWeight: 500, lineHeight: '1.5em', color: '#000', margin: 0 }}>
-                {getValue(specs)}
+
+            <div className="min-w-0 flex-1">
+              <p className="text-[16px] font-medium leading-6 text-black lg:text-[18px] lg:leading-[26px]">
+                {item.value(specs)}
               </p>
-              {/* Label: Body Small/Medium 14px/500, Black/50% */}
-              <p style={{ fontSize: 14, fontWeight: 500, lineHeight: '1.57em', color: 'rgba(0,0,0,0.5)', margin: 0 }}>
-                {label}
+              <p className="mt-[2px] text-[14px] font-medium leading-5 tracking-[0.02em] text-black/50 lg:text-[16px] lg:leading-6">
+                {item.label}
               </p>
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </section>
+  );
+}
+
+function TopSpeedIcon() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 56 56" fill="none" aria-hidden="true" className="h-full w-full">
+      <path
+        d="M12 35.333C12 26.68 19.0135 19.667 27.6667 19.667C36.3198 19.667 43.3333 26.68 43.3333 35.333"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      <path d="M27.666 35.333L35.3887 27.6104" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+      <circle cx="27.6667" cy="35.333" r="3.33333" fill="currentColor" />
+      <path
+        d="M15.333 35.333H10.667M44.667 35.333H40M18.833 26.5L15.5 23.167M36.5 26.5L39.833 23.167"
+        stroke="currentColor"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function EngineIcon() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 56 56" fill="none" aria-hidden="true" className="h-full w-full">
+      <path
+        d="M19.834 22.167H34.1667C35.4553 22.167 36.5 23.2117 36.5 24.5003V35.0003C36.5 36.289 35.4553 37.3337 34.1667 37.3337H19.834C18.5453 37.3337 17.5007 36.289 17.5007 35.0003V24.5003C17.5007 23.2117 18.5453 22.167 19.834 22.167Z"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14 25.667H17.5M14 34.167H17.5M36.5 25.667H42M36.5 34.167H42M22.167 18.667V22.167M31.833 18.667V22.167M22.167 37.333V40.833M31.833 37.333V40.833"
+        stroke="currentColor"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function AccelerationIcon() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 56 56" fill="none" aria-hidden="true" className="h-full w-full">
+      <path
+        d="M14 35.333C14 27.601 20.268 21.333 28 21.333C35.732 21.333 42 27.601 42 35.333"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      <path d="M28 35.333L33.8333 29.5" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+      <circle cx="28" cy="35.333" r="3.33333" fill="currentColor" />
+    </svg>
+  );
+}
+
+function HorsePowerIcon() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 56 56" fill="none" aria-hidden="true" className="h-full w-full">
+      <path
+        d="M31.5 8.167L18.667 28H27.417L24.5 47.833L37.333 26.833H28.583L31.5 8.167Z"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function SeatsIcon() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 56 56" fill="none" aria-hidden="true" className="h-full w-full">
+      <circle cx="20.9997" cy="18.6667" r="6.66667" stroke="currentColor" strokeWidth="4" />
+      <circle cx="37.3337" cy="24.5" r="5.25" stroke="currentColor" strokeWidth="4" />
+      <path
+        d="M10.5 40.833C10.5 34.39 15.7233 29.167 22.1667 29.167C28.61 29.167 33.8333 34.39 33.8333 40.833"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M31.5 40.833C31.5 36.3267 35.16 32.667 39.6663 32.667C42.1563 32.667 44.386 33.782 45.884 35.5387"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function ColorIcon() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 56 56" fill="none" aria-hidden="true" className="h-full w-full">
+      <path
+        d="M20.167 16.333H35.833V31.5C35.833 35.366 32.699 38.5 28.833 38.5H27.167C23.301 38.5 20.167 35.366 20.167 31.5V16.333Z"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinejoin="round"
+      />
+      <path d="M17.833 16.333H38.167" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+      <path d="M28 38.5V44.333" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function TransmissionIcon() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 56 56" fill="none" aria-hidden="true" className="h-full w-full">
+      <circle cx="16.3333" cy="16.3333" r="4.66667" stroke="currentColor" strokeWidth="4" />
+      <circle cx="32.6663" cy="16.3333" r="4.66667" stroke="currentColor" strokeWidth="4" />
+      <circle cx="16.3333" cy="39.6663" r="4.66667" stroke="currentColor" strokeWidth="4" />
+      <circle cx="32.6663" cy="28" r="4.66667" stroke="currentColor" strokeWidth="4" />
+      <path
+        d="M16.333 21V35M32.667 21V23.333M21 16.333H28M21 39.667H32.667M32.667 32.667V39.667H39.667C42.2443 39.667 44.333 37.5783 44.333 35.001V28"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function FuelIcon() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 56 56" fill="none" aria-hidden="true" className="h-full w-full">
+      <path
+        d="M18.667 42V17.5C18.667 16.2113 19.7117 15.1667 21.0003 15.1667H32.667C33.9557 15.1667 35.0003 16.2113 35.0003 17.5V42"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      <path d="M18.667 28H35.0003" stroke="currentColor" strokeWidth="4" />
+      <path
+        d="M35 18.667H39.0837L42 22.167V36.167C42 37.4557 40.9553 38.5003 39.6667 38.5003H38.5C37.2113 38.5003 36.1667 37.4557 36.1667 36.167V30.3337"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

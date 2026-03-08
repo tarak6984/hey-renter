@@ -42,60 +42,93 @@ export default async function CarProfilePage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
-      <Breadcrumb
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'Super Cars', href: '/listings?category=super' },
-          { label: car.model },
-        ]}
-      />
+      <section className="bg-[#f5f5f5]">
+        <div className="mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-6 md:px-[39px]">
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/' },
+              { label: 'Super Cars', href: '/listings?category=super' },
+              { label: car.model },
+            ]}
+            className="max-w-none px-0 py-0"
+            itemClassName="gap-4"
+            linkClassName="text-[18px] font-medium leading-[26px] text-black hover:text-black"
+            currentClassName="text-[18px] font-normal leading-[26px] text-black/40"
+            separatorClassName="h-4 w-4 text-black"
+          />
 
-      <div className="mx-auto w-full max-w-[1440px] px-4 pb-16 sm:px-6 md:px-[39px]">
-        <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-white">
-              <Image src={car.brandLogo} alt={car.brand} width={32} height={32} className="object-contain" />
+          <div className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center overflow-hidden">
+                <Image
+                  src={car.brandLogo}
+                  alt={car.brand}
+                  width={56}
+                  height={56}
+                  className="h-14 w-14 object-contain"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="text-[18px] font-normal leading-[26px] text-black">{car.brand}</p>
+                <h1 className="text-[24px] font-bold leading-[30px] text-black">{car.model}</h1>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-gray-500">{car.brand}</p>
-              <h1 className="text-2xl font-extrabold text-gray-900">{car.model}</h1>
+
+            <div className="flex items-center gap-4">
+              <button
+                className="flex h-14 w-14 items-center justify-center rounded-[10px] bg-white text-black shadow-[0_2px_6px_rgba(0,0,0,0.06),0_6px_16px_rgba(0,0,0,0.08)] transition-colors hover:bg-white/90"
+                aria-label="Wishlist"
+              >
+                <Heart size={28} strokeWidth={2.2} />
+              </button>
+              <button
+                className="flex h-14 w-14 items-center justify-center rounded-[10px] bg-white text-black shadow-[0_2px_6px_rgba(0,0,0,0.06),0_6px_16px_rgba(0,0,0,0.08)] transition-colors hover:bg-white/90"
+                aria-label="Share"
+              >
+                <Share2 size={28} strokeWidth={2.2} />
+              </button>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-white" aria-label="Wishlist">
-              <Heart size={18} className="text-gray-500" />
-            </button>
-            <button className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 transition-colors hover:bg-white" aria-label="Share">
-              <Share2 size={18} className="text-gray-500" />
-            </button>
           </div>
         </div>
+      </section>
 
-        <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="mx-auto w-full max-w-[1440px] px-4 pb-16 sm:px-6 md:px-[39px]">
+        <div className="grid items-start gap-[30px] xl:grid-cols-[minmax(0,898px)_434px]">
           <div>
-            <ImageGallery images={car.images} alt={car.model} />
+            <ImageGallery images={car.images} alt={car.model} noDeposit={car.noDeposit} />
 
-            <div className="mt-6">
-              <h2 className="mb-3 text-lg font-extrabold">Specifications</h2>
+            <div className="mt-[30px]">
               <SpecsGrid specs={car.specs} />
             </div>
 
             <GeneralRules car={car} />
 
-            <div className="mt-8 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-              <h2 className="mb-3 text-lg font-extrabold">How it feels to drive?</h2>
-              <p className="mb-3 text-sm leading-7 text-gray-600">
-                Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
-              </p>
-              <p className="mb-3 text-sm leading-7 text-gray-600">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s.
-              </p>
-              <button className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 py-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50">
-                SEE MORE
-              </button>
-            </div>
+            <section className="mt-[30px] rounded-[20px] bg-white px-6 py-6 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_4px_6px_-1px_rgba(0,0,0,0.1)]">
+              <div className="flex flex-col items-center gap-6">
+                <h2 className="w-full text-center text-[18px] font-medium leading-[26px] text-black">
+                  How it feels to drive?
+                </h2>
 
-            <FaqAccordion />
+                <p className="w-full whitespace-pre-line text-center text-[16px] font-normal leading-[24px] text-black">
+                  {`Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.but also the leap into electronic typesetting, remaining essentially unchanged.
+
+It is a long established fact that a reader.`}
+                </p>
+
+                <button className="flex h-14 w-full items-center justify-center gap-2 rounded-[10px] border-2 border-black/10 bg-black/[0.06] px-5 pl-6 text-[16px] font-medium leading-[24px] text-black transition-colors hover:bg-black/[0.08]">
+                  SEE MORE
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path
+                      d="M2.11328 5.25332L3.05328 4.31332L7.99995 9.25332L12.9466 4.31332L13.8866 5.25332L7.99995 11.14L2.11328 5.25332Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </section>
+
           </div>
 
           <div>
@@ -110,21 +143,41 @@ export default async function CarProfilePage({ params }: PageProps) {
         </div>
 
         <section className="mt-16">
-          <h2 className="mb-2 text-center text-2xl font-extrabold">OTHER OPTIONS</h2>
-          <p className="mb-6 text-center text-sm text-gray-500">
+          <div className="flex flex-col items-center gap-6">
+            <h2
+              className="text-center text-black"
+              style={{
+                fontFamily: 'var(--font-clash)',
+                fontSize: '30px',
+                fontWeight: 600,
+                lineHeight: '38px',
+              }}
+            >
+              OTHER OPTIONS
+            </h2>
+            <p className="text-center text-[18px] font-normal leading-[26px] text-black">
             Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
-          </p>
-          <div className="flex flex-wrap justify-center gap-5 xl:justify-start">
+            </p>
+          </div>
+          <div className="mt-10 grid justify-items-center gap-[30px] sm:grid-cols-2 xl:grid-cols-4">
             {otherCars.slice(0, 4).map((otherCar) => (
               <CarCard key={otherCar.id} car={otherCar} />
             ))}
           </div>
           <div className="mt-6 flex justify-center">
-            <button className="flex items-center gap-2 rounded-full border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 transition-all hover:bg-white">
+            <button className="flex h-14 w-full items-center justify-center gap-2 rounded-[10px] border-2 border-black px-5 pl-6 text-[18px] font-medium leading-[26px] text-black transition-colors hover:bg-white/70">
               SEE - 1,289 OTHER OPTIONS
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M7.41016 16.59L12.0002 12L7.41016 7.41L8.83016 6L14.8302 12L8.83016 18L7.41016 16.59Z"
+                  fill="currentColor"
+                />
+              </svg>
             </button>
           </div>
         </section>
+
+        <FaqAccordion />
 
         <SeoSection />
       </div>
