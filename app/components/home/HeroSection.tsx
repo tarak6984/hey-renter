@@ -1,12 +1,12 @@
 import Image from 'next/image';
 
-const HERO_IMAGE_WIDTH = 2880;
-const HERO_IMAGE_HEIGHT = 550;
-
+const HERO_STAGE_HEIGHT = 275;
+const HERO_GAP = 72;
 /**
  * Home hero section based on the 1440px Figma desktop frame.
- * The artwork is rendered at its native aspect ratio so browser zoom
- * does not re-crop the cars when the effective viewport changes.
+ * The hero art is composed from three separate car assets inside an oversized
+ * centered rail. At the baseline desktop width the side cars are intentionally
+ * cropped, and wider viewports reveal more of them naturally.
  */
 export default function HeroSection() {
   return (
@@ -51,23 +51,52 @@ export default function HeroSection() {
 
       <div className="h-10 shrink-0 md:h-12" />
 
-      <div className="mx-auto w-full max-w-[1440px]">
+      <div className="w-full overflow-hidden">
         <div
-          className="relative w-full"
+          className="relative w-full overflow-hidden"
           style={{
-            aspectRatio: `${HERO_IMAGE_WIDTH} / ${HERO_IMAGE_HEIGHT}`,
             flexShrink: 0,
+            height: `clamp(180px, ${(HERO_STAGE_HEIGHT / 1440) * 100}vw, ${HERO_STAGE_HEIGHT}px)`,
           }}
         >
-          <Image
-            src="/assets/home-optimized/hero-cars.webp"
-            alt="Luxury cars showcase - Rolls Royce, Lamborghini Urus, Sports Car"
-            fill
-            className="object-contain object-center"
-            priority
-            sizes="(max-width: 1440px) 100vw, 1440px"
-            quality={78}
-          />
+          <div
+            className="pointer-events-none absolute bottom-0 left-1/2 grid -translate-x-1/2 items-end"
+            style={{
+              gridTemplateColumns: '756px 765px 765px',
+              gap: `${HERO_GAP}px`,
+            }}
+          >
+            <Image
+              src="/assets/hero/left-car-image.png"
+              alt="Rolls Royce side profile"
+              width={2000}
+              height={617}
+              priority
+              className="h-auto w-full self-end"
+              sizes="(max-width: 1440px) 52.5vw, 756px"
+              quality={92}
+            />
+            <Image
+              src="/assets/hero/middle-car-image.png"
+              alt="Lamborghini Urus side profile"
+              width={1537}
+              height={550}
+              priority
+              className="h-auto w-full self-end"
+              sizes="(max-width: 1440px) 53.125vw, 765px"
+              quality={92}
+            />
+            <Image
+              src="/assets/hero/right-car-image.png"
+              alt="Sports car side profile"
+              width={1725}
+              height={567}
+              priority
+              className="h-auto w-full self-end"
+              sizes="(max-width: 1440px) 53.125vw, 765px"
+              quality={92}
+            />
+          </div>
         </div>
       </div>
 
