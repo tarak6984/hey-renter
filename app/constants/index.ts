@@ -1,5 +1,7 @@
 import { Car, CarCategory } from '@/app/types';
 
+const SUPPORTED_LANGUAGES = ['English', 'Arabic', 'Russian', 'French', 'Italian', 'German'] as const;
+
 // ─── Brand Data ──────────────────────────────────────────────────────────────
 
 export const CAR_BRANDS = [
@@ -70,7 +72,7 @@ export const MOCK_CARS: Car[] = [
     securityDeposit: false,
     fuelPolicy: 'Same to Same',
     insurance: 'Basic Comprehensive Insurance',
-    languages: ['English', 'Arabic', 'Russian', 'French', 'Italian', 'German'],
+    languages: [...SUPPORTED_LANGUAGES],
     payments: ['Credit Card', 'Bank Card', 'Cash', 'Crypto'],
     documents: ['Driving License', 'Emirates ID or Passport', 'International Driving Permit (IDP)'],
     rating: 4.8,
@@ -108,7 +110,7 @@ export const MOCK_CARS: Car[] = [
     securityDeposit: false,
     fuelPolicy: 'Same to Same',
     insurance: 'Basic Comprehensive Insurance',
-    languages: ['English', 'Arabic'],
+    languages: [...SUPPORTED_LANGUAGES],
     payments: ['Credit Card', 'Cash'],
     documents: ['Driving License', 'Emirates ID or Passport'],
   },
@@ -144,7 +146,7 @@ export const MOCK_CARS: Car[] = [
     securityDeposit: false,
     fuelPolicy: 'Same to Same',
     insurance: 'Basic Comprehensive Insurance',
-    languages: ['English', 'Arabic'],
+    languages: [...SUPPORTED_LANGUAGES],
     payments: ['Credit Card', 'Cash'],
     documents: ['Driving License', 'Emirates ID or Passport'],
   },
@@ -180,7 +182,7 @@ export const MOCK_CARS: Car[] = [
     securityDeposit: false,
     fuelPolicy: 'Same to Same',
     insurance: 'Basic Comprehensive Insurance',
-    languages: ['English', 'Arabic'],
+    languages: [...SUPPORTED_LANGUAGES],
     payments: ['Credit Card', 'Cash'],
     documents: ['Driving License', 'Emirates ID or Passport'],
   },
@@ -216,7 +218,7 @@ export const MOCK_CARS: Car[] = [
     securityDeposit: false,
     fuelPolicy: 'Same to Same',
     insurance: 'Basic Comprehensive Insurance',
-    languages: ['English', 'Arabic'],
+    languages: [...SUPPORTED_LANGUAGES],
     payments: ['Credit Card', 'Cash'],
     documents: ['Driving License', 'Emirates ID or Passport'],
   },

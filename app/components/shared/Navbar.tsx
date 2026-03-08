@@ -13,7 +13,7 @@ export default function Navbar() {
   const [focused, setFocused] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 w-full" style={{ backgroundColor: '#12151C' }}>
+    <nav data-shell-navbar className="sticky top-0 z-50 w-full" style={{ backgroundColor: '#12151C' }}>
       <div className="relative mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-4 sm:px-6 md:h-[80px] md:px-[39px] md:py-0">
         <Link
           href="/"

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { getCalendarDays, MONTH_NAMES } from '@/app/lib/utils';
 
 interface PickupModalProps {
@@ -41,8 +41,55 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
   const [hourlyHour, setHourlyHour] = useState(8);
   const [hourlyMinute, setHourlyMinute] = useState(0);
   const [hourlyIsPM, setHourlyIsPM] = useState(false);
+  const [shellOffset, setShellOffset] = useState(80);
+  const [viewport, setViewport] = useState({ width: 1280, height: 900 });
+
+  useEffect(() => {
+    if (!open || typeof window === 'undefined') return;
+
+    const visualViewport = window.visualViewport;
+
+    const measureHeaderOffset = () => {
+      const navbar = document.querySelector<HTMLElement>('[data-shell-navbar]');
+      const navbarBottom = navbar?.getBoundingClientRect().bottom ?? 80;
+
+      setShellOffset(Math.max(0, Math.round(navbarBottom)) || 80);
+      setViewport({
+        width: visualViewport?.width ?? window.innerWidth,
+        height: visualViewport?.height ?? window.innerHeight,
+      });
+    };
+
+    measureHeaderOffset();
+    window.addEventListener('resize', measureHeaderOffset);
+    window.addEventListener('scroll', measureHeaderOffset, { passive: true });
+    visualViewport?.addEventListener('resize', measureHeaderOffset);
+    visualViewport?.addEventListener('scroll', measureHeaderOffset);
+
+    return () => {
+      window.removeEventListener('resize', measureHeaderOffset);
+      window.removeEventListener('scroll', measureHeaderOffset);
+      visualViewport?.removeEventListener('resize', measureHeaderOffset);
+      visualViewport?.removeEventListener('scroll', measureHeaderOffset);
+    };
+  }, [open]);
 
   if (!open) return null;
+
+  const modalBaseWidth = 361;
+  const modalBaseHeight = showHourlyCalendar
+    ? (hourlyShowTime ? 860 : 690)
+    : showMonthlyCalendar
+    ? 690
+    : 597;
+  const headerGap = 24;
+  const availableWidth = Math.max(280, viewport.width - 32);
+  const availableHeight = Math.max(280, viewport.height - shellOffset - (headerGap * 2));
+  const modalScale = Math.min(1, availableWidth / modalBaseWidth, availableHeight / modalBaseHeight);
+  const modalLayoutSize = {
+    width: modalBaseWidth * modalScale,
+    height: modalBaseHeight * modalScale,
+  };
 
   const days = getCalendarDays(viewYear, viewMonth);
 
@@ -108,37 +155,57 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center"
       onClick={onClose}
       style={{
         animation: 'pickupModalBackdropIn 180ms ease both',
+        alignItems: 'flex-start',
+        top: `${shellOffset}px`,
+        paddingTop: `${headerGap}px`,
+        paddingBottom: '24px',
+        paddingLeft: '16px',
+        paddingRight: '16px',
+        backgroundColor: 'rgba(6,9,14,0.58)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        overflowY: 'auto',
       }}
     >
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          width: '320px',
-          backgroundColor: '#ffffff',
-          borderRadius: '20px',
-          boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
-          overflow: 'hidden',
-          fontFamily: 'var(--font-tt-norms)',
-          animation: 'pickupModalPanelIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both',
-          transformOrigin: 'top center',
+          width: `${modalLayoutSize.width}px`,
+          minHeight: `${modalLayoutSize.height}px`,
+          display: 'flex',
+          justifyContent: 'center',
+          flexShrink: 0,
         }}
       >
+        <div
+          style={{
+            width: '361px',
+            backgroundColor: '#ffffff',
+            borderRadius: '20px',
+            boxShadow: '0 24px 56px rgba(0,0,0,0.20)',
+            overflow: 'hidden',
+            fontFamily: 'var(--font-tt-norms)',
+            animation: 'pickupModalPanelIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both',
+            transformOrigin: 'top center',
+            transform: `scale(${modalScale})`,
+          }}
+        >
         {/* ── Tabs ── */}
-        <div style={{ padding: '10px 10px 0' }}>
-          <div style={{ display: 'flex', backgroundColor: 'rgb(224,223,223)', borderRadius: '50px', padding: '4px' }}>
+        <div style={{ padding: '24px 24px 0' }}>
+          <div style={{ display: 'flex', backgroundColor: 'rgb(224,223,223)', borderRadius: '50px', padding: '6px', minHeight: '68px' }}>
             {(['Daily', 'Monthly', 'Hourly'] as RentalTab[]).map(t => (
               <button key={t} onClick={() => switchTab(t)} style={{
-                flex: 1, padding: '7px 0',
-                fontFamily: 'var(--font-tt-norms)', fontSize: '14px', fontWeight: 500,
-                color: tab === t ? '#000' : 'rgba(0,0,0,0.5)',
+                flex: 1, padding: '16px 0',
+                fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500,
+                color: tab === t ? '#000' : 'rgba(0,0,0,0.8)',
                 backgroundColor: tab === t ? '#fff' : 'transparent',
-                borderRadius: tab === t ? '50px' : undefined,
+                borderRadius: tab === t ? '999px' : undefined,
                 border: 'none', cursor: 'pointer', transition: 'all 0.2s',
-                boxShadow: tab === t ? '0 1px 3px rgba(0,0,0,0.12)' : 'none',
+                boxShadow: tab === t ? '0 2px 8px rgba(0,0,0,0.16)' : 'none',
               }}>{t}</button>
             ))}
           </div>
@@ -146,7 +213,11 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
 
         {/* ── Fixed-height content area — taller when sub-calendar is open ── */}
         <div style={{
-          height: (showHourlyCalendar || showMonthlyCalendar) ? '440px' : '380px',
+          height: showHourlyCalendar && hourlyShowTime
+            ? '585px'
+            : (showHourlyCalendar || showMonthlyCalendar)
+            ? '505px'
+            : '417px',
           transition: 'height 0.18s ease',
           position: 'relative',
           overflow: 'hidden',
@@ -239,7 +310,7 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
 
             {/* ── HOURLY ── */}
             {visibleTab === 'Hourly' && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '12px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', height: '100%', gap: '24px', paddingTop: '32px' }}>
                 {showHourlyCalendar ? (
                   /* Step 1: pick a single start date */
                   <HourlyDatePicker
@@ -259,7 +330,7 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
                     <HourlyDial hours={hours} onChange={setHours} />
                     <span
                       onClick={() => setShowHourlyCalendar(true)}
-                      style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '15px', fontWeight: 500, color: '#000', textDecoration: 'underline', cursor: 'pointer', textAlign: 'center' }}
+                      style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, color: '#000', textDecoration: 'underline', textUnderlineOffset: '2px', cursor: 'pointer', textAlign: 'center' }}
                     >
                       {hourlyStartDate && hourlyShowTime
                         ? `${fmtDate(hourlyStartDate)}, ${hourlyHour}:${String(hourlyMinute).padStart(2,'0')} ${hourlyIsPM ? 'PM' : 'AM'}`
@@ -274,7 +345,7 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
 
             {/* ── MONTHLY ── */}
             {visibleTab === 'Monthly' && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '12px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', height: '100%', gap: '24px', paddingTop: '32px' }}>
                 {showMonthlyCalendar ? (
                   <CalendarPicker
                     viewYear={monthlyViewYear} viewMonth={monthlyViewMonth}
@@ -296,7 +367,7 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
                     <MonthlyDial months={months} onChange={setMonths} />
                     <span
                       onClick={() => setShowMonthlyCalendar(true)}
-                      style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '15px', fontWeight: 500, color: '#000', textDecoration: 'underline', cursor: 'pointer', textAlign: 'center' }}
+                      style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, color: '#000', textDecoration: 'underline', textUnderlineOffset: '2px', cursor: 'pointer', textAlign: 'center' }}
                     >
                       {monthlyRangeStart
                         ? `${fmtDate(monthlyRangeStart)}${monthlyRangeEnd ? ` - ${fmtDate(monthlyRangeEnd)}` : ''}`
@@ -312,17 +383,18 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
 
         {/* ── CTA — hidden when any sub-calendar is open ── */}
         {!showMonthlyCalendar && !showHourlyCalendar && (
-          <div style={{ padding: '8px 12px 12px' }}>
+          <div style={{ borderTop: '1px solid rgba(0,0,0,0.1)', padding: '16px', marginTop: 'auto' }}>
             <button onClick={handleConfirm} style={{
-              width: '100%', height: '46px',
+              width: '100%', height: '56px',
               backgroundColor: 'rgb(184,240,79)',
               borderRadius: '10px', border: 'none', cursor: 'pointer',
-              fontFamily: 'var(--font-tt-norms)', fontSize: '16px', fontWeight: 500, color: '#000',
+              fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, color: '#000',
             }}>
               Confirm
             </button>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
@@ -348,45 +420,40 @@ function HourlyDatePicker({ viewYear, viewMonth, selectedDate, onPrevMonth, onNe
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px 6px' }}>
-        <button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0 4px', display: 'flex', alignItems: 'center' }}>
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M11 3L5 9L11 15" stroke="#000" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 14px 10px' }}>
         <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '15px', fontWeight: 600, color: '#000' }}>
           {MONTH_NAMES[viewMonth]} {viewYear}
         </span>
         <div style={{ display: 'flex', gap: '8px' }}>
-          <button onClick={onPrevMonth} style={{ width: '24px', height: '24px', backgroundColor: 'transparent', border: '1px solid #ddd', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button onClick={onPrevMonth} style={{ width: '20px', height: '20px', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>
             <ChevronIcon dir="left" />
           </button>
-          <button onClick={onNextMonth} style={{ width: '24px', height: '24px', backgroundColor: 'transparent', border: '1px solid #ddd', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button onClick={onNextMonth} style={{ width: '20px', height: '20px', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>
             <ChevronIcon dir="right" />
           </button>
         </div>
       </div>
 
       {/* Day headers */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '0 10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '0 14px' }}>
         {['S','M','T','W','T','F','S'].map((d, i) => (
-          <div key={i} style={{ height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-tt-norms)', fontSize: '12px', fontWeight: 500, color: 'rgba(0,0,0,0.4)' }}>{d}</div>
+          <div key={i} style={{ height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-tt-norms)', fontSize: '14px', fontWeight: 500, color: 'rgba(0,0,0,0.85)' }}>{d}</div>
         ))}
       </div>
 
       {/* Day cells — single selection */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '0 10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '0 14px' }}>
         {days.map((d, i) => {
           const sel = d !== null && isSelected(d);
           return (
-            <div key={i} style={{ height: '34px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div key={i} style={{ height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {d !== null ? (
                 <button onClick={() => onDayClick(tsFor(d))} style={{
-                  width: '32px', height: '32px',
+                  width: '40px', height: '40px',
                   borderRadius: sel ? '8px' : '50%',
                   backgroundColor: sel ? '#000' : 'transparent',
-                  color: sel ? '#fff' : '#000',
-                  fontFamily: 'var(--font-tt-norms)', fontSize: '13px', fontWeight: sel ? 600 : 400,
+                  color: sel ? '#fff' : 'rgba(0,0,0,0.5)',
+                  fontFamily: 'var(--font-tt-norms)', fontSize: '16px', fontWeight: sel ? 600 : 500,
                   border: 'none', cursor: 'pointer', transition: 'all 0.15s',
                 }}>{d}</button>
               ) : null}
@@ -397,30 +464,28 @@ function HourlyDatePicker({ viewYear, viewMonth, selectedDate, onPrevMonth, onNe
 
       {/* Time picker — shown after date selected */}
       {showTime && selectedDate && (
-        <div style={{ marginTop: 'auto', borderTop: '1px solid #f0f0f0', padding: '8px 14px', position: 'relative' }}>
-          <div style={{ textAlign: 'center', fontFamily: 'var(--font-tt-norms)', fontSize: '12px', color: 'rgba(0,0,0,0.45)', marginBottom: '4px' }}>
-            {fmtDateFull(selectedDate)}
-          </div>
-          <div style={{ position: 'absolute', left: '14px', right: '14px', top: '50%', transform: 'translateY(-10%)', height: '36px', backgroundColor: 'rgba(0,0,0,0.04)', borderRadius: '6px', pointerEvents: 'none' }} />
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+        <div style={{ marginTop: 'auto', borderTop: '1px solid #E7E7E7', padding: '12px 14px 18px', position: 'relative' }}>
+          <div style={{ position: 'absolute', left: '68px', right: '68px', top: '86px', height: '30px', backgroundColor: 'rgba(0,0,0,0.06)', borderRadius: '6px', pointerEvents: 'none' }} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px', minHeight: '132px' }}>
             <DrumScroll value={hour} min={1} max={12} onChange={onHourChange} />
-            <span style={{ fontSize: '18px', fontWeight: 700, color: '#000', paddingBottom: '2px' }}>:</span>
+            <span style={{ fontSize: '18px', fontWeight: 700, color: '#000', paddingBottom: '2px', margin: '0 4px' }}>:</span>
             <DrumScroll value={minute} min={0} max={59} onChange={onMinuteChange} pad />
-            <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '12px' }}>
               {['AM', 'PM'].map(p => (
                 <button key={p} onClick={() => onIsPMChange(p === 'PM')} style={{
-                  fontFamily: 'var(--font-tt-norms)', fontSize: '13px', fontWeight: 600,
-                  color: (isPM && p === 'PM') || (!isPM && p === 'AM') ? '#000' : 'rgba(0,0,0,0.25)',
-                  background: 'none', border: 'none', cursor: 'pointer', padding: '2px 0', lineHeight: '20px',
+                  fontFamily: 'var(--font-tt-norms)', fontSize: '14px', fontWeight: 500,
+                  color: (isPM && p === 'PM') || (!isPM && p === 'AM') ? '#000' : 'rgba(0,0,0,0.28)',
+                  background: 'none', border: 'none', cursor: 'pointer', padding: '5px 0', lineHeight: '20px',
                 }}>{p}</button>
               ))}
             </div>
           </div>
           <button onClick={onBack} style={{
-            marginTop: '6px', width: '100%', height: '36px',
-            backgroundColor: '#000', color: '#fff',
-            borderRadius: '8px', border: 'none', cursor: 'pointer',
-            fontFamily: 'var(--font-tt-norms)', fontSize: '14px', fontWeight: 600,
+            width: '100%', height: '56px', marginTop: '12px',
+            backgroundColor: 'rgb(184,240,79)', color: '#000',
+            borderRadius: '10px', border: 'none', cursor: 'pointer',
+            fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1,
           }}>Done</button>
         </div>
       )}
@@ -431,6 +496,36 @@ function HourlyDatePicker({ viewYear, viewMonth, selectedDate, onPrevMonth, onNe
 /* ── helpers ── */
 function toTs(year: number, month: number, day: number) {
   return new Date(year, month, day).getTime();
+}
+
+function DialDots() {
+  const cx = 156.5;
+  const cy = 156.5;
+  const radius = 126.21;
+  const dotRadius = 2.1;
+  const dotCount = 9;
+  const step = 360 / dotCount;
+
+  return (
+    <>
+      {Array.from({ length: dotCount }, (_, index) => {
+        const angle = (-90 + (index * step)) * (Math.PI / 180);
+        const x = cx + radius * Math.cos(angle);
+        const y = cy + radius * Math.sin(angle);
+
+        return (
+          <circle
+            key={index}
+            cx={x}
+            cy={y}
+            r={dotRadius}
+            fill="rgba(0, 0, 0, 0.5)"
+            style={{ pointerEvents: 'none' }}
+          />
+        );
+      })}
+    </>
+  );
 }
 function fmtDate(ts: number) {
   const d = new Date(ts);
@@ -462,20 +557,15 @@ function CalendarPicker({ viewYear, viewMonth, rangeStart, rangeEnd, onPrevMonth
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px 6px' }}>
-        <button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0 4px', display: 'flex', alignItems: 'center' }}>
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M11 3L5 9L11 15" stroke="#000" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 14px 10px' }}>
         <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '15px', fontWeight: 600, color: '#000' }}>
           {MONTH_NAMES[viewMonth]} {viewYear}
         </span>
         <div style={{ display: 'flex', gap: '8px' }}>
-          <button onClick={onPrevMonth} style={{ width: '24px', height: '24px', backgroundColor: 'transparent', border: '1px solid #ddd', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button onClick={onPrevMonth} style={{ width: '20px', height: '20px', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>
             <ChevronIcon dir="left" />
           </button>
-          <button onClick={onNextMonth} style={{ width: '24px', height: '24px', backgroundColor: 'transparent', border: '1px solid #ddd', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button onClick={onNextMonth} style={{ width: '20px', height: '20px', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>
             <ChevronIcon dir="right" />
           </button>
         </div>
@@ -489,14 +579,14 @@ function CalendarPicker({ viewYear, viewMonth, rangeStart, rangeEnd, onPrevMonth
       )}
 
       {/* Day headers */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '0 10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '0 14px' }}>
         {['S','M','T','W','T','F','S'].map((d, i) => (
-          <div key={i} style={{ height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-tt-norms)', fontSize: '12px', fontWeight: 500, color: 'rgba(0,0,0,0.4)' }}>{d}</div>
+          <div key={i} style={{ height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-tt-norms)', fontSize: '14px', fontWeight: 500, color: 'rgba(0,0,0,0.85)' }}>{d}</div>
         ))}
       </div>
 
       {/* Day cells */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '0 10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '0 14px' }}>
         {days.map((d, i) => {
           const start   = d !== null && isStart(d);
           const end     = d !== null && isEnd(d);
@@ -504,17 +594,17 @@ function CalendarPicker({ viewYear, viewMonth, rangeStart, rangeEnd, onPrevMonth
           const colIndex = i % 7;
           return (
             <div key={i} style={{
-              height: '34px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center',
               backgroundColor: inRange ? 'rgba(0,0,0,0.06)' : 'transparent',
-              borderRadius: inRange ? (colIndex === 0 ? '17px 0 0 17px' : colIndex === 6 ? '0 17px 17px 0' : '0') : undefined,
+              borderRadius: inRange ? (colIndex === 0 ? '8px 0 0 8px' : colIndex === 6 ? '0 8px 8px 0' : '0') : undefined,
             }}>
               {d !== null ? (
                 <button onClick={() => onDayClick(tsFor(d))} style={{
-                  width: '32px', height: '32px',
+                  width: '40px', height: '40px',
                   borderRadius: start || end ? '8px' : '50%',
                   backgroundColor: start || end ? '#000' : 'transparent',
-                  color: start || end ? '#fff' : '#000',
-                  fontFamily: 'var(--font-tt-norms)', fontSize: '13px', fontWeight: start || end ? 600 : 400,
+                  color: start || end ? '#fff' : 'rgba(0,0,0,0.5)',
+                  fontFamily: 'var(--font-tt-norms)', fontSize: '16px', fontWeight: start || end ? 600 : 500,
                   border: 'none', cursor: 'pointer', transition: 'all 0.15s', position: 'relative', zIndex: 1,
                 }}>{d}</button>
               ) : null}
@@ -525,12 +615,12 @@ function CalendarPicker({ viewYear, viewMonth, rangeStart, rangeEnd, onPrevMonth
 
       {/* Done button */}
       {rangeStart && (
-        <div style={{ marginTop: 'auto', padding: '6px 14px 8px' }}>
+        <div style={{ marginTop: '12px', borderTop: '1px solid #E7E7E7', padding: '14px 14px 12px' }}>
           <button onClick={onBack} style={{
-            width: '100%', height: '38px',
-            backgroundColor: rangeEnd ? '#000' : 'rgba(0,0,0,0.15)', color: '#fff',
-            borderRadius: '8px', border: 'none', cursor: rangeEnd ? 'pointer' : 'default',
-            fontFamily: 'var(--font-tt-norms)', fontSize: '14px', fontWeight: 600,
+            width: '100%', height: '48px',
+            backgroundColor: 'rgb(184,240,79)', color: '#000',
+            borderRadius: '10px', border: 'none', cursor: rangeEnd ? 'pointer' : 'default',
+            fontFamily: 'var(--font-tt-norms)', fontSize: '16px', fontWeight: 500,
           }}>
             {rangeEnd ? 'Done' : 'Select end date'}
           </button>
@@ -543,11 +633,9 @@ function CalendarPicker({ viewYear, viewMonth, rangeStart, rangeEnd, onPrevMonth
 /* ── MonthlyDial – same design as HourlyDial but for 1-12 months ─────────── */
 function MonthlyDial({ months, onChange }: { months: number; onChange: (m: number) => void }) {
   const MAX = 12;
-  const cx = 130; const cy = 130;
-  const r = 85;
-  const ringWidth = 42;
-  const tickR = r;
-
+  const size = 313;
+  const cx = 156.5; const cy = 156.5;
+  const r = 124.53;
   const svgRef = useRef<SVGSVGElement>(null);
   const isDragging = useRef(false);
 
@@ -562,18 +650,18 @@ function MonthlyDial({ months, onChange }: { months: number; onChange: (m: numbe
   const angleToMonths = useCallback((clientX: number, clientY: number) => {
     if (!svgRef.current) return months;
     const rect = svgRef.current.getBoundingClientRect();
-    const scaleX = 260 / rect.width;
-    const scaleY = 260 / rect.height;
+    const scaleX = size / rect.width;
+    const scaleY = size / rect.height;
     const x = (clientX - rect.left) * scaleX - cx;
     const y = (clientY - rect.top) * scaleY - cy;
     let angle = Math.atan2(y, x) * (180 / Math.PI) + 90;
     if (angle < 0) angle += 360;
     return Math.max(1, Math.min(MAX, Math.round((angle / 360) * MAX)));
-  }, [months, cx, cy, MAX]);
+  }, [months, cx, cy, MAX, size]);
 
-  const onHandlePointerDown = useCallback((e: React.PointerEvent<SVGCircleElement>) => {
+  const onHandlePointerDown = useCallback((e: React.PointerEvent<SVGImageElement>) => {
     e.stopPropagation();
-    (e.currentTarget as SVGCircleElement).setPointerCapture(e.pointerId);
+    (e.currentTarget as SVGImageElement).setPointerCapture(e.pointerId);
     isDragging.current = true;
   }, []);
 
@@ -584,69 +672,72 @@ function MonthlyDial({ months, onChange }: { months: number; onChange: (m: numbe
 
   const onPointerUp = useCallback(() => { isDragging.current = false; }, []);
 
-  // 12 tick dots
-  const ticks = Array.from({ length: 12 }, (_, i) => {
-    const a = ((i / 12) * 360 - 90) * (Math.PI / 180);
-    return { x: cx + tickR * Math.cos(a), y: cy + tickR * Math.sin(a) };
-  });
-
   return (
-    <div style={{ position: 'relative', width: '260px', height: '260px' }}>
-      <svg ref={svgRef} width="260" height="260" viewBox="0 0 260 260"
+    <div style={{ position: 'relative', width: `${size}px`, height: `${size}px`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <svg ref={svgRef} width={size} height={size} viewBox={`0 0 ${size} ${size}`}
         style={{ touchAction: 'none', cursor: 'default' }}
         onPointerMove={onSvgPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
       >
         <defs>
-          <radialGradient id="monthHandleGrad" cx="45%" cy="35%" r="60%">
-            <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="70%" stopColor="#f5f5f5" />
-            <stop offset="100%" stopColor="#e8f5d0" />
-          </radialGradient>
-          <filter id="monthHandleShadow" x="-40%" y="-40%" width="180%" height="180%">
-            <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="rgba(0,0,0,0.20)" />
+          <filter id="monthArcGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="-1.5" stdDeviation="3" floodColor="#C4F46B" floodOpacity="0.55" />
+            <feDropShadow dx="0" dy="2.5" stdDeviation="4" floodColor="#90D516" floodOpacity="0.45" />
           </filter>
+          <linearGradient id="monthArcGradient" x1="154" y1="4" x2="309" y2="187" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#C0F15A" />
+            <stop offset="55%" stopColor="#B7ED3F" />
+            <stop offset="100%" stopColor="#A6E922" />
+          </linearGradient>
         </defs>
-
-        {/* Elevation shadow disk */}
-        <circle cx={cx} cy={cy} r={r + ringWidth/2 + 2} fill="rgb(235,235,235)"
-          style={{ filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.18)) drop-shadow(0 4px 8px rgba(0,0,0,0.12))', pointerEvents: 'none' }}
-        />
-        {/* Outer gray border */}
-        <circle cx={cx} cy={cy} r={r + ringWidth/2 - 1} fill="none"
-          stroke="rgb(200,200,200)" strokeWidth="2" style={{ pointerEvents: 'none' }}
-        />
-        {/* Gray track ring */}
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgb(225,225,225)" strokeWidth={ringWidth}
+        <image
+          href="/assets/calendar/Ellipse%20(2).svg"
+          x="0"
+          y="0"
+          width="313"
+          height="313"
+          preserveAspectRatio="xMidYMid meet"
           style={{ pointerEvents: 'none' }}
         />
-        {/* Inner gray border */}
-        <circle cx={cx} cy={cy} r={r - ringWidth/2 + 1} fill="none"
-          stroke="rgb(205,205,205)" strokeWidth="2" style={{ pointerEvents: 'none' }}
-        />
-        {/* Tick dots */}
-        {ticks.map((t, i) => (
-          <circle key={i} cx={t.x} cy={t.y} r={3} fill="rgb(148,148,148)" style={{ pointerEvents: 'none' }} />
-        ))}
-        {/* Lime arc */}
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgb(184,240,79)" strokeWidth={ringWidth}
+        <DialDots />
+        <circle
+          cx={cx}
+          cy={cy}
+          r={r}
+          fill="none"
+          stroke="url(#monthArcGradient)"
+          strokeWidth={63}
           strokeLinecap="round"
           strokeDasharray={`${arcLength} ${circumference}`}
           transform={`rotate(-90 ${cx} ${cy})`}
+          filter="url(#monthArcGlow)"
           style={{ pointerEvents: 'none' }}
         />
-        {/* White handle */}
-        <circle cx={hx} cy={hy} r={17} fill="url(#monthHandleGrad)"
-          filter="url(#monthHandleShadow)"
+        <image
+          href="/assets/calendar/Ellipse.svg"
+          x="37.12"
+          y="54.41"
+          width="238.76"
+          height="238.76"
+          preserveAspectRatio="xMidYMid meet"
+          style={{ pointerEvents: 'none' }}
+        />
+        <image
+          href="/assets/calendar/Handle.svg"
+          x={hx - 27.02}
+          y={hy - 27.02}
+          width="54.04"
+          height="54.04"
+          preserveAspectRatio="xMidYMid meet"
           style={{ cursor: 'grab' }}
           onPointerDown={onHandlePointerDown}
         />
         {/* Center number */}
-        <text x={cx} y={cy - 10} textAnchor="middle" dominantBaseline="middle"
-          style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '48px', fontWeight: 700, fill: 'rgb(30,30,30)', pointerEvents: 'none' }}
+        <text x={cx} y={cy - 12} textAnchor="middle" dominantBaseline="middle"
+          style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '60px', fontWeight: 700, fill: 'rgb(30,30,30)', pointerEvents: 'none' }}
         >{months}</text>
         {/* Center label */}
-        <text x={cx} y={cy + 26} textAnchor="middle" dominantBaseline="middle"
-          style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '16px', fontWeight: 500, fill: 'rgb(120,120,120)', pointerEvents: 'none' }}
+        <text x={cx} y={cy + 27} textAnchor="middle" dominantBaseline="middle"
+          style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 700, fill: 'rgb(34,34,34)', pointerEvents: 'none' }}
         >months</text>
       </svg>
     </div>
@@ -655,11 +746,10 @@ function MonthlyDial({ months, onChange }: { months: number; onChange: (m: numbe
 
 /* ── HourlyDial – circular arc knob with full mouse drag support ─────────── */
 function HourlyDial({ hours, onChange }: { hours: number; onChange: (h: number) => void }) {
-  const MAX = 24;
-  const cx = 130; const cy = 130;
-  const r = 85;
-  const ringWidth = 42;  // wide ring matching Figma
-  const tickR = r;       // dots on ring centerline
+  const MAX = 12;
+  const size = 313;
+  const cx = 156.5; const cy = 156.5;
+  const r = 124.53;
 
   const svgRef = useRef<SVGSVGElement>(null);
   const isDragging = useRef(false);
@@ -672,27 +762,24 @@ function HourlyDial({ hours, onChange }: { hours: number; onChange: (h: number) 
   const hx = cx + r * Math.cos(handleAngle);
   const hy = cy + r * Math.sin(handleAngle);
 
-  // Convert pointer position → hours value
   const angleToHours = useCallback((clientX: number, clientY: number) => {
     if (!svgRef.current) return hours;
     const rect = svgRef.current.getBoundingClientRect();
-    const scaleX = 260 / rect.width;
-    const scaleY = 260 / rect.height;
+    const scaleX = size / rect.width;
+    const scaleY = size / rect.height;
     const x = (clientX - rect.left) * scaleX - cx;
     const y = (clientY - rect.top) * scaleY - cy;
     let angle = Math.atan2(y, x) * (180 / Math.PI) + 90;
     if (angle < 0) angle += 360;
     return Math.max(1, Math.round((angle / 360) * MAX));
-  }, [hours, cx, cy, MAX]);
+  }, [hours, cx, cy, MAX, size]);
 
-  // Only start drag when pointer goes down ON the white handle
-  const onHandlePointerDown = useCallback((e: React.PointerEvent<SVGCircleElement>) => {
+  const onHandlePointerDown = useCallback((e: React.PointerEvent<SVGImageElement>) => {
     e.stopPropagation();
-    (e.currentTarget as SVGCircleElement).setPointerCapture(e.pointerId);
+    (e.currentTarget as SVGImageElement).setPointerCapture(e.pointerId);
     isDragging.current = true;
   }, []);
 
-  // Move fires on the SVG (capture keeps pointer even if outside handle)
   const onSvgPointerMove = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
     if (!isDragging.current) return;
     onChange(angleToHours(e.clientX, e.clientY));
@@ -702,96 +789,57 @@ function HourlyDial({ hours, onChange }: { hours: number; onChange: (h: number) 
     isDragging.current = false;
   }, []);
 
-  // 12 dots matching Figma — evenly spaced, deeper gray
-  const ticks = Array.from({ length: 12 }, (_, i) => {
-    const a = ((i / 12) * 360 - 90) * (Math.PI / 180);
-    return { x: cx + tickR * Math.cos(a), y: cy + tickR * Math.sin(a) };
-  });
-
   return (
-    <div style={{ position: 'relative', width: '260px', height: '260px' }}>
+    <div style={{ position: 'relative', width: `${size}px`, height: `${size}px`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <svg
         ref={svgRef}
-        width="260" height="260"
-        viewBox="0 0 260 260"
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
         style={{ touchAction: 'none', cursor: 'default' }}
         onPointerMove={onSvgPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
       >
-        {/* defs */}
         <defs>
-          <radialGradient id="handleGrad" cx="45%" cy="35%" r="60%">
-            <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="70%" stopColor="#f5f5f5" />
-            <stop offset="100%" stopColor="#e8f5d0" />
-          </radialGradient>
-          <filter id="handleShadow" x="-40%" y="-40%" width="180%" height="180%">
-            <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="rgba(0,0,0,0.20)" />
+          <filter id="hourArcGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="-1.5" stdDeviation="3" floodColor="#C4F46B" floodOpacity="0.55" />
+            <feDropShadow dx="0" dy="2.5" stdDeviation="4" floodColor="#90D516" floodOpacity="0.45" />
           </filter>
+          <linearGradient id="hourArcGradient" x1="154" y1="4" x2="309" y2="187" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#C0F15A" />
+            <stop offset="55%" stopColor="#B7ED3F" />
+            <stop offset="100%" stopColor="#A6E922" />
+          </linearGradient>
         </defs>
-
-        {/* 0. Dial disk elevation shadow — large diffused shadow beneath entire dial */}
-        <circle cx={cx} cy={cy} r={r + ringWidth/2 + 2} fill="rgb(235,235,235)"
-          style={{ filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.18)) drop-shadow(0 4px 8px rgba(0,0,0,0.12))', pointerEvents: 'none' }}
-        />
-
-        {/* 1a. Outer gray border ring */}
-        <circle cx={cx} cy={cy} r={r + ringWidth/2 - 1} fill="none"
-          stroke="rgb(200,200,200)" strokeWidth="2"
-          style={{ pointerEvents: 'none' }}
-        />
-
-        {/* 1b. Gray track ring */}
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgb(225,225,225)" strokeWidth={ringWidth}
-          style={{ pointerEvents: 'none' }}
-        />
-
-        {/* 1c. Inner gray border ring */}
-        <circle cx={cx} cy={cy} r={r - ringWidth/2 + 1} fill="none"
-          stroke="rgb(205,205,205)" strokeWidth="2"
-          style={{ pointerEvents: 'none' }}
-        />
-
-        {/* 2. Tick dots — 12 dots, dark gray matching Figma */}
-        {ticks.map((t, i) => (
-          <circle key={i} cx={t.x} cy={t.y} r={3} fill="rgb(148,148,148)" style={{ pointerEvents: 'none' }} />
-        ))}
-
-        {/* 3. Lime green arc — covers active tick dots */}
+        <image href="/assets/calendar/Ellipse%20(2).svg" x="0" y="0" width="313" height="313" preserveAspectRatio="xMidYMid meet" style={{ pointerEvents: 'none' }} />
+        <DialDots />
         <circle
-          cx={cx} cy={cy} r={r}
+          cx={cx}
+          cy={cy}
+          r={r}
           fill="none"
-          stroke="rgb(184,240,79)"
-          strokeWidth={ringWidth}
+          stroke="url(#hourArcGradient)"
+          strokeWidth={63}
           strokeLinecap="round"
           strokeDasharray={`${arcLength} ${circumference}`}
           transform={`rotate(-90 ${cx} ${cy})`}
+          filter="url(#hourArcGlow)"
           style={{ pointerEvents: 'none' }}
         />
-
-        {/* 4. White handle with radial gradient + shadow — matches Figma */}
-        <circle
-          cx={hx} cy={hy} r={17} fill="url(#handleGrad)"
-          filter="url(#handleShadow)"
-          style={{ cursor: 'grab' }}
-          onPointerDown={onHandlePointerDown}
-        />
-
-        {/* 5. Center number */}
-        <text x={cx} y={cy - 10} textAnchor="middle" dominantBaseline="middle"
-          style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '48px', fontWeight: 700, fill: 'rgb(30,30,30)', pointerEvents: 'none' }}
+        <image href="/assets/calendar/Ellipse.svg" x="37.12" y="54.41" width="238.76" height="238.76" preserveAspectRatio="xMidYMid meet" style={{ pointerEvents: 'none' }} />
+        <image href="/assets/calendar/Handle.svg" x={hx - 27.02} y={hy - 27.02} width="54.04" height="54.04" preserveAspectRatio="xMidYMid meet" style={{ cursor: 'grab' }} onPointerDown={onHandlePointerDown} />
+        <text x={cx} y={cy - 12} textAnchor="middle" dominantBaseline="middle"
+          style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '60px', fontWeight: 700, fill: 'rgb(30,30,30)', pointerEvents: 'none' }}
         >{hours}</text>
-        {/* 6. "hours" label */}
-        <text x={cx} y={cy + 26} textAnchor="middle" dominantBaseline="middle"
-          style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '16px', fontWeight: 500, fill: 'rgb(120,120,120)', pointerEvents: 'none' }}
+        <text x={cx} y={cy + 27} textAnchor="middle" dominantBaseline="middle"
+          style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 700, fill: 'rgb(34,34,34)', pointerEvents: 'none' }}
         >hours</text>
       </svg>
     </div>
   );
 }
 
-/* ── DrumScroll – shows prev/current/next values like iOS picker ─────────── */
 function DrumScroll({ value, min, max, onChange, pad }: {
   value: number; min: number; max: number;
   onChange: (v: number) => void; pad?: boolean;
@@ -800,12 +848,12 @@ function DrumScroll({ value, min, max, onChange, pad }: {
   const prev = value <= min ? max : value - 1;
   const next = value >= max ? min : value + 1;
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', width: '40px' }}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', width: '42px' }}
       onWheel={e => { e.preventDefault(); onChange(e.deltaY > 0 ? (value >= max ? min : value + 1) : (value <= min ? max : value - 1)); }}
     >
-      <span onClick={() => onChange(prev)} style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '13px', fontWeight: 400, color: 'rgba(0,0,0,0.25)', textAlign: 'center', lineHeight: '20px', cursor: 'pointer' }}>{fmt(prev)}</span>
-      <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '22px', fontWeight: 700, color: '#000', textAlign: 'center', lineHeight: '36px' }}>{fmt(value)}</span>
-      <span onClick={() => onChange(next)} style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '13px', fontWeight: 400, color: 'rgba(0,0,0,0.25)', textAlign: 'center', lineHeight: '20px', cursor: 'pointer' }}>{fmt(next)}</span>
+      <span onClick={() => onChange(prev)} style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '12px', fontWeight: 400, color: 'rgba(0,0,0,0.16)', textAlign: 'center', lineHeight: '22px', cursor: 'pointer' }}>{fmt(prev)}</span>
+      <span style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '18px', fontWeight: 500, color: '#000', textAlign: 'center', lineHeight: '30px' }}>{fmt(value)}</span>
+      <span onClick={() => onChange(next)} style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '12px', fontWeight: 400, color: 'rgba(0,0,0,0.16)', textAlign: 'center', lineHeight: '22px', cursor: 'pointer' }}>{fmt(next)}</span>
     </div>
   );
 }
@@ -821,3 +869,4 @@ function ChevronIcon({ dir }: { dir: 'left' | 'right' }) {
     </svg>
   );
 }
+

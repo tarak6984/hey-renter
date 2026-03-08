@@ -1,130 +1,201 @@
-# 🚗 Hey Renter
+# Hey Renter
 
-> **Rent a Luxury Car in Dubai** – A pixel-perfect Next.js implementation of the Hey Renter car rental platform, translated from Figma designs.
+Hey Renter is a Next.js App Router project for a luxury car rental website focused on Figma-faithful UI, responsive behavior, and reusable front-end components.
 
-[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
+The current app covers four primary flows:
+- Home page
+- Listings page
+- Car detail page
+- Booking confirmation page
 
----
+## Overview
 
-## 📐 Design Source
+This project is built as a static/mock-driven front end for a Dubai luxury car rental experience.
 
-All pages are translated from Figma designs exported to `public/figma-files/`. A future milestone will integrate the Figma API for pixel-perfect rendering.
+Key characteristics:
+- Figma-driven implementation
+- App Router architecture
+- TypeScript throughout
+- Tailwind CSS for styling
+- Shared reusable components for layout and feature sections
+- Client-side booking and WhatsApp flows
 
----
+## Tech Stack
 
-## 🗂 Project Structure
+| Tool | Version | Purpose |
+|------|---------|---------|
+| Next.js | 16.1.6 | React framework with App Router |
+| React | 19.2.3 | UI library |
+| TypeScript | 5 | Static typing |
+| Tailwind CSS | 4 | Utility-first styling |
+| ESLint | 9 | Linting |
+| Lucide React | Latest installed | Icons |
+| clsx + tailwind-merge | Latest installed | Class composition |
 
-```
+## Main Routes
+
+| Route | Purpose |
+|------|---------|
+| `/` | Home page with hero, search, categories, brands, stats, and SEO section |
+| `/listings` | Listings page with search bar, filter tags, car grid, and pagination |
+| `/cars/[slug]` | Car profile page with gallery, specs, booking widget, FAQs, and related options |
+| `/confirmation` | Booking confirmation page with booking summary, WhatsApp CTA, and document upload |
+
+## Features
+
+- Figma-aligned home page and listings experience
+- Search flow with brand, model, and date/time selection
+- Listings card system with reusable car cards
+- Car detail gallery and booking sidebar
+- WhatsApp negotiation flow with prefilled booking context
+- Confirmation flow with booking ID and document upload
+- Generated favicon, Open Graph image, and Twitter image
+
+## Project Structure
+
+```text
 hey-renter/
 ├── app/
+│   ├── cars/[slug]/              # Car profile route
+│   ├── confirmation/             # Confirmation route
+│   ├── listings/                 # Listings route
 │   ├── components/
-│   │   ├── shared/          # TopBar, Navbar, Footer, Breadcrumb
-│   │   ├── ui/              # Button, Badge, SeoSection (reusable primitives)
-│   │   ├── home/            # HeroSection, SearchBar, StatsRow, CategoryCards, BrandsRow
-│   │   ├── listings/        # CarCard, FilterBar, Pagination
-│   │   └── car-profile/     # ImageGallery, SpecsGrid, GeneralRules, BookingWidget, PickupModal, FaqAccordion
-│   ├── constants/           # Mock data: cars, brands, categories, FAQ, footer links
-│   ├── lib/                 # Utility functions (cn, formatAED, getCalendarDays, …)
-│   ├── types/               # TypeScript interfaces (Car, Booking, SearchFilters, …)
-│   ├── listings/            # /listings route
-│   ├── cars/[slug]/         # /cars/:slug route (Car Profile)
-│   └── confirmation/        # /confirmation route
+│   │   ├── car-profile/          # Car page feature components
+│   │   ├── home/                 # Home page sections
+│   │   ├── listings/             # Listings components
+│   │   ├── shared/               # Navbar, top bar, footer, breadcrumb
+│   │   └── ui/                   # Shared UI primitives
+│   ├── constants/                # Mock cars, brands, FAQ, footer data
+│   ├── lib/                      # Utilities and brand media helpers
+│   ├── types/                    # Shared TypeScript types
+│   ├── icon.tsx                  # App favicon generator
+│   ├── opengraph-image.tsx       # Open Graph image generator
+│   ├── twitter-image.tsx         # Twitter image generator
+│   ├── globals.css               # Global styles
+│   └── layout.tsx                # App shell and metadata
 ├── public/
-│   ├── figma-files/         # Exported Figma design references
-│   ├── hero/                # Hero car images
-│   ├── brands/              # Brand SVG logos
-│   └── categories/          # Category card images
-└── next.config.ts
+│   ├── assets/                   # Production images, logos, icons, cars
+│   └── figma-files/              # Exported Figma references
+├── next.config.ts
+├── package.json
+└── README.md
 ```
 
----
+## Local Development
 
-## 🖥 Pages
-
-| Route | Description |
-|-------|-------------|
-| `/` | Home – Hero, Search Bar, Stats, Category Cards, Brand Logos, SEO |
-| `/listings` | Listings – Filter bar, 4-col car grid, Pagination |
-| `/cars/[slug]` | Car Profile – Gallery, Specs, Booking Widget, FAQ, Other Options |
-| `/confirmation` | Booking Confirmed – Booking ID, WhatsApp CTA, Document Upload |
-
----
-
-## ✨ Features
-
-- 🎨 **Pixel-close Figma translation** across 4 pages
-- 📅 **Pickup Date Modal** – Daily (calendar + time), Monthly (radial dial), Hourly
-- 🔍 **Smart Search Bar** – Brand/Model/DateTime selectors with dynamic model filtering
-- 🖼 **Image Lightbox** – Full-screen gallery with thumbnail strip
-- 💚 **WhatsApp integration** on all booking CTAs
-- 📄 **Document Upload** on confirmation page
-- 🔒 **Security headers** via `next.config.ts`
-- ♿ **Accessible** – aria-labels, semantic HTML, keyboard navigation
-- 📱 **Fully responsive** – mobile-first, works on all screen sizes
-
----
-
-## 🚀 Getting Started
+### Install
 
 ```bash
-# Install dependencies
 npm install
+```
 
-# Run development server
+### Run the dev server
+
+```bash
 npm run dev
+```
 
-# Build for production
+Default local URL:
+
+```text
+http://localhost:3000
+```
+
+### Build for production
+
+```bash
 npm run build
+```
 
-# Start production server
+### Start the production server
+
+```bash
 npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+### Run linting
 
----
-
-## 🌿 Git Branching Strategy
-
-```
-main          ← Production-ready releases
-└── develop   ← Integration branch
-    ├── feat/project-setup
-    ├── feat/shared-components
-    ├── feat/home-page
-    ├── feat/listings-page
-    ├── feat/car-profile-page
-    └── feat/confirmation-page
+```bash
+npm run lint
 ```
 
----
+## Source of Truth Files
 
-## 🛣 Roadmap
+These files are the best entry points when working in the codebase:
 
-- [ ] Figma API integration for pixel-perfect rendering
-- [ ] Real car data from backend API
-- [ ] Authentication (renter login/register)
-- [ ] Payment gateway integration (Stripe)
-- [ ] Admin dashboard for rental companies
-- [ ] Real-time availability checking
-- [ ] Multi-language support (Arabic, Russian, French)
+- `app/layout.tsx`: app shell, metadata, shared wrappers
+- `app/page.tsx`: home page route
+- `app/listings/page.tsx`: listings route
+- `app/cars/[slug]/page.tsx`: car profile route
+- `app/confirmation/page.tsx`: confirmation route
+- `app/constants/index.ts`: mock cars and static content
+- `app/types/index.ts`: shared interfaces
+- `app/lib/utils.ts`: utility helpers
+- `app/globals.css`: global styles and layout behavior
 
----
+## Data Model Notes
 
-## 📦 Tech Stack
+The app is currently mock-data driven.
 
-| Tool | Purpose |
-|------|---------|
-| Next.js 16 | React framework (App Router) |
-| TypeScript 5 | Type safety |
-| Tailwind CSS 4 | Utility-first styling |
-| Lucide React | Icon library |
-| clsx + tailwind-merge | Conditional class merging |
+Important points:
+- Cars come from `MOCK_CARS` in `app/constants/index.ts`
+- Car pages resolve by `slug`
+- Search and booking state are client-side
+- There is no backend integration yet
 
----
+## Design and Responsiveness Notes
 
-## 📄 License
+- Figma references live in `public/figma-files`
+- The desktop source-of-truth layout is centered around a `1440px` design frame
+- Larger desktop widths use centered container behavior instead of forcing full-width stretch
+- Repeated UI like listings cards and filters should be implemented in code, not as flat Figma exports
 
-© 2025 Hey Renter. All Rights Reserved.
+## WhatsApp Flow
+
+There are two WhatsApp-related flows in the app:
+
+1. Car profile negotiation
+   - Built from the booking widget inputs
+   - Sends car, date/time, best rate, phone, and full name into a prefilled WhatsApp message
+
+2. Confirmation page contact CTA
+   - Carries the booking context forward from the reserve flow
+   - Reuses booking details in the WhatsApp prefill
+
+## Quality Checklist
+
+Before shipping changes, verify:
+
+- `npm run lint` passes
+- `npm run build` passes for substantial changes
+- No route imports are broken
+- Shared layout remains intact across routes
+- Main pages still behave correctly at desktop widths like `1440px` and `1920px`
+
+## Deployment
+
+This project is designed to deploy cleanly on Vercel.
+
+Typical flow:
+
+```bash
+git add .
+git commit -m "your message"
+git push origin main
+```
+
+## Roadmap
+
+Planned future work:
+
+- Figma API integration
+- Real inventory and backend APIs
+- Authentication
+- Payment gateway integration
+- Admin dashboard
+- Real-time availability
+- Multi-language support
+
+## License
+
+Copyright 2025 Hey Renter. All rights reserved.

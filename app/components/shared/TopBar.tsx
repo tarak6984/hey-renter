@@ -13,6 +13,7 @@ const SOCIAL_LINKS = [
 export default function TopBar() {
   return (
     <div
+      data-shell-topbar
       className="w-full text-white"
       style={{ backgroundColor: '#12151C', height: '40px', display: 'flex', alignItems: 'center' }}
     >

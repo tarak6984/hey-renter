@@ -69,6 +69,7 @@ export default function RootLayout({
       <body className={`${inter.variable} antialiased`}>
         <TopBar />
         <div
+          data-shell-divider
           style={{
             width: '100%',
             height: '1px',

@@ -318,7 +318,7 @@ export default function CarCard({
 
             <Link
               href={`/cars/${car.slug}`}
-              className="flex h-14 w-[108px] items-center justify-center whitespace-nowrap rounded-[100px] border border-[#B8F04F] bg-[#12151C] px-4 font-bold text-white"
+              className="flex h-14 w-[108px] items-center justify-center whitespace-nowrap rounded-[100px] border-2 border-[#B8F04F] bg-[#12151C] px-4 font-bold text-white"
               style={{
                 fontSize: 16,
                 fontWeight: 700,
