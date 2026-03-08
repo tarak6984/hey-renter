@@ -635,7 +635,8 @@ function MonthlyDial({ months, onChange }: { months: number; onChange: (m: numbe
   const MAX = 12;
   const size = 313;
   const cx = 156.5; const cy = 156.5;
-  const r = 124.53;
+  const r = 121.5;
+  const arcStrokeWidth = 56;
   const svgRef = useRef<SVGSVGElement>(null);
   const isDragging = useRef(false);
 
@@ -705,7 +706,7 @@ function MonthlyDial({ months, onChange }: { months: number; onChange: (m: numbe
           r={r}
           fill="none"
           stroke="url(#monthArcGradient)"
-          strokeWidth={63}
+          strokeWidth={arcStrokeWidth}
           strokeLinecap="round"
           strokeDasharray={`${arcLength} ${circumference}`}
           transform={`rotate(-90 ${cx} ${cy})`}
@@ -749,7 +750,8 @@ function HourlyDial({ hours, onChange }: { hours: number; onChange: (h: number) 
   const MAX = 12;
   const size = 313;
   const cx = 156.5; const cy = 156.5;
-  const r = 124.53;
+  const r = 121.5;
+  const arcStrokeWidth = 56;
 
   const svgRef = useRef<SVGSVGElement>(null);
   const isDragging = useRef(false);
@@ -820,7 +822,7 @@ function HourlyDial({ hours, onChange }: { hours: number; onChange: (h: number) 
           r={r}
           fill="none"
           stroke="url(#hourArcGradient)"
-          strokeWidth={63}
+          strokeWidth={arcStrokeWidth}
           strokeLinecap="round"
           strokeDasharray={`${arcLength} ${circumference}`}
           transform={`rotate(-90 ${cx} ${cy})`}
