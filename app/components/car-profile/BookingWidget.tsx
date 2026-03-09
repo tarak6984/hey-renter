@@ -111,7 +111,7 @@ export default function BookingWidget({
 
   return (
     <>
-      <div className="sticky top-24 flex flex-col gap-6 rounded-[20px] bg-white px-4 pb-4 pt-6 shadow-[0_2px_4px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.1)]">
+      <div className="flex flex-col gap-6 rounded-[20px] bg-white px-4 pb-4 pt-6 shadow-[0_2px_4px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.1)] xl:sticky xl:top-24">
         <h3 className="text-center text-[18px] font-medium leading-[26px] text-black">
           Get the Best Offer for This Car in Minutes
         </h3>
@@ -265,7 +265,7 @@ export default function BookingWidget({
 
         <button
           onClick={handleReserve}
-          className="flex h-14 w-full items-center justify-center gap-[7px] rounded-[10px] border border-[#8DCC19] bg-[#B8F04F] px-6 text-[18px] font-medium leading-[26px] text-black shadow-[0_16px_20px_rgba(113,170,6,0.35)] transition-colors hover:bg-[#afd95f]"
+          className="flex min-h-14 w-full items-center justify-center gap-[7px] rounded-[10px] border border-[#8DCC19] bg-[#B8F04F] px-4 py-3 text-center text-[16px] font-medium leading-6 text-black shadow-[0_16px_20px_rgba(113,170,6,0.35)] transition-colors hover:bg-[#afd95f] sm:px-6 sm:text-[18px] sm:leading-[26px]"
         >
           <Lock size={18} strokeWidth={2.3} />
           Reserve Now &amp; Pay on Delivery
@@ -282,7 +282,7 @@ export default function BookingWidget({
             href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex h-14 w-full items-center justify-center gap-2 rounded-[10px] bg-[#1CC25A] px-4 text-[18px] font-medium leading-[26px] text-white transition-colors hover:bg-[#18b253]"
+            className="flex min-h-14 w-full items-center justify-center gap-2 rounded-[10px] bg-[#1CC25A] px-4 py-3 text-center text-[16px] font-medium leading-6 text-white transition-colors hover:bg-[#18b253] sm:text-[18px] sm:leading-[26px]"
           >
             <span>Negotiate on</span>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="white" aria-hidden="true">
@@ -302,7 +302,7 @@ export default function BookingWidget({
                 'You receive the best quotes in 5 minutes.',
                 'Lowest rate for the same or similar car.',
               ].map((step, i) => (
-                <li key={i} className="text-[18px] font-normal leading-[26px] text-black">
+                <li key={i} className="text-[16px] font-normal leading-6 text-black sm:text-[18px] sm:leading-[26px]">
                   <span className="text-[#0EAD69]">{i + 1}.</span>{' '}
                   {step === 'We contact 100+ rental companies.' ? (
                     <>

@@ -9,7 +9,7 @@ import { FOOTER_COLUMNS, FOOTER_SEO_LINKS } from '@/app/constants';
 export default function Footer() {
   return (
     <footer className="bg-[#12151C] text-white">
-      <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-14 sm:px-6 md:px-[39px]">
+      <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-12 sm:px-6 md:px-[39px]">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-5">
           <div className="space-y-4 md:col-span-2 xl:col-span-1">
             <LogoMark />
@@ -36,7 +36,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-gray-800">
-        <div className="mx-auto grid max-w-[1440px] grid-cols-2 gap-8 px-4 py-8 sm:px-6 md:px-[39px] lg:grid-cols-4">
+        <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-8 px-4 py-8 sm:grid-cols-2 sm:px-6 md:px-[39px] lg:grid-cols-4">
           {FOOTER_SEO_LINKS.map((col, i) => (
             <div key={i}>
               <h5 className="mb-3 text-xs font-semibold text-gray-400">{col.heading}</h5>
@@ -101,7 +101,7 @@ function SocialIcons() {
   ];
 
   return (
-    <div className="relative mt-2 h-5 w-[240px]">
+    <div className="relative mt-2 h-5 w-[240px] max-w-full">
       <Image
         src="/assets/icons/Social Icons.svg"
         alt="Social icons"
@@ -124,7 +124,7 @@ function SocialIcons() {
 
 function PaymentMethods() {
   return (
-    <div className="relative h-[66px] w-[172px]">
+    <div className="relative h-[66px] w-[172px] max-w-full">
       <Image
         src="/assets/icons/Payments Methods.svg"
         alt="Payment methods"

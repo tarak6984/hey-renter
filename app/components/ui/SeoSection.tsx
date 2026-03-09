@@ -15,7 +15,7 @@ export default function SeoSection({ title = 'SEO SECTION' }: SeoSectionProps) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <section className="my-12 w-full rounded-[20px] border border-black/10 bg-white px-4 py-8 sm:px-6 md:p-10">
+    <section className="my-12 min-w-0 overflow-hidden rounded-[20px] border border-black/10 bg-white px-4 py-8 sm:px-6 md:p-10">
       <div className="flex flex-col items-center gap-8 md:gap-10">
         <h2
           className="w-full text-center text-black"

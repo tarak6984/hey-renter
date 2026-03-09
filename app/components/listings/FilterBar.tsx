@@ -27,7 +27,7 @@ export default function FilterBar({ total, onNoDepositChange, onUnlimitedMileage
 
   return (
     <div className="flex flex-col">
-      <div className="flex min-h-11 items-center justify-between px-[39px]">
+      <div className="flex min-h-11 flex-col gap-4 px-0 sm:flex-row sm:items-center sm:justify-between xl:px-[39px]">
         <p
           className="text-black"
           style={{
@@ -39,7 +39,7 @@ export default function FilterBar({ total, onNoDepositChange, onUnlimitedMileage
           {total} cars found
         </p>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-start sm:self-auto">
           <button
             className="flex items-center gap-1.5 text-black transition-opacity hover:opacity-70"
             style={{ fontSize: 16, fontWeight: 500, lineHeight: '24px' }}
@@ -62,34 +62,36 @@ export default function FilterBar({ total, onNoDepositChange, onUnlimitedMileage
         </div>
       </div>
 
-      <div className="flex min-h-[76px] flex-wrap items-center gap-[19px] px-[39px] py-4">
-        <FilterPill
-          active={activeFilter === 'noDeposit'}
-          icon={<NoDepositIcon active={activeFilter === 'noDeposit'} />}
-          suffixIcon={activeFilter === 'noDeposit' ? <CancelIcon /> : undefined}
-          onClick={() => toggleFilter('noDeposit')}
-        >
-          No Deposit
-        </FilterPill>
-        <FilterPill active={false} suffixIcon={<CategoryChevron />} onClick={() => {}}>
-          Category
-        </FilterPill>
-        <FilterPill
-          active={activeFilter === 'unlimitedMileage'}
-          icon={<UnlimitedMileageIcon active={activeFilter === 'unlimitedMileage'} />}
-          suffixIcon={activeFilter === 'unlimitedMileage' ? <CancelIcon /> : undefined}
-          onClick={() => toggleFilter('unlimitedMileage')}
-        >
-          Unlimited mileage
-        </FilterPill>
-        <FilterPill
-          active={activeFilter === 'offers'}
-          icon={<OffersIcon active={activeFilter === 'offers'} />}
-          suffixIcon={activeFilter === 'offers' ? <CancelIcon /> : undefined}
-          onClick={() => toggleFilter('offers')}
-        >
-          Offers
-        </FilterPill>
+      <div className="-mx-4 overflow-x-auto px-4 py-4 sm:mx-0 sm:px-0 xl:px-[39px]">
+        <div className="flex min-h-[56px] min-w-max items-center gap-3 sm:min-h-[76px] sm:flex-wrap sm:gap-[19px]">
+          <FilterPill
+            active={activeFilter === 'noDeposit'}
+            icon={<NoDepositIcon active={activeFilter === 'noDeposit'} />}
+            suffixIcon={activeFilter === 'noDeposit' ? <CancelIcon /> : undefined}
+            onClick={() => toggleFilter('noDeposit')}
+          >
+            No Deposit
+          </FilterPill>
+          <FilterPill active={false} suffixIcon={<CategoryChevron />} onClick={() => {}}>
+            Category
+          </FilterPill>
+          <FilterPill
+            active={activeFilter === 'unlimitedMileage'}
+            icon={<UnlimitedMileageIcon active={activeFilter === 'unlimitedMileage'} />}
+            suffixIcon={activeFilter === 'unlimitedMileage' ? <CancelIcon /> : undefined}
+            onClick={() => toggleFilter('unlimitedMileage')}
+          >
+            Unlimited mileage
+          </FilterPill>
+          <FilterPill
+            active={activeFilter === 'offers'}
+            icon={<OffersIcon active={activeFilter === 'offers'} />}
+            suffixIcon={activeFilter === 'offers' ? <CancelIcon /> : undefined}
+            onClick={() => toggleFilter('offers')}
+          >
+            Offers
+          </FilterPill>
+        </div>
       </div>
     </div>
   );
@@ -108,7 +110,7 @@ function FilterPill({
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center rounded-[8px] border transition-colors',
+        'flex items-center rounded-[8px] border transition-colors whitespace-nowrap',
         active
           ? 'border-transparent bg-[#12151C] text-white'
           : 'border-[#d0d0d0] bg-[#e5e5e5] text-[#1C1B1F] hover:bg-[#e1e1e1]'
