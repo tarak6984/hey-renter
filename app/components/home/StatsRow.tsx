@@ -21,7 +21,7 @@ const STATS = [
 export default function StatsRow() {
   return (
     <section className="w-full">
-      <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-center gap-x-10 gap-y-6 px-4 sm:px-6 md:h-10 md:px-[39px]">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center justify-center gap-x-6 gap-y-6 px-4 sm:px-6 xl:h-10 xl:px-[39px]">
         {STATS.map((stat) => (
           <StatItem
             key={stat.value}
@@ -51,16 +51,16 @@ function StatItem({
   labelWidth: number;
 }) {
   return (
-    <div className="flex h-[35px] items-center justify-center gap-2" style={{ width: `${width}px` }}>
+    <div className="flex min-h-[35px] items-center justify-center gap-2" style={{ width: `min(${width}px, 100%)` }}>
       <span
         style={{
           width: `${valueWidth}px`,
           display: 'flex',
           alignItems: 'center',
           fontFamily: 'var(--font-clash)',
-          fontSize: '48px',
+          fontSize: 'clamp(32px, 8vw, 48px)',
           fontWeight: 700,
-          lineHeight: '58px',
+          lineHeight: '1',
           color: '#000000',
         }}
       >
@@ -75,9 +75,9 @@ function StatItem({
           width: labelWidth,
           height: 35,
           fontFamily: 'var(--font-tt-norms)',
-          fontSize: '16px',
+          fontSize: 'clamp(14px, 2.8vw, 16px)',
           fontWeight: 500,
-          lineHeight: '24px',
+          lineHeight: '1.3',
           color: '#000000',
         }}
       >

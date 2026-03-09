@@ -18,7 +18,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
     <div className="flex justify-center py-8">
       <nav
         aria-label="Pagination"
-        className="inline-flex h-[46px] items-center overflow-hidden rounded-[11px] bg-[#E0DFDF] p-px"
+        className="inline-flex h-[42px] items-center overflow-hidden rounded-[11px] bg-[#E0DFDF] p-px sm:h-[46px]"
       >
       <PageBtn
         disabled={currentPage <= 1}
@@ -81,8 +81,8 @@ function PageBtn({
       disabled={disabled}
       aria-label={ariaLabel}
       className={cn(
-        'flex h-[44px] items-center justify-center bg-white text-base leading-6 text-black transition-colors',
-        edge ? 'w-[72px]' : 'w-[44px]',
+        'flex h-[40px] items-center justify-center bg-white text-sm leading-5 text-black transition-colors sm:h-[44px] sm:text-base sm:leading-6',
+        edge ? 'w-[60px] sm:w-[72px]' : 'w-[38px] sm:w-[44px]',
         active && 'bg-black font-medium text-[#B8F04F]',
         !active && 'font-normal',
         edge === 'left' && 'rounded-l-[10px]',

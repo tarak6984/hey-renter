@@ -69,15 +69,17 @@ const RULES: RuleItem[] = [
 
 export default function GeneralRules({ car }: GeneralRulesProps) {
   return (
-    <div className="mt-[30px] grid gap-[30px] md:grid-cols-2">
-      <section className="rounded-[20px] bg-white px-6 py-6 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_4px_6px_-1px_rgba(0,0,0,0.1)]">
+    <div className="mt-[30px] grid min-w-0 gap-[30px] md:grid-cols-2">
+      <section className="min-w-0 overflow-hidden rounded-[20px] bg-white px-4 py-5 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_4px_6px_-1px_rgba(0,0,0,0.1)] sm:px-6 sm:py-6">
         <h2 className="text-[18px] font-medium leading-[26px] text-black">General Rules</h2>
 
-        <div className="mt-6 rounded-[10px] border border-black/[0.06] bg-black/[0.06] px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
+        <div className="mt-6 rounded-[10px] border border-black/[0.06] bg-black/[0.06] px-3 py-4 sm:px-4">
+          <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-[16px] font-medium leading-[24px] text-black">{car.insurance}</p>
-              <p className="mt-3 text-[14px] font-medium leading-[22px] text-black/50">
+              <p className="text-[15px] font-medium leading-[22px] text-black sm:text-[16px] sm:leading-[24px]">
+                {car.insurance}
+              </p>
+              <p className="mt-3 text-[13px] font-medium leading-5 text-black/50 sm:text-[14px] sm:leading-[22px]">
                 Excess amount 2K - 5K AED depend on vehicle
               </p>
             </div>
@@ -87,23 +89,27 @@ export default function GeneralRules({ car }: GeneralRulesProps) {
           </div>
         </div>
 
-        <div className="mt-6 rounded-[10px] border border-black/[0.06] bg-black/[0.06] px-4 py-4">
+        <div className="mt-6 rounded-[10px] border border-black/[0.06] bg-black/[0.06] px-3 py-4 sm:px-4">
           {RULES.map((rule, index) => (
             <div
               key={rule.key}
-              className={`flex items-center justify-between gap-4 ${index > 0 ? 'mt-4 border-t border-black/10 pt-4' : ''}`}
+              className={`flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4 ${index > 0 ? 'mt-4 border-t border-black/10 pt-4' : ''}`}
             >
-              <div className="flex min-w-0 items-center gap-2">
+              <div className="flex min-w-0 flex-1 items-center gap-2">
                 <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center text-black">
                   {rule.icon}
                 </div>
-                <p className="text-[16px] font-medium leading-[24px] text-black">{rule.label}</p>
+                <p className="min-w-0 text-[15px] font-medium leading-[22px] text-black sm:text-[16px] sm:leading-[24px]">
+                  {rule.label}
+                </p>
               </div>
 
-              <div className="flex flex-col items-end justify-center text-right">
-                <p className="text-[16px] font-medium leading-[24px] text-black">{rule.value(car)}</p>
+              <div className="flex min-w-0 flex-col justify-center pl-8 text-left sm:max-w-[46%] sm:items-end sm:pl-0 sm:text-right">
+                <p className="break-words text-[15px] font-medium leading-[22px] text-black sm:text-[16px] sm:leading-[24px]">
+                  {rule.value(car)}
+                </p>
                 {rule.detail(car) ? (
-                  <p className="text-[14px] font-medium leading-[22px] text-black/50">
+                  <p className="break-words text-[13px] font-medium leading-5 text-black/50 sm:text-[14px] sm:leading-[22px]">
                     {rule.detail(car)}
                   </p>
                 ) : null}
@@ -113,8 +119,8 @@ export default function GeneralRules({ car }: GeneralRulesProps) {
         </div>
       </section>
 
-      <div className="flex flex-col gap-[30px]">
-        <section className="rounded-[20px] bg-white px-6 py-6 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_4px_6px_-1px_rgba(0,0,0,0.1)]">
+      <div className="min-w-0 flex flex-col gap-[30px]">
+        <section className="min-w-0 overflow-hidden rounded-[20px] bg-white px-4 py-5 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_4px_6px_-1px_rgba(0,0,0,0.1)] sm:px-6 sm:py-6">
           <div className="flex flex-col gap-6">
             <h2 className="text-[18px] font-medium leading-[26px] text-black">Documents Needed</h2>
 
@@ -124,14 +130,14 @@ export default function GeneralRules({ car }: GeneralRulesProps) {
                   <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center">
                     <CheckCircleIcon />
                   </div>
-                  <p className="flex-1 text-[16px] font-medium leading-[24px] text-black">{doc}</p>
+                  <p className="flex-1 text-[15px] font-medium leading-[22px] text-black sm:text-[16px] sm:leading-[24px]">{doc}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="rounded-[20px] bg-white px-6 py-6 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_4px_6px_-1px_rgba(0,0,0,0.1)]">
+        <section className="min-w-0 overflow-hidden rounded-[20px] bg-white px-4 py-5 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_4px_6px_-1px_rgba(0,0,0,0.1)] sm:px-6 sm:py-6">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-6">
               <h2 className="text-[18px] font-medium leading-[26px] text-black">Languages</h2>

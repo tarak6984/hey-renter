@@ -15,9 +15,9 @@ export default function TopBar() {
     <div
       data-shell-topbar
       className="w-full text-white"
-      style={{ backgroundColor: '#12151C', height: '40px', display: 'flex', alignItems: 'center' }}
+      style={{ backgroundColor: '#12151C', minHeight: '40px', display: 'flex', alignItems: 'center' }}
     >
-      <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 md:px-[39px]">
+      <div className="mx-auto flex w-full max-w-[1440px] items-center justify-end px-4 py-2 sm:px-6 md:justify-between md:px-[39px]">
         <div className="hidden items-center md:flex" style={{ gap: '8px' }}>
           {SOCIAL_LINKS.map(({ label, href, icon }) => (
             <Link
@@ -32,7 +32,7 @@ export default function TopBar() {
           ))}
         </div>
 
-        <div className="flex items-center" style={{ gap: '3px' }}>
+        <div className="flex items-center justify-end gap-[3px] overflow-x-auto whitespace-nowrap scrollbar-hide">
           <TopBarButton label="EN" />
           <div className="hidden items-center sm:flex" style={{ gap: '3px' }}>
             <VerticalDivider />
@@ -61,10 +61,10 @@ function TopBarButton({ label, flag = false }: { label: string; flag?: boolean }
       style={{
         gap: '6px',
         fontFamily: 'var(--font-tt-norms)',
-        fontSize: '16px',
+        fontSize: 'clamp(12px, 1.6vw, 16px)',
         fontWeight: 500,
         color: '#fff',
-        padding: '0 5px',
+        padding: '0 4px',
         whiteSpace: 'nowrap',
       }}
     >

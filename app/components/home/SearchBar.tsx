@@ -192,10 +192,10 @@ export default function SearchBar({
 
       <div className="w-full max-w-[420px] rounded-[10px] border border-[#F0F0F0] bg-white p-4 shadow-[0px_2px_4px_-1px_rgba(0,0,0,0.06),0px_4px_6px_-1px_rgba(0,0,0,0.1)] md:hidden">
         <div className="space-y-4">
-          <MobileSelectField
+          <MobileBrandField
             label="Brand"
             value={brand}
-            options={BRAND_OPTIONS.map((option) => option.label)}
+            options={BRAND_OPTIONS}
             onChange={(value) => {
               setBrand(value);
               setModel('Any');
@@ -271,6 +271,99 @@ function MobileSelectField({
         ))}
       </select>
     </label>
+  );
+}
+
+function MobileBrandField({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: readonly { label: string; logo: string | null }[];
+  onChange: (value: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const fieldRef = useRef<HTMLDivElement>(null);
+  const selected = options.find((option) => option.label === value) ?? options[0];
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!fieldRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [open]);
+
+  return (
+    <div ref={fieldRef} className="relative flex flex-col gap-1">
+      <span className="text-sm font-medium text-black/40">{label}</span>
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="flex h-12 w-full items-center justify-between rounded-[10px] border border-black/10 bg-white px-4 text-left"
+      >
+        <span className="flex min-w-0 items-center gap-2">
+          <BrandLogo label={selected.label} src={selected.logo} />
+          <span className="truncate text-base font-medium text-black">{selected.label}</span>
+        </span>
+        <ArrowIcon expanded={open} />
+      </button>
+
+      {open ? (
+        <div
+          role="listbox"
+          aria-label={label}
+          className="absolute left-0 top-[calc(100%+8px)] z-30 max-h-72 w-full overflow-y-auto rounded-[12px] border border-[#E5E5E5] bg-white p-2 shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_10px_10px_-5px_rgba(0,0,0,0.04)]"
+        >
+          {options.map((option) => {
+            const active = option.label === value;
+
+            return (
+              <button
+                key={option.label}
+                type="button"
+                role="option"
+                aria-selected={active}
+                onClick={() => {
+                  onChange(option.label);
+                  setOpen(false);
+                }}
+                className="flex w-full items-center gap-3 rounded-[10px] px-3 py-2 text-left transition-colors"
+                style={{
+                  background: active ? 'rgba(18,21,28,0.06)' : 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                <BrandLogo label={option.label} src={option.logo} />
+                <span className="text-[15px] font-medium leading-6 text-black">{option.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+    </div>
   );
 }
 

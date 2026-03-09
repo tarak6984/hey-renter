@@ -41,9 +41,9 @@ export default async function CarProfilePage({ params }: PageProps) {
   const otherCars = MOCK_CARS.filter((c) => c.id !== car.id);
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5]">
+    <div className="min-h-screen overflow-x-hidden bg-[#f5f5f5]">
       <section className="bg-[#f5f5f5]">
-        <div className="mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-6 md:px-[39px]">
+        <div className="mx-auto w-full max-w-[760px] px-4 py-8 sm:px-6 md:max-w-[1440px] md:px-[39px]">
           <Breadcrumb
             items={[
               { label: 'Home', href: '/' },
@@ -57,8 +57,8 @@ export default async function CarProfilePage({ params }: PageProps) {
             separatorClassName="h-4 w-4 text-black"
           />
 
-          <div className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
+          <div className="mt-8 flex flex-col items-center gap-5 text-center sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:text-left">
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
               <div className="flex h-14 w-14 items-center justify-center overflow-hidden">
                 <Image
                   src={car.brandLogo}
@@ -74,7 +74,7 @@ export default async function CarProfilePage({ params }: PageProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center justify-center gap-4">
               <button
                 className="flex h-14 w-14 items-center justify-center rounded-[10px] bg-white text-black shadow-[0_2px_6px_rgba(0,0,0,0.06),0_6px_16px_rgba(0,0,0,0.08)] transition-colors hover:bg-white/90"
                 aria-label="Wishlist"
@@ -92,9 +92,9 @@ export default async function CarProfilePage({ params }: PageProps) {
         </div>
       </section>
 
-      <div className="mx-auto w-full max-w-[1440px] px-4 pb-16 sm:px-6 md:px-[39px]">
-        <div className="grid items-start gap-[30px] xl:grid-cols-[minmax(0,898px)_434px]">
-          <div>
+      <div className="mx-auto w-full max-w-[760px] px-4 pb-16 sm:px-6 md:max-w-[1440px] md:px-[39px]">
+        <div className="grid min-w-0 items-start gap-[30px] xl:grid-cols-[minmax(0,898px)_434px]">
+          <div className="min-w-0 w-full">
             <ImageGallery images={car.images} alt={car.model} noDeposit={car.noDeposit} />
 
             <div className="mt-[30px]">
@@ -103,13 +103,13 @@ export default async function CarProfilePage({ params }: PageProps) {
 
             <GeneralRules car={car} />
 
-            <section className="mt-[30px] rounded-[20px] bg-white px-6 py-6 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_4px_6px_-1px_rgba(0,0,0,0.1)]">
+            <section className="mt-[30px] min-w-0 overflow-hidden rounded-[20px] bg-white px-4 py-5 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06),0_4px_6px_-1px_rgba(0,0,0,0.1)] sm:px-6 sm:py-6">
               <div className="flex flex-col items-center gap-6">
                 <h2 className="w-full text-center text-[18px] font-medium leading-[26px] text-black">
                   How it feels to drive?
                 </h2>
 
-                <p className="w-full whitespace-pre-line text-center text-[16px] font-normal leading-[24px] text-black">
+                <p className="w-full whitespace-pre-line text-center text-[15px] font-normal leading-6 text-black sm:text-[16px] sm:leading-[24px]">
                   {`Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
 
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.but also the leap into electronic typesetting, remaining essentially unchanged.
@@ -117,7 +117,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 It is a long established fact that a reader.`}
                 </p>
 
-                <button className="flex h-14 w-full items-center justify-center gap-2 rounded-[10px] border-2 border-black/10 bg-black/[0.06] px-5 pl-6 text-[16px] font-medium leading-[24px] text-black transition-colors hover:bg-black/[0.08]">
+                <button className="flex h-14 w-full items-center justify-center gap-2 rounded-[10px] border-2 border-black/10 bg-black/[0.06] px-4 text-[16px] font-medium leading-[24px] text-black transition-colors hover:bg-black/[0.08] sm:px-5 sm:pl-6">
                   SEE MORE
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path
@@ -131,7 +131,7 @@ It is a long established fact that a reader.`}
 
           </div>
 
-          <div>
+          <div className="min-w-0 w-full">
             <BookingWidget
               carId={car.id}
               carBrand={car.brand}
@@ -148,14 +148,14 @@ It is a long established fact that a reader.`}
               className="text-center text-black"
               style={{
                 fontFamily: 'var(--font-clash)',
-                fontSize: '30px',
+                fontSize: 'clamp(24px, 6vw, 30px)',
                 fontWeight: 600,
                 lineHeight: '38px',
               }}
             >
               OTHER OPTIONS
             </h2>
-            <p className="text-center text-[18px] font-normal leading-[26px] text-black">
+            <p className="text-center text-[16px] font-normal leading-6 text-black sm:text-[18px] sm:leading-[26px]">
             Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.
             </p>
           </div>
@@ -165,7 +165,7 @@ It is a long established fact that a reader.`}
             ))}
           </div>
           <div className="mt-6 flex justify-center">
-            <button className="flex h-14 w-full items-center justify-center gap-2 rounded-[10px] border-2 border-black px-5 pl-6 text-[18px] font-medium leading-[26px] text-black transition-colors hover:bg-white/70">
+            <button className="flex h-14 w-full items-center justify-center gap-2 rounded-[10px] border-2 border-black px-4 text-center text-[16px] font-medium leading-6 text-black transition-colors hover:bg-white/70 sm:px-5 sm:pl-6 sm:text-[18px] sm:leading-[26px]">
               SEE - 1,289 OTHER OPTIONS
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path

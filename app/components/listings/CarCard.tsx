@@ -86,7 +86,7 @@ export default function CarCard({
         gap: 24,
       }}
     >
-      <div className="relative h-[225px] flex-shrink-0 overflow-hidden rounded-[10px] bg-[#D8D8D8]">
+      <div className="relative h-[225px] flex-shrink-0 overflow-hidden rounded-[10px] bg-[#D8D8D8] sm:h-[225px]">
         <Image
           key={activeImage}
           src={activeImage}
@@ -257,7 +257,7 @@ export default function CarCard({
           </div>
         </div>
 
-        <div className="mt-6 flex items-end justify-between px-2" style={{ gap: 17 }}>
+        <div className="mt-6 flex items-end justify-between px-2" style={{ gap: 12 }}>
           <div className="flex flex-col" style={{ gap: 8 }}>
             <span
               style={{

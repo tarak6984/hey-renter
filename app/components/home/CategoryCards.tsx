@@ -6,7 +6,48 @@ export default function CategoryCards() {
   return (
     <section className="py-8">
       <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-0">
-        <div className="relative aspect-[1440/272] w-full">
+        <div className="grid gap-4 sm:hidden">
+          {CAR_CATEGORIES.map((category) => (
+            <Link
+              key={category.id}
+              href={`/listings?category=${category.id}`}
+              className="group relative overflow-hidden rounded-[18px]"
+            >
+              <div className="relative aspect-[16/9] w-full">
+                <div className="absolute inset-0 bg-[#d9d9d9]" />
+                <div className="absolute inset-0 p-3">
+                  <Image
+                    src={category.image}
+                    alt={category.label}
+                    fill
+                    className={
+                      category.image.endsWith('.png')
+                        ? 'object-contain object-right-bottom p-2 transition-transform duration-300 group-hover:scale-[1.03]'
+                        : 'object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]'
+                    }
+                    sizes="100vw"
+                    quality={90}
+                  />
+                </div>
+                <div
+                  className="absolute inset-0"
+                  style={{ background: category.gradient }}
+                />
+                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between px-4 pb-4">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[22px] font-bold leading-[1.05] text-white">{category.label}</span>
+                    <span className="text-[14px] font-medium text-white/85">{category.carCount} cars from AED {category.fromPrice}</span>
+                  </div>
+                  <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[12px] font-medium text-white backdrop-blur-sm">
+                    Explore
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        <div className="relative hidden aspect-[1440/272] w-full sm:block">
           <Image
             src="/assets/home-optimized/category-listing.webp"
             alt="Car categories"
