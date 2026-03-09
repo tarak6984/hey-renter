@@ -89,8 +89,8 @@ function ListingsResults({
         </div>
       </div>
 
-      <section className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-4 py-6 sm:px-6 md:px-[39px]">
-        <div className="w-full max-w-[1344px]">
+      <section className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-4 pb-6 sm:px-6 md:px-[39px]">
+        <div className="w-full">
           <FilterBar total={280} />
 
           {allCars.length === 0 ? (

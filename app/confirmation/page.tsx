@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { MOCK_CARS } from '@/app/constants';
 import Breadcrumb from '@/app/components/shared/Breadcrumb';
+import { buildWhatsAppUrl } from '@/app/lib/utils';
 
 const CONFIRMATION_WHATSAPP_NUMBER = '8801788656498';
 
@@ -48,7 +49,7 @@ function ConfirmationContent() {
     `Phone: ${phone ? `${countryCode} ${phone}` : 'Not provided yet'}`,
     `Full Name: ${fullName || 'Not provided yet'}`,
   ].join('\n');
-  const whatsappHref = `https://wa.me/${CONFIRMATION_WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
+  const whatsappHref = buildWhatsAppUrl(CONFIRMATION_WHATSAPP_NUMBER, whatsappMessage);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(bookingId);

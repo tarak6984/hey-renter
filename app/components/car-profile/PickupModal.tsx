@@ -356,8 +356,14 @@ export default function PickupModal({ open, onClose, onConfirm }: PickupModalPro
                       if (!monthlyRangeStart || (monthlyRangeStart && monthlyRangeEnd)) {
                         setMonthlyRangeStart(ts); setMonthlyRangeEnd(null);
                       } else {
-                        if (ts < monthlyRangeStart) { setMonthlyRangeEnd(monthlyRangeStart); setMonthlyRangeStart(ts); }
-                        else setMonthlyRangeEnd(ts);
+                        if (ts < monthlyRangeStart) {
+                          setMonthlyRangeEnd(monthlyRangeStart);
+                          setMonthlyRangeStart(ts);
+                          setMonths(getRangeMonthCount(ts, monthlyRangeStart));
+                        } else {
+                          setMonthlyRangeEnd(ts);
+                          setMonths(getRangeMonthCount(monthlyRangeStart, ts));
+                        }
                       }
                     }}
                     onBack={() => setShowMonthlyCalendar(false)}
@@ -509,6 +515,8 @@ function DialDots() {
   return (
     <>
       {Array.from({ length: dotCount }, (_, index) => {
+        if (index === 0) return null;
+
         const angle = (-90 + (index * step)) * (Math.PI / 180);
         const x = cx + radius * Math.cos(angle);
         const y = cy + radius * Math.sin(angle);
@@ -534,6 +542,16 @@ function fmtDate(ts: number) {
 function fmtDateFull(ts: number) {
   const d = new Date(ts);
   return `${MONTH_NAMES[d.getMonth()].slice(0,3)} ${d.getDate()}, ${d.getFullYear()}`;
+}
+
+function getRangeMonthCount(startTs: number, endTs: number) {
+  const start = new Date(startTs);
+  const end = new Date(endTs);
+  const calendarMonthDiff =
+    ((end.getFullYear() - start.getFullYear()) * 12) +
+    (end.getMonth() - start.getMonth());
+
+  return Math.max(1, Math.min(12, calendarMonthDiff || 1));
 }
 
 /* ── CalendarPicker – stores dates as timestamps, supports cross-month/year ── */
@@ -635,8 +653,8 @@ function MonthlyDial({ months, onChange }: { months: number; onChange: (m: numbe
   const MAX = 12;
   const size = 313;
   const cx = 156.5; const cy = 156.5;
-  const r = 121.5;
-  const arcStrokeWidth = 56;
+  const r = 118;
+  const arcStrokeWidth = 52;
   const svgRef = useRef<SVGSVGElement>(null);
   const isDragging = useRef(false);
 
@@ -681,8 +699,14 @@ function MonthlyDial({ months, onChange }: { months: number; onChange: (m: numbe
       >
         <defs>
           <filter id="monthArcGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="0" stdDeviation="7.5" floodColor="#A8EE2B" floodOpacity="0.34" />
             <feDropShadow dx="0" dy="-1.5" stdDeviation="3" floodColor="#C4F46B" floodOpacity="0.55" />
             <feDropShadow dx="0" dy="2.5" stdDeviation="4" floodColor="#90D516" floodOpacity="0.45" />
+          </filter>
+          <filter id="monthHandleGlow" x="-80%" y="-80%" width="260%" height="260%">
+            <feDropShadow dx="0" dy="2.5" stdDeviation="4.5" floodColor="#8FD613" floodOpacity="0.7" />
+            <feDropShadow dx="0" dy="7" stdDeviation="8" floodColor="#A8EE2B" floodOpacity="0.34" />
+            <feDropShadow dx="0" dy="2" stdDeviation="2.2" floodColor="#000000" floodOpacity="0.24" />
           </filter>
           <linearGradient id="monthArcGradient" x1="154" y1="4" x2="309" y2="187" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#C0F15A" />
@@ -707,7 +731,7 @@ function MonthlyDial({ months, onChange }: { months: number; onChange: (m: numbe
           fill="none"
           stroke="url(#monthArcGradient)"
           strokeWidth={arcStrokeWidth}
-          strokeLinecap="round"
+          strokeLinecap="butt"
           strokeDasharray={`${arcLength} ${circumference}`}
           transform={`rotate(-90 ${cx} ${cy})`}
           filter="url(#monthArcGlow)"
@@ -729,6 +753,7 @@ function MonthlyDial({ months, onChange }: { months: number; onChange: (m: numbe
           width="54.04"
           height="54.04"
           preserveAspectRatio="xMidYMid meet"
+          filter="url(#monthHandleGlow)"
           style={{ cursor: 'grab' }}
           onPointerDown={onHandlePointerDown}
         />
@@ -750,8 +775,8 @@ function HourlyDial({ hours, onChange }: { hours: number; onChange: (h: number) 
   const MAX = 12;
   const size = 313;
   const cx = 156.5; const cy = 156.5;
-  const r = 121.5;
-  const arcStrokeWidth = 56;
+  const r = 118;
+  const arcStrokeWidth = 52;
 
   const svgRef = useRef<SVGSVGElement>(null);
   const isDragging = useRef(false);
@@ -805,8 +830,14 @@ function HourlyDial({ hours, onChange }: { hours: number; onChange: (h: number) 
       >
         <defs>
           <filter id="hourArcGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="0" stdDeviation="7.5" floodColor="#A8EE2B" floodOpacity="0.34" />
             <feDropShadow dx="0" dy="-1.5" stdDeviation="3" floodColor="#C4F46B" floodOpacity="0.55" />
             <feDropShadow dx="0" dy="2.5" stdDeviation="4" floodColor="#90D516" floodOpacity="0.45" />
+          </filter>
+          <filter id="hourHandleGlow" x="-80%" y="-80%" width="260%" height="260%">
+            <feDropShadow dx="0" dy="2.5" stdDeviation="4.5" floodColor="#8FD613" floodOpacity="0.7" />
+            <feDropShadow dx="0" dy="7" stdDeviation="8" floodColor="#A8EE2B" floodOpacity="0.34" />
+            <feDropShadow dx="0" dy="2" stdDeviation="2.2" floodColor="#000000" floodOpacity="0.24" />
           </filter>
           <linearGradient id="hourArcGradient" x1="154" y1="4" x2="309" y2="187" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#C0F15A" />
@@ -823,14 +854,14 @@ function HourlyDial({ hours, onChange }: { hours: number; onChange: (h: number) 
           fill="none"
           stroke="url(#hourArcGradient)"
           strokeWidth={arcStrokeWidth}
-          strokeLinecap="round"
+          strokeLinecap="butt"
           strokeDasharray={`${arcLength} ${circumference}`}
           transform={`rotate(-90 ${cx} ${cy})`}
           filter="url(#hourArcGlow)"
           style={{ pointerEvents: 'none' }}
         />
         <image href="/assets/calendar/Ellipse.svg" x="37.12" y="54.41" width="238.76" height="238.76" preserveAspectRatio="xMidYMid meet" style={{ pointerEvents: 'none' }} />
-        <image href="/assets/calendar/Handle.svg" x={hx - 27.02} y={hy - 27.02} width="54.04" height="54.04" preserveAspectRatio="xMidYMid meet" style={{ cursor: 'grab' }} onPointerDown={onHandlePointerDown} />
+        <image href="/assets/calendar/Handle.svg" x={hx - 27.02} y={hy - 27.02} width="54.04" height="54.04" preserveAspectRatio="xMidYMid meet" filter="url(#hourHandleGlow)" style={{ cursor: 'grab' }} onPointerDown={onHandlePointerDown} />
         <text x={cx} y={cy - 12} textAnchor="middle" dominantBaseline="middle"
           style={{ fontFamily: 'var(--font-tt-norms)', fontSize: '60px', fontWeight: 700, fill: 'rgb(30,30,30)', pointerEvents: 'none' }}
         >{hours}</text>

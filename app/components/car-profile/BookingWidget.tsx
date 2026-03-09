@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { useRef, useState } from 'react';
 import { Calendar, Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { buildWhatsAppUrl } from '@/app/lib/utils';
 
 const PickupModal = dynamic(() => import('@/app/components/car-profile/PickupModal'), {
   ssr: false,
@@ -68,7 +69,7 @@ export default function BookingWidget({
     `Phone: ${normalizedPhone ? `${countryCode} ${normalizedPhone}` : 'Not provided yet'}`,
     `Full Name: ${normalizedName || 'Not provided yet'}`,
   ].join('\n');
-  const whatsappHref = `https://wa.me/${NEGOTIATION_WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
+  const whatsappHref = buildWhatsAppUrl(NEGOTIATION_WHATSAPP_NUMBER, whatsappMessage);
   const hasValidationErrors = Object.keys(errors).length > 0;
 
   const handleReserve = () => {

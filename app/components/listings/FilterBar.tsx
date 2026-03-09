@@ -27,38 +27,39 @@ export default function FilterBar({ total, onNoDepositChange, onUnlimitedMileage
 
   return (
     <div className="flex flex-col">
-      <div className="flex min-h-11 flex-col gap-4 px-0 sm:flex-row sm:items-center sm:justify-between xl:px-[39px]">
-        <p
-          className="text-black"
-          style={{
-            fontSize: 16,
-            fontWeight: 500,
-            lineHeight: '24px',
-          }}
-        >
-          {total} cars found
-        </p>
+      <div className="flex min-h-11 flex-col gap-4 py-2 md:relative md:left-1/2 md:right-1/2 md:ml-[-50vw] md:mr-[-50vw] md:h-11 md:w-screen md:flex-row md:items-center md:justify-center md:bg-[#E5E5E5] md:py-0 md:shadow-[0_1px_0_rgba(0,0,0,0.15),0_-1px_0_rgba(0,0,0,0.15)]">
+        <div className="flex w-full flex-col gap-4 px-0 md:h-11 md:flex-row md:items-center md:justify-between md:px-[39px]">
+          <p
+            className="text-black"
+            style={{
+              fontSize: 16,
+              fontWeight: 500,
+              lineHeight: '24px',
+            }}
+          >
+            {total} cars found
+          </p>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <button
-            className="flex items-center gap-1.5 text-black transition-opacity hover:opacity-70"
-            style={{ fontSize: 16, fontWeight: 500, lineHeight: '24px' }}
-          >
-            <FunnelIcon />
-            Filters
-          </button>
-          <span
-            aria-hidden="true"
-            className="block h-6 w-px bg-black/60"
-            style={{ transform: 'translateY(0.5px)' }}
-          />
-          <button
-            className="flex items-center gap-1.5 text-black transition-opacity hover:opacity-70"
-            style={{ fontSize: 16, fontWeight: 500, lineHeight: '24px' }}
-          >
-            <SortIcon />
-            Sort by
-          </button>
+          <div className="flex h-6 items-center gap-2 self-start md:self-auto">
+            <button
+              className="flex h-6 items-center gap-1.5 text-black transition-opacity hover:opacity-70"
+              style={{ fontSize: 16, fontWeight: 500, lineHeight: '24px' }}
+            >
+              <FunnelIcon />
+              Filters
+            </button>
+            <span
+              aria-hidden="true"
+              className="block h-[15px] w-[1.5px] bg-black/10"
+            />
+            <button
+              className="flex h-6 items-center gap-1.5 text-black transition-opacity hover:opacity-70"
+              style={{ fontSize: 16, fontWeight: 500, lineHeight: '24px' }}
+            >
+              <SortIcon />
+              Sort by
+            </button>
+          </div>
         </div>
       </div>
 
