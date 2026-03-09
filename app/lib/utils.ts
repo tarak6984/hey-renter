@@ -39,7 +39,14 @@ export function generateBookingId(): string {
  */
 export function truncate(text: string, limit: number): string {
   if (text.length <= limit) return text;
-  return text.slice(0, limit).trimEnd() + '…';
+  return text.slice(0, limit).trimEnd() + '...';
+}
+
+/**
+ * Builds a prefilled WhatsApp deep link.
+ */
+export function buildWhatsAppUrl(phoneNumber: string, message: string): string {
+  return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 }
 
 /**
@@ -50,7 +57,9 @@ export function getCalendarDays(year: number, month: number): (number | null)[] 
   const firstDay = new Date(year, month, 1).getDay(); // 0 = Sunday
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const days: (number | null)[] = Array(firstDay).fill(null);
-  for (let d = 1; d <= daysInMonth; d++) days.push(d);
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    days.push(day);
+  }
   return days;
 }
 
@@ -58,6 +67,16 @@ export function getCalendarDays(year: number, month: number): (number | null)[] 
  * Month names array.
  */
 export const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];

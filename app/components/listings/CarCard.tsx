@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Heart } from 'lucide-react';
 import { useState } from 'react';
 import { Car } from '@/app/types';
+import { buildWhatsAppUrl } from '@/app/lib/utils';
 
 interface CarCardProps {
   car: Car;
@@ -74,6 +75,10 @@ export default function CarCard({
     car.specs.topSpeed,
     `${car.specs.seats} Seater`,
   ];
+  const listingsWhatsappHref = buildWhatsAppUrl(
+    '971000000000',
+    `I'm interested in ${car.model}`
+  );
 
   return (
     <div
@@ -291,7 +296,7 @@ export default function CarCard({
           <div className="flex items-center" style={{ gap: 8 }}>
             {whatsappEnabled ? (
               <a
-                href={`https://wa.me/971000000000?text=I'm interested in ${car.model}`}
+                href={listingsWhatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
