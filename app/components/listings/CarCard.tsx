@@ -87,6 +87,7 @@ export default function CarCard({
         minHeight: 439,
         borderRadius: 15,
         background: 'linear-gradient(0deg, #ffffff 0%, #e9e9e9 44%, #2b2e34 100%)',
+        boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.08)',
         padding: '8px 8px 16px',
         gap: 24,
       }}
