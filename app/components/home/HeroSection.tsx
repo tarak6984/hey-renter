@@ -1,12 +1,11 @@
 import Image from 'next/image';
 
 const HERO_STAGE_HEIGHT = 275;
-const HERO_GAP = 72;
 /**
  * Home hero section based on the 1440px Figma desktop frame.
  * The hero art is composed from three separate car assets inside an oversized
- * centered rail. At the baseline desktop width the side cars are intentionally
- * cropped, and wider viewports reveal more of them naturally.
+  * centered rail. At the baseline desktop width the side cars are intentionally
+  * cropped, and wider viewports reveal more of them naturally.
  */
 export default function HeroSection() {
   return (
@@ -62,8 +61,9 @@ export default function HeroSection() {
           <div
             className="pointer-events-none absolute bottom-0 left-1/2 grid -translate-x-1/2 items-end"
             style={{
-              gridTemplateColumns: '756px 765px 765px',
-              gap: `${HERO_GAP}px`,
+              width: 'clamp(1700px, 155vw, 2430px)',
+              gridTemplateColumns: '31.11% 31.48% 31.48%',
+              gap: '2.96%',
             }}
           >
             <Image
