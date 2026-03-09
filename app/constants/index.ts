@@ -28,7 +28,7 @@ export const CAR_CATEGORIES: {
   image: string;
   gradient: string;
 }[] = [
-  { id: 'super',          label: 'SUPER',          carCount: 150, fromPrice: 1200, image: '/assets/categories/super.png',          gradient: 'linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 37%), linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 35%, rgba(0,0,0,0) 100%)' },
+  { id: 'super',          label: 'SUPER',          carCount: 150, fromPrice: 1200, image: '/assets/categories/super-mobile-fit.png', gradient: 'linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 37%), linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 35%, rgba(0,0,0,0) 100%)' },
   { id: 'luxury',         label: 'LUXURY',         carCount: 150, fromPrice: 1200, image: '/assets/categories/luxury.png',         gradient: 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 34%, rgba(0,0,0,0) 100%)' },
   { id: 'suv',            label: "SUV's",          carCount: 150, fromPrice: 1200, image: '/assets/categories/suv.png',            gradient: 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 37%, rgba(0,0,0,0) 100%)' },
   { id: 'convertible',    label: 'CONVERTIBLE',    carCount: 150, fromPrice: 1200, image: '/assets/categories/convertible.png',    gradient: 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 37%, rgba(0,0,0,0) 100%)' },

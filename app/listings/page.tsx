@@ -115,7 +115,7 @@ function ListingsResults({
           )}
 
           <div className="my-6 flex justify-center">
-            <button className="flex items-center gap-2 rounded-full border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 transition-all hover:border-gray-500 hover:bg-white">
+            <button className="flex items-center gap-2 rounded-full border border-gray-300 px-5 py-3 text-center text-sm font-semibold text-gray-700 transition-all hover:border-gray-500 hover:bg-white sm:px-8">
               SEE - 1,289 OTHER OPTIONS
               <ChevronDown size={15} />
             </button>

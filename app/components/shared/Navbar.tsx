@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 
 /**
  * Navbar - main navigation bar.
@@ -11,14 +12,19 @@ import { useState } from 'react';
 export default function Navbar() {
   const [query, setQuery] = useState('');
   const [focused, setFocused] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <nav data-shell-navbar className="sticky top-0 z-50 w-full" style={{ backgroundColor: '#12151C' }}>
-      <div className="relative mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-4 sm:px-6 md:h-[80px] md:px-[39px] md:py-0">
+      <div className="relative mx-auto flex max-w-[1440px] flex-col gap-3 px-4 py-3 sm:px-6 md:px-[39px] xl:h-[80px] xl:flex-row xl:items-center xl:justify-between xl:gap-4 xl:py-0">
+        <div className="flex items-center justify-between gap-4 xl:contents">
         <Link
           href="/"
           aria-label="Hey Renter - Home"
           className="z-10 flex flex-shrink-0 items-center"
+          onClick={closeMenu}
         >
           <Image
             src="/assets/icons/logo.svg"
@@ -26,12 +32,22 @@ export default function Navbar() {
             width={248}
             height={40}
             priority
-            className="h-auto w-[168px] md:w-[248px]"
+            className="h-auto w-[168px] sm:w-[190px] xl:w-[248px]"
           />
         </Link>
 
+        <button
+          type="button"
+          onClick={() => setMenuOpen((value) => !value)}
+          aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/8 text-white transition-colors hover:bg-white/12 xl:hidden"
+        >
+          {menuOpen ? <X size={22} strokeWidth={2.2} /> : <Menu size={22} strokeWidth={2.2} />}
+        </button>
+        </div>
+
         <div
-          className="absolute left-1/2 hidden -translate-x-1/2 items-center min-[1400px]:flex"
+          className="absolute left-1/2 hidden -translate-x-1/2 items-center xl:flex"
           style={{ gap: '16px' }}
         >
           <NavItem label="Rent by Category" href="/listings?type=category" />
@@ -64,11 +80,12 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <div className="z-10 flex flex-shrink-0">
+        <div className="z-10 flex w-full flex-shrink-0 xl:w-auto">
           <div
             className="flex items-center transition-all duration-200"
             style={{
-              width: 'clamp(160px, 20vw, 248px)',
+              width: '100%',
+              maxWidth: '248px',
               height: '48px',
               borderRadius: '40px',
               backgroundColor: 'rgba(255,255,255,0.10)',
@@ -95,6 +112,23 @@ export default function Navbar() {
             />
           </div>
         </div>
+
+        {menuOpen ? (
+          <div className="flex flex-col gap-3 rounded-[20px] border border-white/10 bg-[#171B23] p-4 text-white shadow-[0_20px_40px_rgba(0,0,0,0.24)] xl:hidden">
+            <MobileNavLink href="/listings?type=category" onNavigate={closeMenu}>
+              Rent by Category
+            </MobileNavLink>
+            <MobileNavLink href="/listings?type=brand" onNavigate={closeMenu}>
+              Rent by Brands
+            </MobileNavLink>
+            <MobileNavLink href="/about" onNavigate={closeMenu}>
+              About
+            </MobileNavLink>
+            <MobileNavLink href="/help" onNavigate={closeMenu}>
+              Get Help
+            </MobileNavLink>
+          </div>
+        ) : null}
       </div>
     </nav>
   );
@@ -114,6 +148,27 @@ function NavItem({ label, href }: { label: string; href: string }) {
       }}
     >
       {label}
+      <ChevronLime />
+    </Link>
+  );
+}
+
+function MobileNavLink({
+  children,
+  href,
+  onNavigate,
+}: {
+  children: React.ReactNode;
+  href: string;
+  onNavigate: () => void;
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onNavigate}
+      className="flex items-center justify-between rounded-[12px] border border-white/8 bg-white/4 px-4 py-3 text-[16px] font-medium text-white transition-colors hover:bg-white/8"
+    >
+      <span>{children}</span>
       <ChevronLime />
     </Link>
   );

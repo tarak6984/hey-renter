@@ -18,12 +18,12 @@ export default function HeroSection() {
         width: '100%',
       }}
     >
-      <div className="flex flex-col items-center gap-2 px-4 pt-14 text-center sm:px-6 md:px-[39px] md:pt-20">
+      <div className="flex flex-col items-center gap-2 px-4 pt-10 text-center sm:px-6 md:pt-14 xl:px-[39px] xl:pt-20">
         <h1
           className="max-w-[16ch]"
           style={{
             fontFamily: 'var(--font-clash)',
-            fontSize: 'clamp(36px, 4vw, 48px)',
+            fontSize: 'clamp(32px, 7vw, 48px)',
             fontWeight: 700,
             lineHeight: '1.2',
             color: '#000000',
@@ -37,7 +37,7 @@ export default function HeroSection() {
         <p
           style={{
             fontFamily: 'var(--font-tt-norms)',
-            fontSize: 'clamp(16px, 1.5vw, 18px)',
+            fontSize: 'clamp(16px, 3.5vw, 18px)',
             fontWeight: 500,
             lineHeight: '1.45',
             color: '#000000',
@@ -48,18 +48,31 @@ export default function HeroSection() {
         </p>
       </div>
 
-      <div className="h-10 shrink-0 md:h-12" />
+      <div className="h-6 shrink-0 md:h-8 xl:h-12" />
 
       <div className="w-full overflow-hidden">
         <div
           className="relative w-full overflow-hidden"
           style={{
             flexShrink: 0,
-            height: `clamp(180px, ${(HERO_STAGE_HEIGHT / 1440) * 100}vw, ${HERO_STAGE_HEIGHT}px)`,
+            height: `clamp(180px, 32vw, ${HERO_STAGE_HEIGHT}px)`,
           }}
         >
+          <div className="absolute inset-x-0 bottom-0 flex items-end justify-center px-4 sm:hidden">
+            <Image
+              src="/assets/hero/middle-car-image.png"
+              alt="Lamborghini Urus side profile"
+              width={1537}
+              height={550}
+              priority
+              className="h-auto w-full max-w-[680px]"
+              sizes="100vw"
+              quality={92}
+            />
+          </div>
+
           <div
-            className="pointer-events-none absolute bottom-0 left-1/2 grid -translate-x-1/2 items-end"
+            className="pointer-events-none absolute bottom-0 left-1/2 hidden -translate-x-1/2 items-end sm:grid"
             style={{
               width: 'clamp(1700px, 155vw, 2430px)',
               gridTemplateColumns: '31.11% 31.48% 31.48%',
@@ -100,7 +113,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className="h-12 shrink-0 md:h-16" />
+      <div className="h-8 shrink-0 md:h-12 xl:h-16" />
     </section>
   );
 }
