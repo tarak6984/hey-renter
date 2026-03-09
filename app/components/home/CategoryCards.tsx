@@ -14,21 +14,14 @@ export default function CategoryCards() {
               className="group relative overflow-hidden rounded-[18px]"
             >
               <div className="relative aspect-[16/9] w-full">
-                <div className="absolute inset-0 bg-[#d9d9d9]" />
-                <div className="absolute inset-0 p-3">
-                  <Image
-                    src={category.image}
-                    alt={category.label}
-                    fill
-                    className={
-                      category.image.endsWith('.png')
-                        ? 'object-contain object-right-bottom p-2 transition-transform duration-300 group-hover:scale-[1.03]'
-                        : 'object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]'
-                    }
-                    sizes="100vw"
-                    quality={90}
-                  />
-                </div>
+                <Image
+                  src={category.image}
+                  alt={category.label}
+                  fill
+                  className={`object-cover transition-transform duration-300 group-hover:scale-[1.03] ${getMobileCategoryImagePosition(category.id)}`}
+                  sizes="100vw"
+                  quality={90}
+                />
                 <div
                   className="absolute inset-0"
                   style={{ background: category.gradient }}
@@ -73,4 +66,21 @@ export default function CategoryCards() {
       </div>
     </section>
   );
+}
+
+function getMobileCategoryImagePosition(categoryId: string) {
+  switch (categoryId) {
+    case 'driver-service':
+      return 'object-center';
+    case 'convertible':
+      return 'object-center';
+    case 'luxury':
+      return 'object-center';
+    case 'suv':
+      return 'object-center';
+    case 'economy':
+      return 'object-center';
+    default:
+      return 'object-center';
+  }
 }
